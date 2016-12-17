@@ -39,8 +39,7 @@ namespace BMPClient.BMP
                 Buffer.BlockCopy(data, 22, ipBytes, 0, 4);
                 PeerAddress = new IPAddress(ipBytes);
             }
-
-            //TODO add extension method to handle uint64
+            
             PeerDistinguisher = BitConverter.ToUInt64(data.Skip(2).Take(8).Reverse().ToArray(), 0);
             PeerAS = data.ToUInt32(26);
 

@@ -70,5 +70,21 @@ namespace BMPClient
                 data.Skip(index).Take(4);
             return BitConverter.ToUInt32(bytes.ToArray(), 0);
         }
+
+        public static ulong ToUlong(this byte[] data, int index)
+        {
+            var bytes = IsLittleEndian
+                ? data.Skip(index).Take(4).Reverse() :
+                data.Skip(index).Take(4);
+            return BitConverter.ToUInt32(bytes.ToArray(), 0);
+        }
+
+        public static ulong ToUlong(this ArraySegment<byte> data, int index)
+        {
+            var bytes = IsLittleEndian
+                ? data.Skip(index).Take(4).Reverse() :
+                data.Skip(index).Take(4);
+            return BitConverter.ToUInt32(bytes.ToArray(), 0);
+        }
     }
 }
