@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{77CDFB9B-DAF0-4910-AC2E-A6DE4A3CCAAF}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BMPClient</RootNamespace>
+    <AssemblyName>BMPClient</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BGP\ASPathSegment.cs" />
+    <Compile Include="BGP\BGP.cs" />
+    <Compile Include="BGP\BGPHeader.cs" />
+    <Compile Include="BGP\BGPKeepAlive.cs" />
+    <Compile Include="BGP\BGPMessage.cs" />
+    <Compile Include="BGP\BGPNotification.cs" />
+    <Compile Include="BGP\BGPOpen.cs" />
+    <Compile Include="BGP\IBGPMsgBody.cs" />
+    <Compile Include="BGP\ImsgBody.cs" />
+    <Compile Include="BGP\OptionalParameter.cs" />
+    <Compile Include="BGP\PathAttrAtomicAggregate.cs" />
+    <Compile Include="BGP\PathAttribute.cs" />
+    <Compile Include="BGP\BGPRouteRefresh.cs" />
+    <Compile Include="BGP\BGPUpdate.cs" />
+    <Compile Include="BGP\CapabilityAddPath.cs" />
+    <Compile Include="BGP\CapabilityCiscoRouteRefresh.cs" />
+    <Compile Include="BGP\CapabilityEnhancedRouteRefresh.cs" />
+    <Compile Include="BGP\CapabilityFourOctetAsNumber.cs" />
+    <Compile Include="BGP\CapabilityGracefulRestart.cs" />
+    <Compile Include="BGP\CapabilityMultiProtocol.cs" />
+    <Compile Include="BGP\Capability.cs" />
+    <Compile Include="BGP\CapabilityRouteRefresh.cs" />
+    <Compile Include="BGP\IPAddrPrefix.cs" />
+    <Compile Include="BGP\OptionalParameterCapability.cs" />
+    <Compile Include="BGP\PathAttributeAggregator.cs" />
+    <Compile Include="BGP\PathAttributeASPath.cs" />
+    <Compile Include="BGP\PathAttributeLargeCommunities.cs" />
+    <Compile Include="BGP\PathAttributeMPReachNLRI.cs" />
+    <Compile Include="BGP\PathAttributeMPUnreachNLRI.cs" />
+    <Compile Include="BGP\PathAttributeMultiExitDisc.cs" />
+    <Compile Include="BGP\PathAttributeOrigin.cs" />
+    <Compile Include="BGP\PathAttributeUnknown.cs" />
+    <Compile Include="BitConverterExtensions.cs" />
+    <Compile Include="BMP\Header.cs" />
+    <Compile Include="BMP\BMPMessage.cs" />
+    <Compile Include="BMP\BMPInitiation.cs" />
+    <Compile Include="BMP\PeerDownNotification.cs" />
+    <Compile Include="BMP\PeerHeader.cs" />
+    <Compile Include="BMP\PeerUpNotification.cs" />
+    <Compile Include="BMP\BMPStatsTLV.cs" />
+    <Compile Include="BMP\IBMPBody.cs" />
+    <Compile Include="BMP\RouteMonitoring.cs" />
+    <Compile Include="BMP\StatisticsReport.cs" />
+    <Compile Include="BMP\BMPTermination.cs" />
+    <Compile Include="BGP\OptionalParameterUnknown.cs" />
+    <Compile Include="JSON\IPAddressConverter.cs" />
+    <Compile Include="JSON\IPPrefixConvert.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
