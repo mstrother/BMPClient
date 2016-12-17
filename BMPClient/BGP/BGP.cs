@@ -69,8 +69,8 @@ namespace BMPClient.BGP
 
         public enum SubsequentAddressFamily : byte
         {
-            unicast = 1,
-            multicast = 2
+            Unicast = 1,
+            Multicast = 2
         }
     }
 }
