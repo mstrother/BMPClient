@@ -1,4 +1,4 @@
-# BMPClient
+# BMP Client
 
 BMP Client ([BGP Monitoring Protocol](https://tools.ietf.org/html/rfc7854)) client. BMP, is an IETF Standards Track protocol. It provides a convenient interface for the collection of BGP routing information in near real-time. The introduction of BMP allows network operators to grant access to an Adj-RIB stream, both post and pre policy, of a peer along with periodic dumps of certain statistics. It is not necessary to peer with or grant logon access to the network device generating the BMP information. The messages are received on a BMP monitoring station such as BMP Client.
 
