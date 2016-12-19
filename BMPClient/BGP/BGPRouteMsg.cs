@@ -2,7 +2,7 @@
 
 namespace BMPClient.BGP
 {
-    public class BGPRouteRefresh : ImsgBody
+    public class BGPRouteMsg : ImsgBody
     {
         public void DecodeFromBytes(ArraySegment<byte> data)
         {

@@ -5,7 +5,7 @@ using System.Net;
 
 namespace BMPClient.BGP
 {
-    public class BGPOpen : ImsgBody
+    public class BGPOpenMsg : ImsgBody
     {
         public byte Version { get; private set; }
         public ushort MyAS { get; private set; }

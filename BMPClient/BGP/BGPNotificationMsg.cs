@@ -1,7 +1,6 @@
 ﻿using System;
-using BMPClient.BGP;
 
-namespace BMPClient
+namespace BMPClient.BGP
 {
     public class BGPNotification : ImsgBody
     {

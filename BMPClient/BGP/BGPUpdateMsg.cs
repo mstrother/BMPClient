@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BMPClient.BGP
 {
-    public class BGPUpdate : ImsgBody
+    public class BGPUpdateMsg : ImsgBody
     {
         private readonly List<PathAttribute> pathAttributes = new List<PathAttribute>();
         

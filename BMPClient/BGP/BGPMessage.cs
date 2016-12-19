@@ -24,17 +24,20 @@ namespace BMPClient.BGP
             switch (header.Type)
             {
                 case BGP.MessageType.Open:
-                    body = new BGPOpen();
+                    body = new BGPOpenMsg();
                     break;
                 case BGP.MessageType.Update:
-                    body = new BGPUpdate();
+                    body = new BGPUpdateMsg();
                     break;
                 case BGP.MessageType.Notification:
-                    throw new NotImplementedException();
+                    body = new BGPNotification();
+                    break;
                 case BGP.MessageType.Keepalive:
-                    throw new NotImplementedException();
+                    body = new BGPKeepAliveMsg();
+                    break;
                 case BGP.MessageType.RouteRefresh:
-                    throw new NotImplementedException();
+                    body = new BGPRouteMsg();
+                    break;
                 default:
                     throw new NotImplementedException();
             }
