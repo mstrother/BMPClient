@@ -52,7 +52,7 @@
     <Compile Include="BGP\BGP.cs" />
     <Compile Include="BGP\BGPHeader.cs" />
     <Compile Include="BGP\BGPKeepAliveMsg.cs" />
-    <Compile Include="BGP\BGPMessage.cs" />
+    <Compile Include="BGP\BGPMsg.cs" />
     <Compile Include="BGP\BGPNotificationMsg.cs" />
     <Compile Include="BGP\BGPOpenMsg.cs" />
     <Compile Include="BGP\IBGPMsgBody.cs" />

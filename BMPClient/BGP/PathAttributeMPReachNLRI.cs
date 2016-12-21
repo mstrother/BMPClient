@@ -23,34 +23,41 @@ namespace BMPClient.BGP
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
-            var ipAddrPrefixes = new List<IPAddrPrefix>();
-
             AFI = (BGP.AddressFamily) data.ToUInt16(0);
-            SAFI = (BGP.SubsequentAddressFamily) data.ElementAt(2);
-
+            SAFI = (BGP.SubsequentAddressFamily) data.ElementAt(3);
+            int nextHopLength = data.ElementAt(3);
             var offset = 4;
-            var nextHopLength = data.ElementAt(3);
 
             if (nextHopLength > 0)
             {
-                //TODO colalescing
                 var addrLength = 4;
                 if (AFI == BGP.AddressFamily.IPv6)
                     addrLength = 16;
                 NextHop = new IPAddress(data.Skip(offset).Take(addrLength).ToArray());
                 offset += addrLength;
+                var hasLinkLocal = nextHopLength == 32;
+                if (hasLinkLocal)
+                {
+                    LinkLocalNextHop = new IPAddress(data.Skip(offset).Take(addrLength).ToArray());
+                    offset += 16;
+                }
             }
 
+            //reserved byte (RFC4760)
             offset++;
+
+            var ipAddrPrefixes = new List<IPAddrPrefix>();
 
             while (offset < data.Count)
             {
-                var ipAddrPrefixLen = data.Count - offset;
-                var ipAddrPrefixBytes = new byte[ipAddrPrefixLen];
-                Buffer.BlockCopy(data.ToArray(), offset, ipAddrPrefixBytes, 0, ipAddrPrefixLen);
-                var ipAddrPrefix = new IPAddrPrefix(ipAddrPrefixBytes);
-                offset += ipAddrPrefixLen;
+                int length = data.ElementAt(offset);
+                length = (length + 7) / 8;
+                length++;
+                var segmentOffset = data.Offset + offset;
+                var prefixSegment = new ArraySegment<byte>(data.Array, segmentOffset, length);
+                var ipAddrPrefix = new IPAddrPrefix(prefixSegment, AFI);
                 ipAddrPrefixes.Add(ipAddrPrefix);
+                offset += prefixSegment.Count;
             }
 
             Value = ipAddrPrefixes.ToArray();
