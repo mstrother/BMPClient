@@ -1,4 +1,4 @@
-﻿namespace BMPClient.BMP
+﻿namespace BmpListener.BMP
 {
     public interface IBMPBody
     {

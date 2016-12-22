@@ -3,7 +3,7 @@ using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace BMPClient.JSON
+namespace BmpListener.JSON
 {
     internal class IPAddressConverter : JsonConverter
     {

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BMPClient.BGP
+namespace BmpListener.BGP
 {
     public class BGPKeepAliveMsg : ImsgBody
     {

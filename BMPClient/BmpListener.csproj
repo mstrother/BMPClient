@@ -7,8 +7,8 @@
     <ProjectGuid>{77CDFB9B-DAF0-4910-AC2E-A6DE4A3CCAAF}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BMPClient</RootNamespace>
-    <AssemblyName>BMPClient</AssemblyName>
+    <RootNamespace>BmpListener</RootNamespace>
+    <AssemblyName>BmpListener</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -97,6 +97,7 @@
     <Compile Include="JSON\IPPrefixConvert.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BmpListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

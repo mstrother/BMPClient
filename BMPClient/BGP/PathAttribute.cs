@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace BMPClient.BGP
+namespace BmpListener.BGP
 {
     public abstract class PathAttribute
     {

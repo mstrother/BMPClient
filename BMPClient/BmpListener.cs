@@ -1,41 +1,25 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using BmpListener.BMP;
-using BmpListener.JSON;
-using Newtonsoft.Json;
 
 namespace BmpListener
 {
-    internal class Program
+    public class BmpListener
     {
-        private const string ipAddress = "0.0.0.0";
-        private const int port = 11019;
+        private readonly TcpListener tcpListener;
 
-        private static void Main()
+        public BmpListener(IPAddress ip, int port = 11019)
         {
-            JsonConvert.DefaultSettings = () =>
-            {
-                var settings = new JsonSerializerSettings();
-                settings.Converters.Add(new IPAddressConverter());
-                settings.Converters.Add(new TestConverter());
-                return settings;
-            };
-
-            var cts = new CancellationToken();
-            var listener = new TcpListener(IPAddress.Parse(ipAddress), port);
-            listener.Start();
-            AcceptTcpClient(listener, cts).Wait(cts);
+            tcpListener = new TcpListener(ip, port);
         }
 
-        private static async Task AcceptTcpClient(TcpListener listener, CancellationToken cts)
+        private async Task AcceptTcpClient(CancellationToken cts)
         {
             while (!cts.IsCancellationRequested)
             {
-                Console.WriteLine("Waiting for connection");
-                var tcpClient = await listener.AcceptTcpClientAsync();
+                var tcpClient = await tcpListener.AcceptTcpClientAsync();
                 var task = ProcessClientAsync(tcpClient);
             }
         }
@@ -43,7 +27,6 @@ namespace BmpListener
         private static async Task ProcessClientAsync(TcpClient tcpClient)
         {
             var clientEndPoint = tcpClient.Client.RemoteEndPoint.ToString();
-            Console.WriteLine($"Accepted a new connection from {clientEndPoint}");
             while (true)
                 using (var stream = tcpClient.GetStream())
                 {
@@ -80,16 +63,10 @@ namespace BmpListener
                                     message.Body = new BMPTermination();
                                     break;
                             }
-                            WriteJson(message);
+                            //WriteJson(message);
                         }
                     }
                 }
-        }
-
-        private static void WriteJson(BMPMessage msg)
-        {
-            var json = JsonConvert.SerializeObject(msg);
-            Console.WriteLine(json);
         }
     }
 }

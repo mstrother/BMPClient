@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net;
 
-namespace BMPClient.BMP
+namespace BmpListener.BMP
 {
     public class PeerHeader
     {

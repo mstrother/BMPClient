@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace BMPClient.BGP
+namespace BmpListener.BGP
 {
     public class BGPOpenMsg : ImsgBody
     {

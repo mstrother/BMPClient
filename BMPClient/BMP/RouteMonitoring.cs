@@ -1,6 +1,6 @@
-﻿using BMPClient.BGP;
+﻿using BmpListener.BGP;
 
-namespace BMPClient.BMP
+namespace BmpListener.BMP
 {
     public class RouteMonitoring : IBMPBody
     {

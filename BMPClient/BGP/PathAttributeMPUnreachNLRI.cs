@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BMPClient.BGP
+namespace BmpListener.BGP
 {
     public class PathAttributeMPUnreachNLRI : PathAttribute
     {

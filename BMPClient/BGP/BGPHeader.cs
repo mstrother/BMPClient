@@ -2,7 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace BMPClient.BGP
+namespace BmpListener.BGP
 {
     public class BGPHeader
     {
