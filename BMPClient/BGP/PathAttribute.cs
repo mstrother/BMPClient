@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace BMPClient.BGP
+namespace BmpListener.BGP
 {
     public abstract class PathAttribute
     {
@@ -21,6 +21,10 @@ namespace BMPClient.BGP
             {
                 Length = data.ElementAt(2);
                 data = new ArraySegment<byte>(data.Array, data.Offset + 3, (int) Length);
+            }
+            if (Type  == BGP.AttributeType.MP_UNREACH_NLRI && Length > 16)
+            {
+                int i = 0;
             }
             //TODO validate flags            
             DecodeFromBytes(data);

@@ -1,8 +1,8 @@
 ﻿using System;
-using BMPClient.BGP;
+using BmpListener.BGP;
 using Newtonsoft.Json;
 
-namespace BMPClient.JSON
+namespace BmpListener.JSON
 {
     public class TestConverter : JsonConverter
     {

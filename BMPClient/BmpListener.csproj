@@ -7,8 +7,8 @@
     <ProjectGuid>{77CDFB9B-DAF0-4910-AC2E-A6DE4A3CCAAF}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BMPClient</RootNamespace>
-    <AssemblyName>BMPClient</AssemblyName>
+    <RootNamespace>BmpListener</RootNamespace>
+    <AssemblyName>BmpListener</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -51,17 +51,17 @@
     <Compile Include="BGP\ASPathSegment.cs" />
     <Compile Include="BGP\BGP.cs" />
     <Compile Include="BGP\BGPHeader.cs" />
-    <Compile Include="BGP\BGPKeepAlive.cs" />
-    <Compile Include="BGP\BGPMessage.cs" />
-    <Compile Include="BGP\BGPNotification.cs" />
-    <Compile Include="BGP\BGPOpen.cs" />
+    <Compile Include="BGP\BGPKeepAliveMsg.cs" />
+    <Compile Include="BGP\BGPMsg.cs" />
+    <Compile Include="BGP\BGPNotificationMsg.cs" />
+    <Compile Include="BGP\BGPOpenMsg.cs" />
     <Compile Include="BGP\IBGPMsgBody.cs" />
     <Compile Include="BGP\ImsgBody.cs" />
     <Compile Include="BGP\OptionalParameter.cs" />
     <Compile Include="BGP\PathAttrAtomicAggregate.cs" />
     <Compile Include="BGP\PathAttribute.cs" />
-    <Compile Include="BGP\BGPRouteRefresh.cs" />
-    <Compile Include="BGP\BGPUpdate.cs" />
+    <Compile Include="BGP\BGPRouteMsg.cs" />
+    <Compile Include="BGP\BGPUpdateMsg.cs" />
     <Compile Include="BGP\CapabilityAddPath.cs" />
     <Compile Include="BGP\CapabilityCiscoRouteRefresh.cs" />
     <Compile Include="BGP\CapabilityEnhancedRouteRefresh.cs" />
@@ -97,6 +97,7 @@
     <Compile Include="JSON\IPPrefixConvert.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BmpListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

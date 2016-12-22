@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BMPClient.BGP
+namespace BmpListener.BGP
 {
     public class PathAttributeMPUnreachNLRI : PathAttribute
     {
@@ -17,20 +17,20 @@ namespace BMPClient.BGP
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
             var ipAddrPrefixes = new List<IPAddrPrefix>();
+            AFI = (BGP.AddressFamily)data.ToUInt16(0);
+            SAFI = (BGP.SubsequentAddressFamily)data.ElementAt(2);
 
-            AFI = (BGP.AddressFamily) data.ToUInt16(0);
-            SAFI = (BGP.SubsequentAddressFamily) data.ElementAt(2);
-
-            var offset = 3;
-
-            while (offset < data.Count)
+            for (var i = 3; i < data.Count;)
             {
-                var ipAddrPrefixLen = data.Count - offset;
-                var ipAddrPrefixBytes = new byte[ipAddrPrefixLen];
-                Buffer.BlockCopy(data.ToArray(), offset, ipAddrPrefixBytes, 0, ipAddrPrefixLen);
-                var ipAddrPrefix = new IPAddrPrefix(ipAddrPrefixBytes);
-                offset += ipAddrPrefixLen;
+                int length = data.ElementAt(i);
+                if (length == 0) return;
+                length = (length + 7) / 8;
+                length++;
+                var offset = data.Offset + i;
+                var prefixSegment = new ArraySegment<byte>(data.Array, offset, length);
+                var ipAddrPrefix = new IPAddrPrefix(prefixSegment, AFI);
                 ipAddrPrefixes.Add(ipAddrPrefix);
+                i += prefixSegment.Count;
             }
 
             Value = ipAddrPrefixes.ToArray();

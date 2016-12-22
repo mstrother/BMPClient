@@ -3,11 +3,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using BMPClient.BMP;
-using BMPClient.JSON;
+using BmpListener.BMP;
+using BmpListener.JSON;
 using Newtonsoft.Json;
 
-namespace BMPClient
+namespace BmpListener
 {
     internal class Program
     {
@@ -24,20 +24,10 @@ namespace BMPClient
                 return settings;
             };
 
-            var cts = new CancellationTokenSource();
-
+            var cts = new CancellationToken();
             var listener = new TcpListener(IPAddress.Parse(ipAddress), port);
-            try
-            {
-                listener.Start();
-                var task = AcceptTcpClient(listener, cts.Token);
-                task.Wait(cts.Token);
-            }
-            finally
-            {
-                cts.Cancel();
-                listener.Stop();
-            }
+            listener.Start();
+            AcceptTcpClient(listener, cts).Wait(cts);
         }
 
         private static async Task AcceptTcpClient(TcpListener listener, CancellationToken cts)
@@ -46,43 +36,30 @@ namespace BMPClient
             {
                 Console.WriteLine("Waiting for connection");
                 var tcpClient = await listener.AcceptTcpClientAsync();
-                await EchoAsync(tcpClient, cts).ConfigureAwait(false);
+                var task = ProcessClientAsync(tcpClient);
             }
         }
 
-        private static async Task EchoAsync(TcpClient client, CancellationToken ct)
+        private static async Task ProcessClientAsync(TcpClient tcpClient)
         {
-            var clientEndPoint = client.Client.RemoteEndPoint.ToString();
+            var clientEndPoint = tcpClient.Client.RemoteEndPoint.ToString();
             Console.WriteLine($"Accepted a new connection from {clientEndPoint}");
-            using (client)
-            {
-                using (var stream = client.GetStream())
+            while (true)
+                using (var stream = tcpClient.GetStream())
                 {
-                    var bmpHeaderBytes = new byte[6];
-                    var bmpPeerHeaderBytes = new byte[42];
-
-                    while (!ct.IsCancellationRequested)
+                    while (true)
                     {
-                        //var timeoutTask = Task.Delay(TimeSpan.FromSeconds(15));
-                        var headerReadTask = await stream.ReadAsync(bmpHeaderBytes, 0, 6, ct);
+                        var bmpHeaderBytes = new byte[6];
+                        var bmpPeerHeaderBytes = new byte[42];
+                        await stream.ReadAsync(bmpHeaderBytes, 0, 6); //add cancellation token
                         var header = new Header(bmpHeaderBytes);
                         var message = new BMPMessage(header);
-
-                        //var completedTask = await Task.WhenAny(timeoutTask, amountReadTask).ConfigureAwait(false);
-                        //var completedTask = await Task.WhenAny(headerReadTask).ConfigureAwait(false);
-                        //if (completedTask == timeoutTask)                     
-                        //var msg = Encoding.ASCII.GetBytes("Client timed out");
-                        //await stream.WriteAsync(msg, 0, msg.Length);                                                                 
-
-                        //check version
-
                         if (header.Type != BMPMessage.BMPMessageType.Initiation)
                         {
-                            await stream.ReadAsync(bmpPeerHeaderBytes, 0, 42, ct);
+                            await stream.ReadAsync(bmpPeerHeaderBytes, 0, 42); //add cancellation token
                             message.PeerHeader = new PeerHeader(bmpPeerHeaderBytes);
                             var bmpMsgBytes = new byte[header.Length - 48];
-                            await stream.ReadAsync(bmpMsgBytes, 0, bmpMsgBytes.Length, ct);
-
+                            await stream.ReadAsync(bmpMsgBytes, 0, bmpMsgBytes.Length);
                             switch (header.Type)
                             {
                                 case BMPMessage.BMPMessageType.RouteMonitoring:
@@ -103,15 +80,16 @@ namespace BMPClient
                                     message.Body = new BMPTermination();
                                     break;
                             }
+                            WriteJson(message);
                         }
-                        //await stream.WriteAsync(buf, 0, amountRead, ct).ConfigureAwait(false);
-                        var json = JsonConvert.SerializeObject(message);
-                        Console.WriteLine(json);
                     }
                 }
-            }
-            Console.WriteLine("Client disconnected");
-            Console.ReadKey();
+        }
+
+        private static void WriteJson(BMPMessage msg)
+        {
+            var json = JsonConvert.SerializeObject(msg);
+            Console.WriteLine(json);
         }
     }
 }

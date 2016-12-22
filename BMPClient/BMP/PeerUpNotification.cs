@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net;
-using BMPClient.BGP;
+using BmpListener.BGP;
 
-namespace BMPClient.BMP
+namespace BmpListener.BMP
 {
     public class PeerUpNotification : IBMPBody
     {
@@ -14,8 +14,8 @@ namespace BMPClient.BMP
         public IPAddress LocalAddress { get; set; }
         public ushort LocalPort { get; set; }
         public ushort RemotePort { get; set; }
-        public BGPMessage SentOpenMessage { get; set; }
-        public BGPMessage ReceivedOpenMessage { get; set; }
+        public BGPMsg SentOpenMessage { get; set; }
+        public BGPMsg ReceivedOpenMessage { get; set; }
 
         public void ParseBody(BMPMessage message, byte[] data)
         {
@@ -32,7 +32,7 @@ namespace BMPClient.BMP
             var bgpData = new byte[data.Length - 20];
             Buffer.BlockCopy(data, 20, bgpData, 0, data.Length - 20);
 
-            var bgpMsg = BGPMessage.GetBGPMessage(bgpData);
+            var bgpMsg = BGPMsg.GetBGPMessage(bgpData);
         }
     }
 }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace BMPClient.BGP
+namespace BmpListener.BGP
 {
-    public class BGPOpen : ImsgBody
+    public class BGPOpenMsg : ImsgBody
     {
         public byte Version { get; private set; }
         public ushort MyAS { get; private set; }

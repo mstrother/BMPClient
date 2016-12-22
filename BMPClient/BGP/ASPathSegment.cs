@@ -1,4 +1,4 @@
-﻿namespace BMPClient.BGP
+﻿namespace BmpListener.BGP
 {
     public class ASPathSegment
     {

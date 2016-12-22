@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace BMPClient.BGP
+namespace BmpListener.BGP
 {
-    public class BGPMessage
+    public class BGPMsg
     {
-        public BGPMessage(BGPHeader header, ImsgBody body)
+        public BGPMsg(BGPHeader header, ImsgBody body)
         {
             Header = header;
             Body = body;
@@ -13,7 +13,7 @@ namespace BMPClient.BGP
         public BGPHeader Header { get; }
         public ImsgBody Body { get; }
 
-        public static BGPMessage GetBGPMessage(byte[] data)
+        public static BGPMsg GetBGPMessage(byte[] data)
         {
             var headerData = new ArraySegment<byte>(data, 0, 19);
             var header = new BGPHeader(headerData);
@@ -24,23 +24,26 @@ namespace BMPClient.BGP
             switch (header.Type)
             {
                 case BGP.MessageType.Open:
-                    body = new BGPOpen();
+                    body = new BGPOpenMsg();
                     break;
                 case BGP.MessageType.Update:
-                    body = new BGPUpdate();
+                    body = new BGPUpdateMsg();
                     break;
                 case BGP.MessageType.Notification:
-                    throw new NotImplementedException();
+                    body = new BGPNotification();
+                    break;
                 case BGP.MessageType.Keepalive:
-                    throw new NotImplementedException();
+                    body = new BGPKeepAliveMsg();
+                    break;
                 case BGP.MessageType.RouteRefresh:
-                    throw new NotImplementedException();
+                    body = new BGPRouteMsg();
+                    break;
                 default:
                     throw new NotImplementedException();
             }
 
             body.DecodeFromBytes(msgData);
-            return new BGPMessage(header, body);
+            return new BGPMsg(header, body);
         }
     }
 }

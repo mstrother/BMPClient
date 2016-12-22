@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace BMPClient
+namespace BmpListener
 {
     public static class BitConverterExtensions
     {

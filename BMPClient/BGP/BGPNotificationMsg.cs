@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace BMPClient.BGP
+namespace BmpListener.BGP
 {
-    public class BGPRouteRefresh : ImsgBody
+    public class BGPNotification : ImsgBody
     {
         public void DecodeFromBytes(ArraySegment<byte> data)
         {

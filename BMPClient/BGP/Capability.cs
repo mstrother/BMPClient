@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BMPClient.BGP
+namespace BmpListener.BGP
 {
     public abstract class Capability
     {

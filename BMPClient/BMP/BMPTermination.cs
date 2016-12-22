@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BMPClient.BMP
+namespace BmpListener.BMP
 {
     public class BMPTermination : IBMPBody
     {
