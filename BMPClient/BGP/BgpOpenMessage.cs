@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
-    public class BGPOpenMsg : ImsgBody
+    public sealed class BgpOpenMessage : BgpMessage
     {
+        public BgpOpenMessage(BgpHeader header, ArraySegment<byte> data) : base(header)
+        {
+            DecodeFromBytes(data);
+        }
+
         public byte Version { get; private set; }
         public ushort MyAS { get; private set; }
         public ushort HoldTime { get; private set; }
@@ -14,16 +19,15 @@ namespace BmpListener.BGP
         public byte OptParamsLength { get; private set; }
         public List<OptionalParameter> OptionalParameters { get; private set; }
 
-        public void DecodeFromBytes(ArraySegment<byte> data)
+        public override void DecodeFromBytes(ArraySegment<byte> data)
         {
             OptionalParameters = new List<OptionalParameter>();
             Version = data.First();
             //TODO error if BGP version is not 4
             MyAS = data.ToUInt16(1);
             HoldTime = data.ToUInt16(3);
-            OptParamsLength = data.ElementAt(9);
-            //TODO use tryparse here
             Id = new IPAddress(data.Skip(5).Take(4).ToArray());
+            OptParamsLength = data.ElementAt(9);
 
             data = new ArraySegment<byte>(data.Array, 29, OptParamsLength);
 

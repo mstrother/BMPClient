@@ -1,7 +1,7 @@
-﻿namespace BmpListener.BMP
+﻿namespace BmpListener.Bmp
 {
     public interface IBMPBody
     {
-        void ParseBody(BMPMessage message, byte[] messageBytes);
+        void ParseBody(BmpMessage message, byte[] messageBytes);
     }
 }

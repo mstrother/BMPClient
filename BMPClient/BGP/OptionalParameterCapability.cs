@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
     public class OptionalParameterCapability : OptionalParameter
     {

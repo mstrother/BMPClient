@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
     public class PathAttributeMPReachNLRI : PathAttribute
     {
@@ -13,8 +15,13 @@ namespace BmpListener.BGP
 
         public IPAddress NextHop { get; private set; }
         public IPAddress LinkLocalNextHop { get; private set; }
-        public BGP.AddressFamily AFI { get; private set; }
-        public BGP.SubsequentAddressFamily SAFI { get; private set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Bgp.AddressFamily AFI { get; private set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Bgp.SubsequentAddressFamily SAFI { get; private set; }
+
         public IPAddrPrefix[] Value { get; private set; }
 
         public void NewPrefixFromRouteFamily()
@@ -23,15 +30,15 @@ namespace BmpListener.BGP
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
-            AFI = (BGP.AddressFamily) data.ToUInt16(0);
-            SAFI = (BGP.SubsequentAddressFamily) data.ElementAt(3);
+            AFI = (Bgp.AddressFamily) data.ToUInt16(0);
+            SAFI = (Bgp.SubsequentAddressFamily) data.ElementAt(3);
             int nextHopLength = data.ElementAt(3);
             var offset = 4;
 
             if (nextHopLength > 0)
             {
                 var addrLength = 4;
-                if (AFI == BGP.AddressFamily.IPv6)
+                if (AFI == Bgp.AddressFamily.IPv6)
                     addrLength = 16;
                 NextHop = new IPAddress(data.Skip(offset).Take(addrLength).ToArray());
                 offset += addrLength;

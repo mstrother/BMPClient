@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
     public class PathAttributeASPath : PathAttribute
     {
@@ -21,7 +21,7 @@ namespace BmpListener.BGP
 
             for (var offset = 0; offset < Length;)
             {
-                var asPathSegment = new ASPathSegment {SegmentType = (BGP.SegmentType) data.ElementAt(offset)};
+                var asPathSegment = new ASPathSegment {SegmentType = (Bgp.SegmentType) data.ElementAt(offset)};
                 offset++;
                 asPathSegment.Length = data.ElementAt(offset);
                 offset++;
@@ -29,7 +29,7 @@ namespace BmpListener.BGP
 
                 //if (data.Length - 2 < asPathSegment.Length * 4)
                 //{
-                //    param header length is too short
+                //    param bmpHeader length is too short
                 //    Environment.Exit(0);
                 //}
 

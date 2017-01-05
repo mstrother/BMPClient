@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
     public class PathAttributeMPUnreachNLRI : PathAttribute
     {
@@ -10,15 +12,19 @@ namespace BmpListener.BGP
         {
         }
 
-        public BGP.AddressFamily AFI { get; private set; }
-        public BGP.SubsequentAddressFamily SAFI { get; private set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Bgp.AddressFamily AFI { get; private set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Bgp.SubsequentAddressFamily SAFI { get; private set; }
+
         public IPAddrPrefix[] Value { get; private set; }
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
             var ipAddrPrefixes = new List<IPAddrPrefix>();
-            AFI = (BGP.AddressFamily)data.ToUInt16(0);
-            SAFI = (BGP.SubsequentAddressFamily)data.ElementAt(2);
+            AFI = (AddressFamily) data.ToUInt16(0);
+            SAFI = (SubsequentAddressFamily) data.ElementAt(2);
 
             for (var i = 3; i < data.Count;)
             {

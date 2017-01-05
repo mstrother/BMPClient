@@ -1,6 +1,7 @@
 ﻿using System;
+using Newtonsoft.Json;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
     public abstract class Capability
     {
@@ -24,6 +25,8 @@ namespace BmpListener.BGP
         }
 
         public CapabilityCode CapabilityType { get; }
+
+        [JsonIgnore]
         public byte CapabilityLength { get; }
 
         public static Capability GetCapability(CapabilityCode capabilityCode, ArraySegment<byte> data)

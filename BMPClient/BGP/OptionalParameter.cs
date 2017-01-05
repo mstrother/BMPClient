@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
     public abstract class OptionalParameter
     {
@@ -10,7 +10,7 @@ namespace BmpListener.BGP
             Capabilities = 2
         }
 
-        public OptionalParameter(ArraySegment<byte> data)
+        protected OptionalParameter(ArraySegment<byte> data)
         {
             ParameterType = (Type) data.First();
             ParameterLength = data.ElementAt(1);

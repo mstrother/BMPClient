@@ -1,5 +1,5 @@
 ﻿using System;
-using BmpListener.BGP;
+using BmpListener.Bgp;
 using Newtonsoft.Json;
 
 namespace BmpListener.JSON

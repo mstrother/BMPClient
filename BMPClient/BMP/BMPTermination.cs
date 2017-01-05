@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace BmpListener.BMP
+namespace BmpListener.Bmp
 {
-    public class BMPTermination : IBMPBody
+    public class BmpTermination : IBMPBody
     {
-        public void ParseBody(BMPMessage message, byte[] messageBytes)
+        public void ParseBody(BmpMessage message, byte[] messageBytes)
         {
             throw new NotImplementedException();
         }

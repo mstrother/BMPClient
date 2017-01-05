@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
     public class CapabilityCiscoRouteRefresh : Capability
     {

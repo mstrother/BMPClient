@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net;
-using BmpListener.BGP;
+using BmpListener.Bgp;
 
-namespace BmpListener.BMP
+namespace BmpListener.Bmp
 {
     public class PeerUpNotification : IBMPBody
     {
-        public PeerUpNotification(BMPMessage message, byte[] data)
+        public PeerUpNotification(BmpMessage message, byte[] data)
         {
             ParseBody(message, data);
         }
@@ -14,10 +14,10 @@ namespace BmpListener.BMP
         public IPAddress LocalAddress { get; set; }
         public ushort LocalPort { get; set; }
         public ushort RemotePort { get; set; }
-        public BGPMsg SentOpenMessage { get; set; }
-        public BGPMsg ReceivedOpenMessage { get; set; }
+        public BgpMessage SentOpenMessage { get; set; }
+        public BgpMessage ReceivedOpenMessage { get; set; }
 
-        public void ParseBody(BMPMessage message, byte[] data)
+        public void ParseBody(BmpMessage message, byte[] data)
         {
             if ((message.PeerHeader.Flags & (1 << 7)) != 0)
             {
@@ -29,10 +29,9 @@ namespace BmpListener.BMP
             LocalPort = data.ToUInt16(16);
             RemotePort = data.ToUInt16(18);
 
-            var bgpData = new byte[data.Length - 20];
-            Buffer.BlockCopy(data, 20, bgpData, 0, data.Length - 20);
+            //var dataSegment = new ArraySegment<byte>(data, 20, data.Length - 20);
 
-            var bgpMsg = BGPMsg.GetBGPMessage(bgpData);
+            //SentOpenMessage = BgpMessage.GetBgpMessage(dataSegment);
         }
     }
 }

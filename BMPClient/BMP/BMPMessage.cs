@@ -1,24 +1,15 @@
-﻿namespace BmpListener.BMP
+﻿namespace BmpListener.Bmp
 {
-    public class BMPMessage
+    public class BmpMessage
     {
-        public enum BMPMessageType : byte
+  
+
+        public BmpMessage(BmpHeader bmpHeader)
         {
-            RouteMonitoring,
-            StatisticsReport,
-            PeerDown,
-            PeerUp,
-            Initiation,
-            Termination,
-            RouteMirroring
+            BmpHeader = bmpHeader;
         }
 
-        public BMPMessage(Header header)
-        {
-            Header = header;
-        }
-
-        public Header Header { get; set; }
+        public BmpHeader BmpHeader { get; set; }
         public PeerHeader PeerHeader { get; set; }
         public IBMPBody Body { get; set; }
     }

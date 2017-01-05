@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
     public class PathAttributeOrigin : PathAttribute
     {
@@ -9,11 +11,12 @@ namespace BmpListener.BGP
         {
         }
 
-        public BGP.Origin Origin { get; private set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Origin Origin { get; private set; }
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
-            Origin = (BGP.Origin) data.ElementAt(0);
+            Origin = (Origin) data.ElementAt(0);
         }
     }
 }

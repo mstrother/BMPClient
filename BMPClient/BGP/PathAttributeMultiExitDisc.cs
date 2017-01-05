@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
     internal class PathAttributeMultiExitDisc : PathAttribute
     {

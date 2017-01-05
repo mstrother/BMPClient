@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Net;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
     public class IPAddrPrefix
     {
-        public IPAddrPrefix(ArraySegment<byte> data, BGP.AddressFamily afi = BGP.AddressFamily.IPv4)
+        public IPAddrPrefix(ArraySegment<byte> data, Bgp.AddressFamily afi = Bgp.AddressFamily.IPv4)
         {
             DecodeFromBytes(data, afi);
         }
@@ -14,12 +14,12 @@ namespace BmpListener.BGP
         public byte Length { get; private set; }
         public IPAddress Prefix { get; private set; }
 
-        public void DecodeFromBytes(ArraySegment<byte> data, BGP.AddressFamily afi)
+        public void DecodeFromBytes(ArraySegment<byte> data, Bgp.AddressFamily afi)
         {
             //add length error check
             Length = data.ElementAt(0);
             var byteLength = (Length + 7) / 8;
-            var ipBytes = afi == BGP.AddressFamily.IPv4
+            var ipBytes = afi == Bgp.AddressFamily.IPv4
                 ? new byte[4]
                 : new byte[16];
             if (Length <= 0) return;

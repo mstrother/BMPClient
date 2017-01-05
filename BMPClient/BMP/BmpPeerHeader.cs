@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
-namespace BmpListener.BMP
+namespace BmpListener.Bmp
 {
     public class PeerHeader
     {
@@ -11,7 +13,9 @@ namespace BmpListener.BMP
             Decode(data);
         }
 
-        public byte PeerType { get; private set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PeerType PeerType { get; private set; }
+
         public bool IsPostPolicy { get; private set; }
         public ulong PeerDistinguisher { get; private set; }
         public IPAddress PeerAddress { get; private set; }
@@ -22,24 +26,22 @@ namespace BmpListener.BMP
 
         public void Decode(byte[] data)
         {
-            PeerType = data[0];
+            PeerType = (PeerType) data[0];
             Flags = data[1];
             if ((Flags & (1 << 6)) != 0)
                 IsPostPolicy = true;
 
             if ((Flags & (1 << 7)) != 0)
             {
-                var ipBytes = new byte[16];
-                Buffer.BlockCopy(data, 10, ipBytes, 0, 16);
+                var ipBytes = data.Skip(10).Take(16).ToArray();
                 PeerAddress = new IPAddress(ipBytes);
             }
             else
             {
-                var ipBytes = new byte[4];
-                Buffer.BlockCopy(data, 22, ipBytes, 0, 4);
+                var ipBytes = data.Skip(22).Take(4).ToArray();
                 PeerAddress = new IPAddress(ipBytes);
             }
-            
+
             PeerDistinguisher = BitConverter.ToUInt64(data.Skip(2).Take(8).Reverse().ToArray(), 0);
             PeerAS = data.ToUInt32(26);
 

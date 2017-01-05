@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
     public class CapabilityMultiProtocol : Capability
     {

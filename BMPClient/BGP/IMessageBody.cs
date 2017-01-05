@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
-    public interface ImsgBody
+    public interface IMessageBody
     {
         void DecodeFromBytes(ArraySegment<byte> data);
     }

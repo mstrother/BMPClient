@@ -1,4 +1,4 @@
-﻿namespace BmpListener.BMP
+﻿namespace BmpListener.Bmp
 {
     internal class BMPStatsTLV
     {

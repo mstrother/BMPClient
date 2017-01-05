@@ -1,15 +1,15 @@
 ﻿using System;
 
-namespace BmpListener.BMP
+namespace BmpListener.Bmp
 {
     public class StatisticsReport : IBMPBody
     {
-        public void ParseBody(BMPMessage message, byte[] messageBytes)
+        public void ParseBody(BmpMessage message, byte[] messageBytes)
         {
             throw new NotImplementedException();
         }
 
-        public BMPMessage ParseBody()
+        public BmpMessage ParseBody()
         {
             throw new NotImplementedException();
         }

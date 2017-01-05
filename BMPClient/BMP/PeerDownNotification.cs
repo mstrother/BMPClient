@@ -1,14 +1,13 @@
-﻿using BmpListener.BGP;
+﻿using BmpListener.Bgp;
 
-namespace BmpListener.BMP
+namespace BmpListener.Bmp
 {
     public class PeerDownNotification : IBMPBody
     {
         public short Reason { get; private set; }
-        public BGPMsg BGPNotification { get; set; }
-        private byte[] Data { get; set; }
+        public BgpMessage BGPNotification { get; set; }
 
-        public void ParseBody(BMPMessage message, byte[] messageBytes)
+        public void ParseBody(BmpMessage message, byte[] messageBytes)
         {
             Reason = messageBytes[0];
         }

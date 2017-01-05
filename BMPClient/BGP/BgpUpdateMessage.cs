@@ -1,27 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
-    public class BGPUpdateMsg : ImsgBody
+    public sealed class BgpUpdateMessage : BgpMessage
     {
+        public BgpUpdateMessage(BgpHeader header, ArraySegment<byte> data) : base(header)
+        {
+            DecodeFromBytes(data);
+        }
+
         private readonly List<PathAttribute> pathAttributes = new List<PathAttribute>();
         private readonly List<IPAddrPrefix> withDrawnRoutes = new List<IPAddrPrefix>();
 
-
+        [JsonIgnore]
         public ushort WithdrawnRoutesLength { get; private set; }
+
         public IPAddrPrefix[] WithdrawnRoutes => withDrawnRoutes.ToArray();
+
+        [JsonIgnore]
         public ushort TotalPathAttributeLength { get; private set; }
+
         public PathAttribute[] PathAttributes => pathAttributes.ToArray();
         public IPAddrPrefix[] NLRI { get; private set; }
 
 
-        public void DecodeFromBytes(ArraySegment<byte> data)
+        public override void DecodeFromBytes(ArraySegment<byte> data)
         {
             WithdrawnRoutesLength = data.ToUInt16(0);
             TotalPathAttributeLength = data.ToUInt16(2);
             var offset = 23;
-            
+
             for (int i = WithdrawnRoutesLength; i < WithdrawnRoutesLength;)
             {
                 //var prefix = new byte[5];
@@ -39,9 +49,9 @@ namespace BmpListener.BGP
                 var attrBytes = new ArraySegment<byte>(data.Array, offset, i);
                 var pathAttribute = PathAttribute.GetPathAttribute(attrBytes);
                 //TODO handle extended length attributes
-                offset += (int)pathAttribute.Length + 3;
+                offset += (int) pathAttribute.Length + 3;
                 pathAttributes.Add(pathAttribute);
-                i -= (int)pathAttribute.Length + 3;
+                i -= (int) pathAttribute.Length + 3;
             }
 
             var nlriLength = data.Array.Length - 23 - TotalPathAttributeLength - WithdrawnRoutesLength;

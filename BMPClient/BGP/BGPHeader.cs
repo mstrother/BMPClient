@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
-namespace BmpListener.BGP
+namespace BmpListener.Bgp
 {
-    public class BGPHeader
+    public class BgpHeader
     {
-        public BGPHeader(ArraySegment<byte> data)
+        public BgpHeader(ArraySegment<byte> data)
         {
             Length = data.ToUInt16(16);
-            Type = (BGP.MessageType)data.ElementAt(18);
+            Type = (MessageType)data.ElementAt(18);
         }
         
+        [JsonIgnore]
         public uint Length { get; }
-        public BGP.MessageType Type { get; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public MessageType Type { get; }
     }
 }
