@@ -10,7 +10,7 @@ namespace BmpListener.Bgp
     }
 
     [Flags]
-    public enum AttributeFlags : byte
+    public enum AttributeFlags
     {
         EXTENDED_LENGTH = 1 << 4,
         PARTIAL = 1 << 5,
@@ -50,14 +50,14 @@ namespace BmpListener.Bgp
         RouteRefresh
     }
 
-    public enum Origin : byte
+    public enum Origin
     {
         IGP,
         EGP,
         Incomplete
     }
 
-    public enum SegmentType : byte
+    public enum SegmentType
     {
         AS_SET = 1,
         AS_SEQUENCE,
@@ -65,7 +65,7 @@ namespace BmpListener.Bgp
         AS_CONFED_SET
     }
 
-    public enum SubsequentAddressFamily : byte
+    public enum SubsequentAddressFamily
     {
         Unicast = 1,
         Multicast = 2
