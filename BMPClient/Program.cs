@@ -18,8 +18,7 @@ namespace BmpListener
                 return settings;
             };
 
-            var ip = IPAddress.Parse("192.168.1.126");
-            var bmpListener = new BmpListener(ip);
+            var bmpListener = new BmpListener();
             bmpListener.Start(WriteJson).Wait();
         }
 
