@@ -48,10 +48,17 @@ namespace BmpListener.Bgp
             {
                 var attrBytes = new ArraySegment<byte>(data.Array, offset, i);
                 var pathAttribute = PathAttribute.GetPathAttribute(attrBytes);
-                //TODO handle extended length attributes
-                offset += (int) pathAttribute.Length + 3;
+                if (pathAttribute.Flags.HasFlag(AttributeFlags.EXTENDED_LENGTH))
+                {
+                    offset += (int)pathAttribute.Length + 4;
+                    i -= (int)pathAttribute.Length + 4;
+                }
+                else
+                {
+                    offset += (int)pathAttribute.Length + 3;
+                    i -= (int)pathAttribute.Length + 3;
+                }
                 pathAttributes.Add(pathAttribute);
-                i -= (int) pathAttribute.Length + 3;
             }
 
             var nlriLength = data.Array.Length - 23 - TotalPathAttributeLength - WithdrawnRoutesLength;

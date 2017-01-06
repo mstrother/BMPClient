@@ -9,30 +9,26 @@ namespace BmpListener.Bgp
     {
         protected PathAttribute(ArraySegment<byte> data)
         {
-            Flags = (Bgp.AttributeFlag) data.First();
-            Type = (Bgp.AttributeType) data.ElementAt(1);
+            Flags = (AttributeFlags)data.ElementAt(0);
+            Type = (AttributeType)data.ElementAt(1);
 
-            if (Flags.HasFlag(Bgp.AttributeFlag.EXTENDED_LENGTH))
+            if (Flags.HasFlag(AttributeFlags.EXTENDED_LENGTH))
             {
                 if (data.Count < 4)
                     throw new Exception();
                 Length = data.ToUInt16(2);
-                data = new ArraySegment<byte>(data.Array, data.Offset + 4, (int) Length);
+                data = new ArraySegment<byte>(data.Array, data.Offset + 4, (int)Length);
             }
             else
             {
                 Length = data.ElementAt(2);
-                data = new ArraySegment<byte>(data.Array, data.Offset + 3, (int) Length);
-            }
-            if (Type == Bgp.AttributeType.MP_UNREACH_NLRI && Length > 16)
-            {
-                var i = 0;
+                data = new ArraySegment<byte>(data.Array, data.Offset + 3, (int)Length);
             }
             //TODO validate flags            
             DecodeFromBytes(data);
         }
 
-        public Bgp.AttributeFlag Flags { get; }
+        public Bgp.AttributeFlags Flags { get; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public Bgp.AttributeType Type { get; }
@@ -44,7 +40,7 @@ namespace BmpListener.Bgp
 
         public static PathAttribute GetPathAttribute(ArraySegment<byte> data)
         {
-            switch ((Bgp.AttributeType) data.ElementAt(1))
+            switch ((Bgp.AttributeType)data.ElementAt(1))
             {
                 case Bgp.AttributeType.ORIGIN:
                     return new PathAttributeOrigin(data);

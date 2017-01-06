@@ -10,12 +10,12 @@ namespace BmpListener.Bgp
     }
 
     [Flags]
-    public enum AttributeFlag
+    public enum AttributeFlags : byte
     {
-        EXTENDED_LENGTH = 1,
-        PARTIAL = 2,
-        TRANSITIVE = 4,
-        OPTIONAL = 8
+        EXTENDED_LENGTH = 1 << 4,
+        PARTIAL = 1 << 5,
+        TRANSITIVE = 1 << 6,
+        OPTIONAL = 1 << 7
     }
 
     public enum AttributeType
