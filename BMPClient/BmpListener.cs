@@ -22,6 +22,7 @@ namespace BmpListener
         {
             tcpListener = new TcpListener(IPAddress.IPv6Any, port);
             tcpListener.Server.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
+            tcpListener.Start();
         }
 
         public async Task Start(Action<BmpMessage> action)
