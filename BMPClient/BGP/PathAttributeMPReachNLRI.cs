@@ -17,10 +17,10 @@ namespace BmpListener.Bgp
         public IPAddress LinkLocalNextHop { get; private set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public Bgp.AddressFamily AFI { get; private set; }
+        public AddressFamily AFI { get; private set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public Bgp.SubsequentAddressFamily SAFI { get; private set; }
+        public SubsequentAddressFamily SAFI { get; private set; }
 
         public IPAddrPrefix[] Value { get; private set; }
 
@@ -30,15 +30,15 @@ namespace BmpListener.Bgp
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
-            AFI = (Bgp.AddressFamily) data.ToUInt16(0);
-            SAFI = (Bgp.SubsequentAddressFamily) data.ElementAt(3);
+            AFI = (AddressFamily) data.ToUInt16(0);
+            SAFI = (SubsequentAddressFamily) data.ElementAt(2);
             int nextHopLength = data.ElementAt(3);
             var offset = 4;
 
             if (nextHopLength > 0)
             {
                 var addrLength = 4;
-                if (AFI == Bgp.AddressFamily.IPv6)
+                if (AFI == AddressFamily.IPv6)
                     addrLength = 16;
                 NextHop = new IPAddress(data.Skip(offset).Take(addrLength).ToArray());
                 offset += addrLength;
