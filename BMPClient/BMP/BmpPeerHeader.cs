@@ -22,16 +22,15 @@ namespace BmpListener.Bmp
         public uint PeerAS { get; private set; }
         public IPAddress PeerBGPId { get; private set; }
         public DateTime Timestamp { get; private set; }
-        public byte Flags { get; private set; }
 
         public void Decode(byte[] data)
         {
             PeerType = (PeerType) data[0];
-            Flags = data[1];
-            if ((Flags & (1 << 6)) != 0)
+            var flags = data[1];
+            if ((flags & (1 << 6)) != 0)
                 IsPostPolicy = true;
 
-            if ((Flags & (1 << 7)) != 0)
+            if ((flags & (1 << 7)) != 0)
             {
                 var ipBytes = data.Skip(10).Take(16).ToArray();
                 PeerAddress = new IPAddress(ipBytes);
