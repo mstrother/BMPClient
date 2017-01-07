@@ -28,6 +28,7 @@ namespace BmpListener.Bgp
             DecodeFromBytes(data);
         }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public Bgp.AttributeFlags Flags { get; }
 
         [JsonConverter(typeof(StringEnumConverter))]
