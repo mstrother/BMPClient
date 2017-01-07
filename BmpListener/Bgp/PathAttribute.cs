@@ -12,7 +12,7 @@ namespace BmpListener.Bgp
             Flags = (AttributeFlags) data.ElementAt(0);
             Type = (AttributeType) data.ElementAt(1);
 
-            if (Flags.HasFlag(AttributeFlags.EXTENDED_LENGTH))
+            if (Flags.HasFlag(AttributeFlags.ExtendedLength))
             {
                 if (data.Count < 4)
                     throw new Exception();
