@@ -59,7 +59,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BMPClient\BmpListener.csproj">
+    <ProjectReference Include="..\BmpListener\BmpListener.csproj">
       <Project>{77cdfb9b-daf0-4910-ac2e-a6de4a3ccaaf}</Project>
       <Name>BmpListener</Name>
     </ProjectReference>

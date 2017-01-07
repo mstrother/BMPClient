@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BmpListener", "BMPClient\BmpListener.csproj", "{77CDFB9B-DAF0-4910-AC2E-A6DE4A3CCAAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BmpListener", "BmpListener\BmpListener.csproj", "{77CDFB9B-DAF0-4910-AC2E-A6DE4A3CCAAF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BmpListener.ConsoleExample", "BmpListener.ConsoleExample\BmpListener.ConsoleExample.csproj", "{6375D5C9-E462-46C0-BCFE-A0CA63B53BB5}"
 EndProject

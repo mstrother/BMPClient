@@ -19,12 +19,12 @@ namespace BmpListener.Bmp
 
         public void ParseBody(BmpMessage message, byte[] data)
         {
-            if ((message.PeerHeader.Flags & (1 << 7)) != 0)
-            {
+            //if ((message.PeerHeader.Flags & (1 << 7)) != 0)
+            //{
                 var ipBytes = new byte[16];
                 Buffer.BlockCopy(data, 0, ipBytes, 0, 16);
                 LocalAddress = new IPAddress(ipBytes);
-            }
+            //}
 
             LocalPort = data.ToUInt16(16);
             RemotePort = data.ToUInt16(18);
