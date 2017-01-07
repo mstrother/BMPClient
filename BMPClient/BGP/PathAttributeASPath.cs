@@ -23,9 +23,9 @@ namespace BmpListener.Bgp
             {
                 var asPathSegment = new ASPathSegment {SegmentType = (Bgp.SegmentType) data.ElementAt(offset)};
                 offset++;
-                asPathSegment.Length = data.ElementAt(offset);
+                var asCount = data.ElementAt(offset);
                 offset++;
-                offset += asPathSegment.Length * 4;
+                offset += asCount * 4;
 
                 //if (data.Length - 2 < asPathSegment.Length * 4)
                 //{
@@ -33,9 +33,9 @@ namespace BmpListener.Bgp
                 //    Environment.Exit(0);
                 //}
 
-                var asList = new uint[asPathSegment.Length];
+                var asList = new uint[asCount];
 
-                for (var i = 0; i < asPathSegment.Length; i++)
+                for (var i = 0; i < asCount; i++)
                 {
                     var asNum = data.ToUInt32(4 * i + 2);
                     asList[i] = asNum;

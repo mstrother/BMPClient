@@ -7,7 +7,6 @@ namespace BmpListener.Bgp
     {
         [JsonConverter(typeof(StringEnumConverter))]
         public Bgp.SegmentType SegmentType { get; set; }
-        public byte Length { get; set; }
         public uint[] ASNs { get; set; }
     }
 }
