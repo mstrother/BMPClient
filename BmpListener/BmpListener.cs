@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using BmpListener.Bmp;
-using Newtonsoft.Json;
 
 namespace BmpListener
 {
@@ -29,7 +28,6 @@ namespace BmpListener
             while (true)
             {
                 var tcpClient = await tcpListener.AcceptTcpClientAsync();
-                Console.WriteLine($"New connection from {tcpClient.Client.RemoteEndPoint}");
                 var task = Task.Run(() => ProcessClientAsync(tcpClient, action));
                 await task;
             }
