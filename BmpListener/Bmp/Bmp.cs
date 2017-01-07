@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BmpListener.Bmp
 {
-    public enum MessageType : byte
+    public enum MessageType
     {
         RouteMonitoring,
         StatisticsReport,
@@ -17,7 +17,7 @@ namespace BmpListener.Bmp
         RouteMirroring
     }
 
-    public enum PeerType : byte
+    public enum PeerType
     {
         Global,
         RD,
