@@ -22,19 +22,19 @@ namespace BmpListener.Bgp
 
         public static BgpMessage GetBgpMessage(ArraySegment<byte> data)
         {
-            var headerData = new ArraySegment<byte>(data.Array, 0, 19);
-            var bgpHeader = new BgpHeader(headerData);
+            data = new ArraySegment<byte>(data.Array, 0, 19);
+            var bgpHeader = new BgpHeader(data);
             var msgLength = (int) bgpHeader.Length - 19;
-            var msgData = new ArraySegment<byte>(data.Array, 19, msgLength);
+            data = new ArraySegment<byte>(data.Array, 19, msgLength);
 
             switch (bgpHeader.Type)
             {
                 case MessageType.Open:
-                    return new BgpOpenMessage(bgpHeader, msgData);
+                    return new BgpOpenMessage(bgpHeader, data);
                 case MessageType.Update:
-                    return new BgpUpdateMessage(bgpHeader, msgData);
+                    return new BgpUpdateMessage(bgpHeader, data);
                 case MessageType.Notification:
-                    return new BgpNotification(bgpHeader, msgData);
+                    return new BgpNotification(bgpHeader, data);
                 //case MessageType.Keepalive:
                 //    return new BgpKeepAliveMessage(bgpHeader, msgData);
                 //case MessageType.RouteRefresh:
