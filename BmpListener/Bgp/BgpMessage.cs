@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace BmpListener.Bgp
 {
-    public abstract class BgpMessage 
+    public abstract class BgpMessage
     {
-        protected BgpMessage(BgpHeader bgpHeader)
+        protected BgpMessage(ref ArraySegment<byte> data)
         {
+            var bgpHeader = new BgpHeader(data);
             Length = bgpHeader.Length;
             Type = bgpHeader.Type;
+            var msgLength = (int) bgpHeader.Length - 19;
+            data = new ArraySegment<byte>(data.Array, 19, msgLength);
         }
 
         [JsonIgnore]
@@ -22,23 +26,19 @@ namespace BmpListener.Bgp
 
         public static BgpMessage GetBgpMessage(ArraySegment<byte> data)
         {
-            data = new ArraySegment<byte>(data.Array, 0, 19);
-            var bgpHeader = new BgpHeader(data);
-            var msgLength = (int) bgpHeader.Length - 19;
-            data = new ArraySegment<byte>(data.Array, 19, msgLength);
-
-            switch (bgpHeader.Type)
+            var msgType = (MessageType) data.ElementAt(18);
+            switch (msgType)
             {
                 case MessageType.Open:
-                    return new BgpOpenMessage(bgpHeader, data);
+                    return new BgpOpenMessage(data);
                 case MessageType.Update:
-                    return new BgpUpdateMessage(bgpHeader, data);
+                    return new BgpUpdateMessage(data);
                 case MessageType.Notification:
-                    return new BgpNotification(bgpHeader, data);
-                //case MessageType.Keepalive:
-                //    return new BgpKeepAliveMessage(bgpHeader, msgData);
-                //case MessageType.RouteRefresh:
-                //    return new BgpRouteMessage(data);
+                    return new BgpNotification(data);
+                case MessageType.Keepalive:
+                    throw new NotImplementedException();
+                case MessageType.RouteRefresh:
+                    throw new NotImplementedException();
                 default:
                     throw new NotImplementedException();
             }

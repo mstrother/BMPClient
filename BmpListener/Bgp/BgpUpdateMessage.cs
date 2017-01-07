@@ -6,7 +6,7 @@ namespace BmpListener.Bgp
 {
     public sealed class BgpUpdateMessage : BgpMessage
     {
-        public BgpUpdateMessage(BgpHeader header, ArraySegment<byte> data) : base(header)
+        public BgpUpdateMessage(ArraySegment<byte> data) : base(ref data)
         {
             DecodeFromBytes(data);
         }

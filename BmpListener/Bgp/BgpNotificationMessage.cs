@@ -4,7 +4,7 @@ namespace BmpListener.Bgp
 {
     public sealed class BgpNotification : BgpMessage
     {
-        public BgpNotification(BgpHeader header, ArraySegment<byte> data) : base(header)
+        public BgpNotification(ArraySegment<byte> data) : base(ref data)
         {
             DecodeFromBytes(data);
         }
