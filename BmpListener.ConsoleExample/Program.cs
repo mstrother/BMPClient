@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Net;
 using BmpListener.Bmp;
 using BmpListener.JSON;
 using Newtonsoft.Json;
 
-namespace BmpListener
+namespace BmpListener.ConsoleExample
 {
     internal class Program
     {
