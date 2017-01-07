@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{77CDFB9B-DAF0-4910-AC2E-A6DE4A3CCAAF}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{6375D5C9-E462-46C0-BCFE-A0CA63B53BB5}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BmpListener</RootNamespace>
-    <AssemblyName>BmpListener</AssemblyName>
+    <RootNamespace>BmpListener.ConsoleExample</RootNamespace>
+    <AssemblyName>BmpListener.ConsoleExample</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>BmpListener.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -51,63 +51,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bgp\ASPathSegment.cs" />
-    <Compile Include="Bgp\Bgp.cs" />
-    <Compile Include="Bgp\BgpHeader.cs" />
-    <Compile Include="Bgp\BgpKeepAliveMessage.cs" />
-    <Compile Include="Bgp\BgpMessage.cs" />
-    <Compile Include="Bgp\BgpNotificationMessage.cs" />
-    <Compile Include="Bgp\BgpOpenMessage.cs" />
-    <Compile Include="Bgp\IBgpMessage.cs" />
-    <Compile Include="Bgp\IMessageBody.cs" />
-    <Compile Include="Bgp\OptionalParameter.cs" />
-    <Compile Include="Bgp\PathAttrAtomicAggregate.cs" />
-    <Compile Include="Bgp\PathAttribute.cs" />
-    <Compile Include="Bgp\BgpRouteMessage.cs" />
-    <Compile Include="Bgp\BgpUpdateMessage.cs" />
-    <Compile Include="Bgp\CapabilityAddPath.cs" />
-    <Compile Include="Bgp\CapabilityCiscoRouteRefresh.cs" />
-    <Compile Include="Bgp\CapabilityEnhancedRouteRefresh.cs" />
-    <Compile Include="Bgp\CapabilityFourOctetAsNumber.cs" />
-    <Compile Include="Bgp\CapabilityGracefulRestart.cs" />
-    <Compile Include="Bgp\CapabilityMultiProtocol.cs" />
-    <Compile Include="Bgp\Capability.cs" />
-    <Compile Include="Bgp\CapabilityRouteRefresh.cs" />
-    <Compile Include="Bgp\IPAddrPrefix.cs" />
-    <Compile Include="Bgp\OptionalParameterCapability.cs" />
-    <Compile Include="Bgp\PathAttributeAggregator.cs" />
-    <Compile Include="Bgp\PathAttributeASPath.cs" />
-    <Compile Include="Bgp\PathAttributeLargeCommunities.cs" />
-    <Compile Include="Bgp\PathAttributeMPReachNLRI.cs" />
-    <Compile Include="Bgp\PathAttributeMPUnreachNLRI.cs" />
-    <Compile Include="Bgp\PathAttributeMultiExitDisc.cs" />
-    <Compile Include="Bgp\PathAttributeOrigin.cs" />
-    <Compile Include="Bgp\PathAttributeUnknown.cs" />
-    <Compile Include="BitConverterExtensions.cs" />
-    <Compile Include="Bmp\Bmp.cs" />
-    <Compile Include="Bmp\BmpHeader.cs" />
-    <Compile Include="Bmp\BmpMessage.cs" />
-    <Compile Include="Bmp\BmpInitiation.cs" />
-    <Compile Include="Bmp\PeerDownNotification.cs" />
-    <Compile Include="Bmp\BmpPeerHeader.cs" />
-    <Compile Include="Bmp\PeerUpNotification.cs" />
-    <Compile Include="Bmp\BMPStatsTLV.cs" />
-    <Compile Include="Bmp\IBMPBody.cs" />
-    <Compile Include="Bmp\RouteMonitoring.cs" />
-    <Compile Include="Bmp\StatisticsReport.cs" />
-    <Compile Include="Bmp\BmpTermination.cs" />
-    <Compile Include="Bgp\OptionalParameterUnknown.cs" />
-    <Compile Include="Json\IPAddressConverter.cs" />
-    <Compile Include="Json\IPPrefixConvert.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BmpListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".gitignore" />
+    <ProjectReference Include="..\BMPClient\BmpListener.csproj">
+      <Project>{77cdfb9b-daf0-4910-ac2e-a6de4a3ccaaf}</Project>
+      <Name>BmpListener</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

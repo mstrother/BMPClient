@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace BmpListener.JSON
 {
-    internal class IPAddressConverter : JsonConverter
+    public class IPAddressConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
