@@ -9,15 +9,11 @@ namespace BmpListener.Bgp
         protected BgpMessage(ref ArraySegment<byte> data)
         {
             var bgpHeader = new BgpHeader(data);
-            Length = bgpHeader.Length;
             Type = bgpHeader.Type;
             var msgLength = (int) bgpHeader.Length - 19;
             data = new ArraySegment<byte>(data.Array, 19, msgLength);
         }
-
-        [JsonIgnore]
-        public uint Length { get; }
-
+        
         public MessageType Type { get; }
 
         public abstract void DecodeFromBytes(ArraySegment<byte> data);
