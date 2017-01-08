@@ -58,7 +58,6 @@
     <Compile Include="Bgp\BgpMessage.cs" />
     <Compile Include="Bgp\BgpNotificationMessage.cs" />
     <Compile Include="Bgp\BgpOpenMessage.cs" />
-    <Compile Include="Bgp\IBgpMessage.cs" />
     <Compile Include="Bgp\IMessageBody.cs" />
     <Compile Include="Bgp\OptionalParameter.cs" />
     <Compile Include="Bgp\PathAttrAtomicAggregate.cs" />
