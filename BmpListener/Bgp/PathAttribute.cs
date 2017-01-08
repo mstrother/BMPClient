@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace BmpListener.Bgp
 {
@@ -28,7 +26,6 @@ namespace BmpListener.Bgp
 
         internal AttributeFlags Flags { get; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         public AttributeType Type { get; }
 
         internal uint Length { get; set; }

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace BmpListener.Bgp
 {
@@ -17,10 +15,8 @@ namespace BmpListener.Bgp
         public IPAddress NextHop { get; private set; }
         public IPAddress LinkLocalNextHop { get; private set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         public AddressFamily AFI { get; private set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         public SubsequentAddressFamily SAFI { get; private set; }
 
         public IPAddrPrefix[] Value { get; private set; }

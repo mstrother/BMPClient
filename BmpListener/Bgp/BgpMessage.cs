@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace BmpListener.Bgp
 {
@@ -19,7 +18,6 @@ namespace BmpListener.Bgp
         [JsonIgnore]
         public uint Length { get; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         public MessageType Type { get; }
 
         public abstract void DecodeFromBytes(ArraySegment<byte> data);

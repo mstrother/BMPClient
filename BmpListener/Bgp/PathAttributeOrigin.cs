@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace BmpListener.Bgp
 {
@@ -12,7 +10,6 @@ namespace BmpListener.Bgp
             Origin = (Origin)data.ElementAt(0);
         }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         public Origin Origin { get; private set; }
     }
 }
