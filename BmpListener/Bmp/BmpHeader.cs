@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace BmpListener.Bmp
 {
@@ -15,7 +14,6 @@ namespace BmpListener.Bmp
         [JsonIgnore]
         public uint Length { get; private set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         public MessageType Type { get; private set; }
 
         public void ParseBytes(byte[] data)
