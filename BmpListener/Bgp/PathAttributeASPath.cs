@@ -6,13 +6,14 @@ namespace BmpListener.Bgp
 {
     public class PathAttributeASPath : PathAttribute
     {
-        public PathAttributeASPath(ArraySegment<byte> data) : base(data)
+        public PathAttributeASPath(ArraySegment<byte> data) : base(ref data)
         {
+            DecodeFromBytes(data);
         }
 
         public ASPathSegment[] ASPaths { get; private set; }
 
-        public override void DecodeFromBytes(ArraySegment<byte> data)
+        public void DecodeFromBytes(ArraySegment<byte> data)
         {
             if (data.Count < 2)
                 Environment.Exit(0);

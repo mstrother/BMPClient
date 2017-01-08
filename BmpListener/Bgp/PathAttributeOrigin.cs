@@ -7,16 +7,12 @@ namespace BmpListener.Bgp
 {
     public class PathAttributeOrigin : PathAttribute
     {
-        public PathAttributeOrigin(ArraySegment<byte> data) : base(data)
+        public PathAttributeOrigin(ArraySegment<byte> data) : base(ref data)
         {
+            Origin = (Origin)data.ElementAt(0);
         }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public Origin Origin { get; private set; }
-
-        public override void DecodeFromBytes(ArraySegment<byte> data)
-        {
-            Origin = (Origin) data.ElementAt(0);
-        }
     }
 }

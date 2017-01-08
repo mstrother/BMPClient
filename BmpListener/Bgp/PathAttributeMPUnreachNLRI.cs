@@ -8,8 +8,9 @@ namespace BmpListener.Bgp
 {
     public class PathAttributeMPUnreachNLRI : PathAttribute
     {
-        public PathAttributeMPUnreachNLRI(ArraySegment<byte> data) : base(data)
+        public PathAttributeMPUnreachNLRI(ArraySegment<byte> data) : base(ref data)
         {
+            DecodeFromBytes(data);
         }
 
         [JsonConverter(typeof(StringEnumConverter))]
@@ -20,7 +21,7 @@ namespace BmpListener.Bgp
 
         public IPAddrPrefix[] Value { get; private set; }
 
-        public override void DecodeFromBytes(ArraySegment<byte> data)
+        public void DecodeFromBytes(ArraySegment<byte> data)
         {
             var ipAddrPrefixes = new List<IPAddrPrefix>();
             AFI = (AddressFamily)data.ToUInt16(0);

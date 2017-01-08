@@ -9,8 +9,9 @@ namespace BmpListener.Bgp
 {
     public class PathAttributeMPReachNLRI : PathAttribute
     {
-        public PathAttributeMPReachNLRI(ArraySegment<byte> data) : base(data)
+        public PathAttributeMPReachNLRI(ArraySegment<byte> data) : base(ref data)
         {
+            DecodeFromBytes(data);
         }
 
         public IPAddress NextHop { get; private set; }
@@ -28,7 +29,7 @@ namespace BmpListener.Bgp
         {
         }
 
-        public override void DecodeFromBytes(ArraySegment<byte> data)
+        public void DecodeFromBytes(ArraySegment<byte> data)
         {
             AFI = (AddressFamily) data.ToUInt16(0);
             SAFI = (SubsequentAddressFamily) data.ElementAt(2);

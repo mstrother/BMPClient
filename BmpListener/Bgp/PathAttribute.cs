@@ -7,41 +7,35 @@ namespace BmpListener.Bgp
 {
     public abstract class PathAttribute
     {
-        protected PathAttribute(ArraySegment<byte> data)
+        protected PathAttribute(ref ArraySegment<byte> data)
         {
-            Flags = (AttributeFlags) data.ElementAt(0);
-            Type = (AttributeType) data.ElementAt(1);
+            Flags = (AttributeFlags)data.ElementAt(0);
+            Type = (AttributeType)data.ElementAt(1);
 
             if (Flags.HasFlag(AttributeFlags.ExtendedLength))
             {
                 if (data.Count < 4)
                     throw new Exception();
                 Length = data.ToUInt16(2);
-                data = new ArraySegment<byte>(data.Array, data.Offset + 4, (int) Length);
+                data = new ArraySegment<byte>(data.Array, data.Offset + 4, (int)Length);
             }
             else
             {
                 Length = data.ElementAt(2);
-                data = new ArraySegment<byte>(data.Array, data.Offset + 3, (int) Length);
+                data = new ArraySegment<byte>(data.Array, data.Offset + 3, (int)Length);
             }
-            //TODO validate flags            
-            DecodeFromBytes(data);
         }
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public AttributeFlags Flags { get; }
+        internal AttributeFlags Flags { get; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public AttributeType Type { get; }
 
-        [JsonIgnore]
-        public uint Length { get; set; }
-
-        public abstract void DecodeFromBytes(ArraySegment<byte> data);
-
+        internal uint Length { get; set; }
+        
         public static PathAttribute GetPathAttribute(ArraySegment<byte> data)
         {
-            switch ((AttributeType) data.ElementAt(1))
+            switch ((AttributeType)data.ElementAt(1))
             {
                 case AttributeType.ORIGIN:
                     return new PathAttributeOrigin(data);
