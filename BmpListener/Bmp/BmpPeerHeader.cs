@@ -13,9 +13,7 @@ namespace BmpListener.Bmp
             Decode(data);
         }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         public PeerType PeerType { get; private set; }
-
         public bool IsPostPolicy { get; private set; }
         public ulong PeerDistinguisher { get; private set; }
         public IPAddress PeerAddress { get; private set; }
