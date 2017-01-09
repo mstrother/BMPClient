@@ -11,17 +11,15 @@ namespace BmpListener.Bgp
             DecodeFromBytes(data);
         }
 
-        public Bgp.AddressFamily AFI { get; private set; }
-
-        public Bgp.SubsequentAddressFamily SAFI { get; private set; }
-
+        public AddressFamily AFI { get; private set; }
+        public SubsequentAddressFamily SAFI { get; private set; }
         public IPAddrPrefix[] Value { get; private set; }
 
         public void DecodeFromBytes(ArraySegment<byte> data)
         {
             var ipAddrPrefixes = new List<IPAddrPrefix>();
-            AFI = (AddressFamily)data.ToUInt16(0);
-            SAFI = (SubsequentAddressFamily)data.ElementAt(2);
+            AFI = (AddressFamily) data.ToUInt16(0);
+            SAFI = (SubsequentAddressFamily) data.ElementAt(2);
 
             for (var i = 3; i < data.Count;)
             {
