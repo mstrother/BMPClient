@@ -5,6 +5,8 @@ namespace BmpListener.Bgp
 {
     public abstract class Capability
     {
+        private byte CapabilityLength;
+
         public enum CapabilityCode : byte
         {
             Multiprotocol = 1,
@@ -25,10 +27,7 @@ namespace BmpListener.Bgp
         }
 
         public CapabilityCode CapabilityType { get; }
-
-        [JsonIgnore]
-        public byte CapabilityLength { get; }
-
+        
         public static Capability GetCapability(CapabilityCode capabilityCode, ArraySegment<byte> data)
         {
             switch (capabilityCode)
