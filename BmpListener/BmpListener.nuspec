@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>BmpListener</id>
+    <version>0.0.2-alpha</version>
+    <title>BmpListener</title>
+    <authors>Mark Strother</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/mstrother/BmpListener/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/mstrother/BmpListener</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>BmpListener</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>BGP BMP</tags>
+  </metadata>
+  <files>
+    <file src="bin\Release\BmpListener.dll" target="lib\net461" />
+  </files>
+</package>
