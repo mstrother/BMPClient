@@ -97,7 +97,7 @@
     <Compile Include="Bmp\BmpTermination.cs" />
     <Compile Include="Bgp\OptionalParameterUnknown.cs" />
     <Compile Include="Json\IPAddressConverter.cs" />
-    <Compile Include="Json\IPPrefixConvert.cs" />
+    <Compile Include="Json\ToStringJsonConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BmpListener.cs" />
   </ItemGroup>
