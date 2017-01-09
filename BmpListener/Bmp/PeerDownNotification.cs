@@ -1,4 +1,6 @@
-﻿using BmpListener.Bgp;
+﻿using System;
+using System.Linq;
+using BmpListener.Bgp;
 
 namespace BmpListener.Bmp
 {
@@ -7,9 +9,9 @@ namespace BmpListener.Bmp
         public short Reason { get; private set; }
         public BgpMessage BGPNotification { get; set; }
 
-        public void ParseBody(BmpMessage message, byte[] messageBytes)
+        public void ParseBody(BmpMessage message, ArraySegment<byte> data)
         {
-            Reason = messageBytes[0];
+            Reason = data.First();
         }
     }
 }

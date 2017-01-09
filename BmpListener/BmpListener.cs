@@ -50,10 +50,11 @@ namespace BmpListener
                         message.PeerHeader = new PeerHeader(bmpPeerHeaderBytes);
                         var bmpMsgBytes = new byte[header.Length - 48];
                         await stream.ReadAsync(bmpMsgBytes, 0, bmpMsgBytes.Length);
+                        var data = new ArraySegment<byte>(bmpMsgBytes);
                         switch (header.Type)
                         {
                             case MessageType.RouteMonitoring:
-                                message.Body = new RouteMonitoring(message, bmpMsgBytes);
+                                message.Body = new RouteMonitoring(message, data);
                                 break;
                             case MessageType.StatisticsReport:
                                 message.Body = new StatisticsReport();
@@ -61,7 +62,7 @@ namespace BmpListener
                             case MessageType.PeerDown:
                                 break;
                             case MessageType.PeerUp:
-                                message.Body = new PeerUpNotification(message, bmpMsgBytes);
+                                message.Body = new PeerUpNotification(message, data);
                                 break;
                             case MessageType.Initiation:
                                 message.Body = new BmpInitiation();

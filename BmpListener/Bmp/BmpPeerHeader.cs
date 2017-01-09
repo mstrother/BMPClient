@@ -41,10 +41,7 @@ namespace BmpListener.Bmp
 
             PeerDistinguisher = BitConverter.ToUInt64(data.Skip(2).Take(8).Reverse().ToArray(), 0);
             PeerAS = data.ToUInt32(26);
-
-            var bytes = new byte[4];
-            Buffer.BlockCopy(data, 30, bytes, 0, 4);
-            PeerBGPId = new IPAddress(bytes);
+            PeerBGPId = new IPAddress(data.Skip(30).Take(4).ToArray());
 
             var seconds = data.ToUInt32(34);
             var microSeconds = data.ToUInt32(38);

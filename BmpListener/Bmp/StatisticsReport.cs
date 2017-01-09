@@ -4,7 +4,7 @@ namespace BmpListener.Bmp
 {
     public class StatisticsReport : IBMPBody
     {
-        public void ParseBody(BmpMessage message, byte[] messageBytes)
+        public void ParseBody(BmpMessage message, ArraySegment<byte> messageBytes)
         {
             throw new NotImplementedException();
         }

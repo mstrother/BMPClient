@@ -5,17 +5,16 @@ namespace BmpListener.Bmp
 {
     public class RouteMonitoring : IBMPBody
     {
-        public RouteMonitoring(BmpMessage message, byte[] data)
+        public RouteMonitoring(BmpMessage message, ArraySegment<byte> data)
         {
             ParseBody(message, data);
         }
 
         public BgpMessage BGPUpdate { get; set; }
 
-        public void ParseBody(BmpMessage message, byte[] data)
+        public void ParseBody(BmpMessage message, ArraySegment<byte> data)
         {
-            var dataSegment = new ArraySegment<byte>(data);
-            BGPUpdate = BgpMessage.GetBgpMessage(dataSegment);
+            BGPUpdate = BgpMessage.GetBgpMessage(data);
         }
     }
 }
