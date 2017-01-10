@@ -30,7 +30,7 @@ namespace BmpListener.Bmp
 
             data = new ArraySegment<byte>(data.Array, 20, data.Count - 20);
 
-            //SentOpenMessage = BgpMessage.GetBgpMessage(dataSegment);
+            SentOpenMessage = BgpMessage.GetBgpMessage(data);
         }
     }
 }

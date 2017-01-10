@@ -10,8 +10,9 @@ namespace BmpListener.Bgp
         {
             var bgpHeader = new BgpHeader(data);
             Type = bgpHeader.Type;
+            var offset = data.Offset + 19;
             var msgLength = (int) bgpHeader.Length - 19;
-            data = new ArraySegment<byte>(data.Array, 19, msgLength);
+            data = new ArraySegment<byte>(data.Array, offset, msgLength);
         }
         
         public MessageType Type { get; }
