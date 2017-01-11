@@ -60,6 +60,7 @@ namespace BmpListener
                                 message.Body = new StatisticsReport();
                                 break;
                             case MessageType.PeerDown:
+                                message.Body = new PeerDownNotification(message, data);
                                 break;
                             case MessageType.PeerUp:
                                 message.Body = new PeerUpNotification(message, data);

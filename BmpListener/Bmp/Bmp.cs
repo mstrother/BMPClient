@@ -23,4 +23,13 @@ namespace BmpListener.Bmp
         RD,
         Local
     }
+
+    public enum PeerDownReason
+    {
+        Unknown = 0,
+        LocalNotification,
+        LocalNoNotification,
+        RemoteNotification,
+        LocationNoNotification
+    }
 }
