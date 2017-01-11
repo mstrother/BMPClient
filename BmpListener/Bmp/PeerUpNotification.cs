@@ -29,8 +29,11 @@ namespace BmpListener.Bmp
             RemotePort = data.ToUInt16(18);
 
             data = new ArraySegment<byte>(data.Array, 20, data.Count - 20);
-
             SentOpenMessage = BgpMessage.GetBgpMessage(data);
+            var offset = data.Offset + SentOpenMessage.Length;
+            var length = data.Count - SentOpenMessage.Length;
+            data = new ArraySegment<byte>(data.Array, offset, length);
+            ReceivedOpenMessage = BgpMessage.GetBgpMessage(data);
         }
     }
 }
