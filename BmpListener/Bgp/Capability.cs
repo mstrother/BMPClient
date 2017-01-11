@@ -47,7 +47,7 @@ namespace BmpListener.Bgp
                 case CapabilityCode.CiscoRouteRefresh:
                     return new CapabilityCiscoRouteRefresh(capabilityCode, data);
                 default:
-                    return new CapabilityCiscoRouteRefresh(capabilityCode, data);
+                    return null;
             }
         }
     }

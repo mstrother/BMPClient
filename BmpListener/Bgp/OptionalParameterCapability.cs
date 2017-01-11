@@ -26,7 +26,8 @@ namespace BmpListener.Bgp
                 i++;
                 data = new ArraySegment<byte>(bytes, i, length);
                 var capability = Capability.GetCapability(type, data);
-                capabilities.Add(capability);
+                if (capability != null)
+                    capabilities.Add(capability);
                 i += length;
             }
             ParameterValue = capabilities.ToArray();
