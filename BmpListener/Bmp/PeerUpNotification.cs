@@ -7,9 +7,9 @@ namespace BmpListener.Bmp
 {
     public class PeerUpNotification : IBMPBody
     {
-        public PeerUpNotification(BmpMessage message, ArraySegment<byte> data)
+        public PeerUpNotification(ArraySegment<byte> data)
         {
-            ParseBody(message, data);
+            ParseBody(data);
         }
 
         public IPAddress LocalAddress { get; set; }
@@ -18,7 +18,7 @@ namespace BmpListener.Bmp
         public BgpMessage SentOpenMessage { get; set; }
         public BgpMessage ReceivedOpenMessage { get; set; }
 
-        public void ParseBody(BmpMessage message, ArraySegment<byte> data)
+        public void ParseBody(ArraySegment<byte> data)
         {
             //if ((message.PeerHeader.Flags & (1 << 7)) != 0)
             //{

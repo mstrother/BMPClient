@@ -54,16 +54,16 @@ namespace BmpListener
                         switch (header.Type)
                         {
                             case MessageType.RouteMonitoring:
-                                message.Body = new RouteMonitoring(message, data);
+                                message.Body = new RouteMonitoring(data);
                                 break;
                             case MessageType.StatisticsReport:
                                 message.Body = new StatisticsReport();
                                 break;
                             case MessageType.PeerDown:
-                                message.Body = new PeerDownNotification(message, data);
+                                message.Body = new PeerDownNotification(data);
                                 break;
                             case MessageType.PeerUp:
-                                message.Body = new PeerUpNotification(message, data);
+                                message.Body = new PeerUpNotification(data);
                                 break;
                             case MessageType.Initiation:
                                 message.Body = new BmpInitiation();

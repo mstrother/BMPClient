@@ -4,6 +4,6 @@ namespace BmpListener.Bmp
 {
     public interface IBMPBody
     {
-        void ParseBody(BmpMessage message, ArraySegment<byte> messageBytes);
+        void ParseBody(ArraySegment<byte> messageBytes);
     }
 }
