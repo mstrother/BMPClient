@@ -5,19 +5,19 @@ namespace BmpListener.Bgp
 {
     public abstract class OptionalParameter
     {
-        public enum Type : byte
+        public enum Type
         {
             Capabilities = 2
         }
 
-        protected OptionalParameter(ArraySegment<byte> data)
+        protected OptionalParameter(ref ArraySegment<byte> data)
         {
             ParameterType = (Type) data.First();
-            ParameterLength = data.ElementAt(1);
+            var length = data.ElementAt(1);
+            data = new ArraySegment<byte>(data.Array, data.Offset + 2, length);
         }
 
         public Type ParameterType { get; }
-        public byte ParameterLength { get; }
 
         public static OptionalParameter GetOptionalParameter(ArraySegment<byte> data)
         {
