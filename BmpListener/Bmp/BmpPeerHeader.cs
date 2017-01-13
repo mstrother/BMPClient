@@ -19,7 +19,7 @@ namespace BmpListener.Bmp
         public IPAddress PeerAddress { get; private set; }
         public uint PeerAS { get; private set; }
         public IPAddress PeerBGPId { get; private set; }
-        public DateTime Timestamp { get; private set; }
+        public DateTime DateTime { get; private set; }
 
         public void Decode(byte[] data)
         {
@@ -45,7 +45,7 @@ namespace BmpListener.Bmp
 
             var seconds = data.ToUInt32(34);
             var microSeconds = data.ToUInt32(38);
-            Timestamp =
+            DateTime =
                 DateTimeOffset.FromUnixTimeSeconds(seconds).AddTicks(microSeconds * 10).DateTime.ToUniversalTime();
         }
     }
