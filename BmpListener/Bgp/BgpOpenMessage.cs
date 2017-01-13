@@ -16,11 +16,10 @@ namespace BmpListener.Bgp
         public ushort MyAS { get; private set; }
         public ushort HoldTime { get; private set; }
         public IPAddress Id { get; private set; }
-        public List<OptionalParameter> OptionalParameters { get; private set; }
+        public List<Capability> Capabilities { get; } = new List<Capability>();
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
-            OptionalParameters = new List<OptionalParameter>();
             Version = data.First();
             //TODO error if BGP version is not 4
             MyAS = data.ToUInt16(1);
@@ -28,17 +27,52 @@ namespace BmpListener.Bgp
             Id = new IPAddress(data.Skip(5).Take(4).ToArray());
 
             var offset = data.Offset + 10;
-            var length = (int)data.ElementAt(9);
-            data = new ArraySegment<byte>(data.Array, offset, length);
+            var count = (int) data.ElementAt(9);
+            data = new ArraySegment<byte>(data.Array, offset, count);
+
             while (data.Count > 0)
             {
-                //TODO if OptParamLength <2 return an error  
-                var optParam = OptionalParameter.GetOptionalParameter(data);
-                OptionalParameters.Add(optParam);
-                offset = data.Offset + optParam.ParameterLength + 2;
-                length = data.Count - optParam.ParameterLength - 2;
-                data = new ArraySegment<byte>(data.Array, offset, length);
+                var length = data.ElementAt(1);
+                offset += 2;
+                count -= 2;
+                if (data.First() == 2)
+                {
+                    var optParamData = new ArraySegment<byte>(data.Array, offset, length);
+                    var capabilities = new CapabilitiesOptionalParameter(optParamData);
+                    Capabilities.AddRange(capabilities.Capabilities);
+                    offset += length;
+                    count -= length;
+                }
+                data = new ArraySegment<byte>(data.Array, offset, count);
             }
+
+            //while (data.Count > 0)
+            //{
+            //    var paramType = data.First();
+            //    length = data.ElementAt(1);
+            //    if (paramType == 2)
+            //    {
+            //        offset += 2;
+            //        data = new ArraySegment<byte>(data.Array, offset, length);
+            //        var x = new OptionalParameterCapability(data);
+            //        OptionalParameters.Add(x);
+            //    }
+            //    offset += length;
+            //    length -= length;
+            //    data = new ArraySegment<byte>(data.Array, offset, length);
+            //}
+
+            //var optParam = OptionalParameter.GetOptionalParameter(data);
+            //OptionalParameters.Add(optParam);
         }
+
+
+        //}
+        //        .ToList();
+        //        .Where(y => y.ParameterType == OptionalParameter.Type.Capabilities)
+        //    var capabilities = OptionalParameters
+        //{
+
+        //private void FlatterOptionalParameters()
     }
 }

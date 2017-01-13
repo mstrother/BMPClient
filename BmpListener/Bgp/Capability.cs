@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace BmpListener.Bgp
 {
     public abstract class Capability
     {
-        private byte CapabilityLength;
+        //private readonly int length;
 
         public enum CapabilityCode : byte
         {
@@ -20,32 +21,39 @@ namespace BmpListener.Bgp
             //TODO capability code 129
         }
 
-        protected Capability(CapabilityCode capability, ArraySegment<byte> data)
+        protected Capability(ArraySegment<byte> data)
         {
-            CapabilityType = capability;
-            CapabilityLength = (byte) data.Count;
+            CapabilityType = (CapabilityCode)data.First();
+            Length = data.ElementAt(1);
         }
 
         public CapabilityCode CapabilityType { get; }
-        
-        public static Capability GetCapability(CapabilityCode capabilityCode, ArraySegment<byte> data)
+        public int Length { get; }
+
+        public bool ShouldSerializeLength()
         {
-            switch (capabilityCode)
+            return false;
+        }
+
+        public static Capability GetCapability(ArraySegment<byte> data)
+        {
+            var capabilityType = (CapabilityCode)data.First();
+            switch (capabilityType)
             {
                 case CapabilityCode.Multiprotocol:
-                    return new CapabilityMultiProtocol(capabilityCode, data);
+                    return new CapabilityMultiProtocol(data);
                 case CapabilityCode.RouteRefresh:
-                    return new CapabilityRouteRefresh(capabilityCode, data);
+                    return new CapabilityRouteRefresh(data);
                 case CapabilityCode.GracefulRestart:
-                    return new CapabilityGracefulRestart(capabilityCode, data);
+                    return new CapabilityGracefulRestart(data);
                 case CapabilityCode.FourOctetAs:
-                    return new CapabilityFourOctetAsNumber(capabilityCode, data);
+                    return new CapabilityFourOctetAsNumber(data);
                 case CapabilityCode.AddPath:
-                    return new CapabilityAddPath(capabilityCode, data);
+                    return new CapabilityAddPath(data);
                 case CapabilityCode.EnhancedRouteRefresh:
-                    return new CapabilityEnhancedRouteRefresh(capabilityCode, data);
+                    return new CapabilityEnhancedRouteRefresh(data);
                 case CapabilityCode.CiscoRouteRefresh:
-                    return new CapabilityCiscoRouteRefresh(capabilityCode, data);
+                    return new CapabilityCiscoRouteRefresh(data);
                 default:
                     return null;
             }

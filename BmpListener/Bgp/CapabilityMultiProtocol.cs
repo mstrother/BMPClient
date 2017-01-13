@@ -5,11 +5,10 @@ namespace BmpListener.Bgp
 {
     public class CapabilityMultiProtocol : Capability
     {
-        public CapabilityMultiProtocol(CapabilityCode capability, ArraySegment<byte> data)
-            : base(capability, data)
+        public CapabilityMultiProtocol(ArraySegment<byte> data) : base(data)
         {
-            var afi = data.ToUInt16(0);
-            var safi = data.ElementAt(3);
+            var afi = data.ToUInt16(2);
+            var safi = data.ElementAt(4);
         }
     }
 }

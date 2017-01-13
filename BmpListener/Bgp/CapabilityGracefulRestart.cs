@@ -4,8 +4,7 @@ namespace BmpListener.Bgp
 {
     public class CapabilityGracefulRestart : Capability
     {
-        public CapabilityGracefulRestart(CapabilityCode capability, ArraySegment<byte> data)
-            : base(capability, data)
+        public CapabilityGracefulRestart(ArraySegment<byte> data): base(data)
         {
         }
     }

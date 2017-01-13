@@ -4,12 +4,11 @@ namespace BmpListener.Bgp
 {
     public class CapabilityFourOctetAsNumber : Capability
     {
-        public CapabilityFourOctetAsNumber(CapabilityCode capability, ArraySegment<byte> data) 
-            : base(capability, data)
+        public CapabilityFourOctetAsNumber(ArraySegment<byte> data) : base(data)
         {
-            CapabilityValue = data.ToUInt32(0);
+            CapabilityValue = data.ToUInt32(2);
         }
 
-        public uint CapabilityValue { get; private set; }
+        public uint CapabilityValue { get; }
     }
 }
