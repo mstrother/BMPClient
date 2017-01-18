@@ -16,6 +16,7 @@ namespace BmpListener.Bgp
         }
         
         public int Length { get; }
+        [JsonIgnore]
         public MessageType Type { get; }
 
         public abstract void DecodeFromBytes(ArraySegment<byte> data);
