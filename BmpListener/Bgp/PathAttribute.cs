@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Linq;
 
 namespace BmpListener.Bgp
@@ -26,8 +27,10 @@ namespace BmpListener.Bgp
 
         internal AttributeFlags Flags { get; }
 
+        [JsonIgnore]
         public AttributeType Type { get; }
 
+        [JsonIgnore]
         internal uint Length { get; set; }
         
         public static PathAttribute GetPathAttribute(ArraySegment<byte> data)

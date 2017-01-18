@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
+using Newtonsoft.Json;
 
 namespace BmpListener.Bgp
 {
@@ -14,8 +16,12 @@ namespace BmpListener.Bgp
         }
 
         public IPAddrPrefix[] WithdrawnRoutes => withDrawnRoutes.ToArray();
-        public PathAttribute[] PathAttributes => pathAttributes.ToArray();
         public IPAddrPrefix[] NLRI { get; private set; }
+        public Dictionary<AttributeType, PathAttribute> Attributes { get; private set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public dynamic Announce { get; private set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public dynamic Withdraw { get; private set; }
 
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
@@ -36,21 +42,22 @@ namespace BmpListener.Bgp
                 //offset += 5;
             }
 
+            Attributes = new Dictionary<AttributeType, PathAttribute>();
             for (int i = totalPathAttributeLength; i > 0;)
             {
                 var attrBytes = new ArraySegment<byte>(data.Array, offset, i);
                 var pathAttribute = PathAttribute.GetPathAttribute(attrBytes);
                 if (pathAttribute.Flags.HasFlag(AttributeFlags.ExtendedLength))
                 {
-                    offset += (int) pathAttribute.Length + 4;
-                    i -= (int) pathAttribute.Length + 4;
+                    offset += (int)pathAttribute.Length + 4;
+                    i -= (int)pathAttribute.Length + 4;
                 }
                 else
                 {
-                    offset += (int) pathAttribute.Length + 3;
-                    i -= (int) pathAttribute.Length + 3;
+                    offset += (int)pathAttribute.Length + 3;
+                    i -= (int)pathAttribute.Length + 3;
                 }
-                pathAttributes.Add(pathAttribute);
+                Attributes.Add(pathAttribute.Type, pathAttribute);
             }
 
             var nlriLength = data.Array.Length - 23 - totalPathAttributeLength - withdrawnRoutesLength;
