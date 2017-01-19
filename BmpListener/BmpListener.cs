@@ -54,7 +54,7 @@ namespace BmpListener
                         switch (header.Type)
                         {
                             case MessageType.RouteMonitoring:
-                                message.Body = new RouteMonitoring(data);
+                                message.Update = (Bgp.BgpUpdateMessage)Bgp.BgpMessage.GetBgpMessage(data);
                                 break;
                             case MessageType.StatisticsReport:
                                 message.Body = new StatisticsReport();
