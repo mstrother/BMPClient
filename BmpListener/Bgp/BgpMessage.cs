@@ -14,7 +14,8 @@ namespace BmpListener.Bgp
             Length = (int) bgpHeader.Length;
             data = new ArraySegment<byte>(data.Array, offset, Length - 19);
         }
-        
+
+        [JsonIgnore]
         public int Length { get; }
         [JsonIgnore]
         public MessageType Type { get; }
