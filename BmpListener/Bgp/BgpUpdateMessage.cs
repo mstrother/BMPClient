@@ -14,9 +14,7 @@ namespace BmpListener.Bgp
         {
             DecodeFromBytes(data);
         }
-
-        public IPAddrPrefix[] WithdrawnRoutes => withDrawnRoutes.ToArray();
-        public IPAddrPrefix[] NLRI { get; private set; }
+        
         public Dictionary<AttributeType, PathAttribute> Attributes { get; private set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public dynamic Announce { get; private set; }
