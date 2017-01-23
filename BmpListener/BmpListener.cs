@@ -42,37 +42,22 @@ namespace BmpListener
                     var bmpHeaderBytes = new byte[6];
                     await stream.ReadAsync(bmpHeaderBytes, 0, 6); //add cancellation token
                     var header = new BmpHeader(bmpHeaderBytes);
-                    var message = new BmpMessage(header);
-                    if (header.Type != MessageType.Initiation)
+                    BmpMessage bmpMessage;
+                    if (header.Type == MessageType.Initiation)
                     {
-                        var bmpPeerHeaderBytes = new byte[42];
-                        await stream.ReadAsync(bmpPeerHeaderBytes, 0, 42); //add cancellation token
-                        message.PeerHeader = new PeerHeader(bmpPeerHeaderBytes);
-                        var bmpMsgBytes = new byte[header.Length - 48];
+                        bmpMessage = new BmpMessage(header);
+                        action?.Invoke(bmpMessage);
+                    }
+                    else
+                    {
+                        //var bmpPeerHeaderBytes = new byte[42];
+                        //await stream.ReadAsync(bmpPeerHeaderBytes, 0, 42); //add cancellation token
+                        //message.PeerHeader = new PeerHeader(bmpPeerHeaderBytes);
+                        var bmpMsgBytes = new byte[header.Length - 6];
                         await stream.ReadAsync(bmpMsgBytes, 0, bmpMsgBytes.Length);
                         var data = new ArraySegment<byte>(bmpMsgBytes);
-                        switch (header.Type)
-                        {
-                            case MessageType.RouteMonitoring:
-                                message.Update = (Bgp.BgpUpdateMessage)Bgp.BgpMessage.GetBgpMessage(data);
-                                break;
-                            case MessageType.StatisticsReport:
-                                message.Body = new StatisticsReport();
-                                break;
-                            case MessageType.PeerDown:
-                                message.Body = new PeerDownNotification(data);
-                                break;
-                            case MessageType.PeerUp:
-                                message.Body = new PeerUpNotification(data);
-                                break;
-                            case MessageType.Initiation:
-                                message.Body = new BmpInitiation();
-                                break;
-                            case MessageType.Termination:
-                                message.Body = new BmpTermination();
-                                break;
-                        }
-                        action?.Invoke(message);
+                        bmpMessage = new BmpMessage(header, data);                        
+                        action?.Invoke(bmpMessage);
                     }
                 }
             }
