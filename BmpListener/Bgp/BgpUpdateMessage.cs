@@ -26,7 +26,7 @@ namespace BmpListener.Bgp
         {
             var withdrawnRoutesLength = data.ToUInt16(0);
             var totalPathAttributeLength = data.ToUInt16(2);
-            var offset = 23;
+            var offset = data.Offset + 4;
 
             for (int i = withdrawnRoutesLength; i < withdrawnRoutesLength;)
             {
