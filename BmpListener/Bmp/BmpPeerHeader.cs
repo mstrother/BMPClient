@@ -8,7 +8,7 @@ namespace BmpListener.Bmp
 {
     public class PeerHeader
     {
-        public PeerHeader(byte[] data)
+        public PeerHeader(ArraySegment<byte> data)
         {
             Decode(data);
         }
@@ -21,10 +21,10 @@ namespace BmpListener.Bmp
         public IPAddress PeerBGPId { get; private set; }
         public DateTime DateTime { get; private set; }
 
-        public void Decode(byte[] data)
+        public void Decode(ArraySegment<byte> data)
         {
-            PeerType = (PeerType) data[0];
-            var flags = data[1];
+            PeerType = (PeerType) data.First();
+            var flags = data.ElementAt(1);
             if ((flags & (1 << 6)) != 0)
                 IsPostPolicy = true;
 
