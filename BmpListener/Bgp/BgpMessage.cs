@@ -10,9 +10,10 @@ namespace BmpListener.Bgp
         {
             var bgpHeader = new BgpHeader(data);
             Type = bgpHeader.Type;
+            Length = (int)bgpHeader.Length;
             var offset = data.Offset + 19;
-            Length = (int) bgpHeader.Length;
-            data = new ArraySegment<byte>(data.Array, offset, Length - 19);
+            var count = Length - 19;
+            data = new ArraySegment<byte>(data.Array, offset, count);
         }
 
         [JsonIgnore]
