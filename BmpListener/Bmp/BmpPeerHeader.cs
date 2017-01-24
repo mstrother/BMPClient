@@ -13,17 +13,17 @@ namespace BmpListener.Bmp
             Decode(data);
         }
 
-        public PeerType PeerType { get; private set; }
+        public PeerType Type { get; private set; }
         public bool IsPostPolicy { get; private set; }
         public ulong PeerDistinguisher { get; private set; }
         public IPAddress PeerAddress { get; private set; }
-        public uint PeerAS { get; private set; }
+        public uint AS { get; private set; }
         public IPAddress PeerBGPId { get; private set; }
         public DateTime DateTime { get; private set; }
 
         public void Decode(ArraySegment<byte> data)
         {
-            PeerType = (PeerType) data.First();
+            Type = (PeerType) data.First();
             var flags = data.ElementAt(1);
             if ((flags & (1 << 6)) != 0)
                 IsPostPolicy = true;
@@ -40,7 +40,7 @@ namespace BmpListener.Bmp
             }
 
             PeerDistinguisher = BitConverter.ToUInt64(data.Skip(2).Take(8).Reverse().ToArray(), 0);
-            PeerAS = data.ToUInt32(26);
+            AS = data.ToUInt32(26);
             PeerBGPId = new IPAddress(data.Skip(30).Take(4).ToArray());
 
             var seconds = data.ToUInt32(34);
