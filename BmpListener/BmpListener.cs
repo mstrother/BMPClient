@@ -45,20 +45,16 @@ namespace BmpListener
                     BmpMessage bmpMessage;
                     if (header.Type == MessageType.Initiation)
                     {
-                        bmpMessage = new BmpMessage(header);
-                        action?.Invoke(bmpMessage);
+                        bmpMessage = BmpMessage.GetBmpMessage(header);
                     }
                     else
                     {
-                        //var bmpPeerHeaderBytes = new byte[42];
-                        //await stream.ReadAsync(bmpPeerHeaderBytes, 0, 42); //add cancellation token
-                        //message.PeerHeader = new PeerHeader(bmpPeerHeaderBytes);
                         var bmpMsgBytes = new byte[header.Length - 6];
                         await stream.ReadAsync(bmpMsgBytes, 0, bmpMsgBytes.Length);
                         var data = new ArraySegment<byte>(bmpMsgBytes);
-                        bmpMessage = new BmpMessage(header, data);                        
-                        action?.Invoke(bmpMessage);
+                        bmpMessage = BmpMessage.GetBmpMessage(header, data);
                     }
+                    action?.Invoke(bmpMessage);
                 }
             }
         }

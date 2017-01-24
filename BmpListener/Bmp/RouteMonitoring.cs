@@ -3,18 +3,19 @@ using BmpListener.Bgp;
 
 namespace BmpListener.Bmp
 {
-    public class RouteMonitoring : IBMPBody
+    public class RouteMonitoring : BmpMessage
     {
-        public RouteMonitoring(ArraySegment<byte> data)
+        public RouteMonitoring(BmpHeader bmpHeader, ArraySegment<byte> data)
+            : base(bmpHeader, ref data)
         {
             ParseBody(data);
         }
 
-        public BgpMessage BGPUpdate { get; set; }
+        public BgpMessage Update { get; set; }
 
         public void ParseBody(ArraySegment<byte> data)
         {
-            BGPUpdate = BgpMessage.GetBgpMessage(data);
+            Update = BgpMessage.GetBgpMessage(data);
         }
     }
 }

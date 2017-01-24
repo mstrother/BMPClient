@@ -4,34 +4,13 @@ using System;
 
 namespace BmpListener.Bmp
 {
-    public class BmpMessage
+    public abstract class BmpMessage
     {
-        public BmpMessage(BmpHeader header, ArraySegment<byte> data)
+        public BmpMessage(BmpHeader header, ref ArraySegment<byte> data)
         {
             BmpHeader = header;
             PeerHeader = new PeerHeader(data);
             data = new ArraySegment<byte>(data.Array, 42, data.Array.Length - 42);
-            switch (header.Type)
-            {
-                case MessageType.RouteMonitoring:
-                    Update = (Bgp.BgpUpdateMessage)Bgp.BgpMessage.GetBgpMessage(data);
-                    break;
-                case MessageType.StatisticsReport:
-                    Body = new StatisticsReport();
-                    break;
-                case MessageType.PeerDown:
-                    Body = new PeerDownNotification(data);
-                    break;
-                case MessageType.PeerUp:
-                    Body = new PeerUpNotification(data);
-                    break;
-                case MessageType.Initiation:
-                    Body = new BmpInitiation();
-                    break;
-                case MessageType.Termination:
-                    Body = new BmpTermination();
-                    break;
-            }
         }
 
         public BmpMessage(BmpHeader header)
@@ -41,9 +20,32 @@ namespace BmpListener.Bmp
 
         public BmpHeader BmpHeader { get; private set; }
         public PeerHeader PeerHeader { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public IBMPBody Body { get; set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public BgpUpdateMessage Update { get; set; }
+
+        public static BmpMessage GetBmpMessage(BmpHeader bmpHeader)
+        {
+            var data = new ArraySegment<byte>();
+            return GetBmpMessage(bmpHeader, data);
+        }
+
+        public static BmpMessage GetBmpMessage(BmpHeader bmpHeader, ArraySegment<byte> data)
+        {
+            switch (bmpHeader.Type)
+            {
+                case MessageType.RouteMonitoring:
+                    return new RouteMonitoring(bmpHeader, data);
+                case MessageType.StatisticsReport:
+                    return new StatisticsReport(bmpHeader, data);
+                case MessageType.PeerDown:
+                    return new PeerDownNotification(bmpHeader, data);
+                case MessageType.PeerUp:
+                    return new PeerUpNotification(bmpHeader, data);
+                case MessageType.Initiation:
+                    return new BmpInitiation(bmpHeader);
+                case MessageType.Termination:
+                    return new BmpTermination(bmpHeader);
+                default:
+                    throw new NotImplementedException();
+            }
+        }
     }
 }

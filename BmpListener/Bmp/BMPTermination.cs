@@ -2,11 +2,10 @@
 
 namespace BmpListener.Bmp
 {
-    public class BmpTermination : IBMPBody
+    public class BmpTermination : BmpMessage
     {
-        public void ParseBody(ArraySegment<byte> messageBytes)
-        {
-            throw new NotImplementedException();
-        }
+        public BmpTermination(BmpHeader bmpHeader)
+            : base(bmpHeader)
+        { }
     }
 }

@@ -2,11 +2,10 @@
 
 namespace BmpListener.Bmp
 {
-    public class BmpInitiation : IBMPBody
+    public class BmpInitiation : BmpMessage
     {
-        public void ParseBody(ArraySegment<byte> data)
-        {
-            throw new NotImplementedException();
-        }
+        public BmpInitiation(BmpHeader bmpHeader)
+            : base(bmpHeader)
+        { }
     }
 }

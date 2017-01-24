@@ -4,9 +4,10 @@ using BmpListener.Bgp;
 
 namespace BmpListener.Bmp
 {
-    public class PeerDownNotification : IBMPBody
+    public class PeerDownNotification : BmpMessage
     {
-        public PeerDownNotification(ArraySegment<byte> data)
+        public PeerDownNotification(BmpHeader bmpHeader, ArraySegment<byte> data)
+            : base(bmpHeader)
         {
             ParseBody(data);
         }
