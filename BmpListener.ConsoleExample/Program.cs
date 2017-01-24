@@ -3,6 +3,7 @@ using BmpListener.Bmp;
 using BmpListener.JSON;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace BmpListener.ConsoleExample
 {
@@ -15,6 +16,7 @@ namespace BmpListener.ConsoleExample
                 var settings = new JsonSerializerSettings();
                 settings.Converters.Add(new IPAddressConverter());
                 settings.Converters.Add(new StringEnumConverter());
+                settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 return settings;
             };
 
