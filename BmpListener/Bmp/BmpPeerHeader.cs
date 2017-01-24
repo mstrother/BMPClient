@@ -17,6 +17,7 @@ namespace BmpListener.Bmp
         public bool IsPostPolicy { get; private set; }
         public ulong PeerDistinguisher { get; private set; }
         public IPAddress PeerAddress { get; private set; }
+        [JsonProperty(PropertyName = "as")]
         public uint AS { get; private set; }
         public IPAddress PeerBGPId { get; private set; }
         public DateTime DateTime { get; private set; }
