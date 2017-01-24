@@ -12,8 +12,7 @@ namespace BmpListener.Bgp
             Type = (MessageType)data.ElementAt(18);
         }
         
-        [JsonIgnore]
-        public uint Length { get; }
+        public int Length { get; }
         public MessageType Type { get; }
     }
 }
