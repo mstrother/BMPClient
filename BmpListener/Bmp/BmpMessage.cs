@@ -18,6 +18,7 @@ namespace BmpListener.Bmp
             BmpHeader = header;
         }
 
+        [JsonIgnore]
         public BmpHeader BmpHeader { get; private set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "Peer")]
         public BmpPeerHeader PeerHeader { get; set; }
