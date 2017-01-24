@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,6 +14,7 @@ namespace BmpListener.Bgp
         }
 
         public IPAddress NextHop { get; private set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public IPAddress LinkLocalNextHop { get; private set; }
 
         public AddressFamily AFI { get; private set; }
@@ -27,8 +29,8 @@ namespace BmpListener.Bgp
 
         public void DecodeFromBytes(ArraySegment<byte> data)
         {
-            AFI = (AddressFamily) data.ToUInt16(0);
-            SAFI = (SubsequentAddressFamily) data.ElementAt(2);
+            AFI = (AddressFamily)data.ToUInt16(0);
+            SAFI = (SubsequentAddressFamily)data.ElementAt(2);
             int nextHopLength = data.ElementAt(3);
             var offset = 4;
 
