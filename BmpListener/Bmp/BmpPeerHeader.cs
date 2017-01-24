@@ -6,9 +6,9 @@ using Newtonsoft.Json.Converters;
 
 namespace BmpListener.Bmp
 {
-    public class PeerHeader
+    public class BmpPeerHeader
     {
-        public PeerHeader(ArraySegment<byte> data)
+        public BmpPeerHeader(ArraySegment<byte> data)
         {
             Decode(data);
         }

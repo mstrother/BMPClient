@@ -9,7 +9,7 @@ namespace BmpListener.Bmp
         public BmpMessage(BmpHeader header, ref ArraySegment<byte> data)
         {
             BmpHeader = header;
-            PeerHeader = new PeerHeader(data);
+            PeerHeader = new BmpPeerHeader(data);
             data = new ArraySegment<byte>(data.Array, 42, data.Array.Length - 42);
         }
 
@@ -19,8 +19,8 @@ namespace BmpListener.Bmp
         }
 
         public BmpHeader BmpHeader { get; private set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public PeerHeader PeerHeader { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "Peer")]
+        public BmpPeerHeader PeerHeader { get; set; }
 
         public static BmpMessage GetBmpMessage(BmpHeader bmpHeader)
         {
