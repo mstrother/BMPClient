@@ -1,5 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
 using System.Linq;
 using BmpListener;
 
@@ -18,11 +17,8 @@ namespace BmpListener.Bmp
             Type = (MessageType)data.ElementAt(5);
         }
 
-        public byte Version { get; private set; }
-
-        [JsonIgnore]
-        public uint Length { get; private set; }
-
-        public MessageType Type { get; private set; }
+        public byte Version { get; }
+        public uint Length { get; }
+        public MessageType Type { get; }
     }
 }
