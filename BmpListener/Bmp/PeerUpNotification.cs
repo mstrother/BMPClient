@@ -35,8 +35,8 @@ namespace BmpListener.Bmp
 
             SentOpenMessage = BgpMessage.GetBgpMessage(data);
 
-            offset = data.Offset + SentOpenMessage.Length;
-            count = data.Count - SentOpenMessage.Length;
+            offset = data.Offset + SentOpenMessage.Header.Length;
+            count = data.Count - SentOpenMessage.Header.Length;
             data = new ArraySegment<byte>(data.Array, offset, count);
 
             ReceivedOpenMessage = BgpMessage.GetBgpMessage(data);
