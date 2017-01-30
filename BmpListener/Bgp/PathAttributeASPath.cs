@@ -34,11 +34,11 @@ namespace BmpListener.Bgp
                 //    Environment.Exit(0);
                 //}
 
-                var asList = new uint[asCount];
+                var asList = new int[asCount];
 
                 for (var i = 0; i < asCount; i++)
                 {
-                    var asNum = data.ToUInt32(4 * i + 2);
+                    var asNum = data.ToInt32(4 * i + 2);
                     asList[i] = asNum;
                 }
 

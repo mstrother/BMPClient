@@ -15,7 +15,7 @@ namespace BmpListener.ConsoleExample
             {
                 var settings = new JsonSerializerSettings();
                 settings.Converters.Add(new IPAddressConverter());
-                settings.Converters.Add(new StringEnumConverter());
+                settings.Converters.Add(new StringEnumConverter(true));
                 settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 return settings;
             };
@@ -26,7 +26,7 @@ namespace BmpListener.ConsoleExample
 
         private static void WriteJson(BmpMessage msg)
         {
-            var json = JsonConvert.SerializeObject(msg);
+            var json = msg.ToJson();
             Console.WriteLine(json);
         }
     }

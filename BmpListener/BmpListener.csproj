@@ -59,6 +59,7 @@
     <Compile Include="Bgp\BgpNotificationMessage.cs" />
     <Compile Include="Bgp\BgpOpenMessage.cs" />
     <Compile Include="Bgp\IMessageBody.cs" />
+    <Compile Include="Bgp\IPathAttribute.cs" />
     <Compile Include="Bgp\PathAttrAtomicAggregate.cs" />
     <Compile Include="Bgp\PathAttribute.cs" />
     <Compile Include="Bgp\BgpRouteMessage.cs" />
@@ -94,7 +95,8 @@
     <Compile Include="Bmp\RouteMonitoring.cs" />
     <Compile Include="Bmp\StatisticsReport.cs" />
     <Compile Include="Bmp\BmpTermination.cs" />
-    <Compile Include="Json\IPAddressConverter.cs" />
+    <Compile Include="Json\IPAddressJsonConverter.cs" />
+    <Compile Include="Json\JsonSerializer.cs" />
     <Compile Include="Json\ToStringJsonConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BmpListener.cs" />

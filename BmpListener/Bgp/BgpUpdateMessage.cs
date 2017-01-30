@@ -12,15 +12,11 @@ namespace BmpListener.Bgp
 
         public BgpUpdateMessage(ArraySegment<byte> data) : base(ref data)
         {
+            Attributes = new List<PathAttribute>();
             DecodeFromBytes(data);
         }
         
-        public Dictionary<AttributeType, PathAttribute> Attributes { get; private set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public dynamic Announce { get; private set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public dynamic Withdraw { get; private set; }
-
+        public List<PathAttribute> Attributes { get; private set; } 
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
@@ -40,7 +36,6 @@ namespace BmpListener.Bgp
                 //offset += 5;
             }
 
-            Attributes = new Dictionary<AttributeType, PathAttribute>();
             for (int i = totalPathAttributeLength; i > 0;)
             {
                 var attrBytes = new ArraySegment<byte>(data.Array, offset, i);
@@ -55,9 +50,9 @@ namespace BmpListener.Bgp
                     offset += (int)pathAttribute.Length + 3;
                     i -= (int)pathAttribute.Length + 3;
                 }
-                Attributes.Add(pathAttribute.Type, pathAttribute);
+                Attributes.Add(pathAttribute);
             }
-
+            
             var nlriLength = data.Array.Length - 23 - totalPathAttributeLength - withdrawnRoutesLength;
         }
     }

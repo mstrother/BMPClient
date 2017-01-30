@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Linq;
 using BmpListener.Bgp;
+using Newtonsoft.Json;
+using System.Dynamic;
+using System.Collections.Generic;
 
 namespace BmpListener.Bmp
 {
@@ -11,11 +15,11 @@ namespace BmpListener.Bmp
             ParseBody(data);
         }
 
-        public BgpMessage Update { get; set; }
+        public BgpUpdateMessage Update { get; set; }
 
         public void ParseBody(ArraySegment<byte> data)
         {
-            Update = BgpMessage.GetBgpMessage(data);
+            Update = (BgpUpdateMessage)BgpMessage.GetBgpMessage(data);
         }
     }
 }

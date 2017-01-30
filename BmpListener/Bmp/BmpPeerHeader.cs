@@ -15,16 +15,20 @@ namespace BmpListener.Bmp
 
         public PeerType Type { get; private set; }
         public bool IsPostPolicy { get; private set; }
+        [JsonProperty(PropertyName = "distinguisher")]
         public ulong PeerDistinguisher { get; private set; }
+        [JsonProperty(PropertyName = "ip")]
         public IPAddress PeerAddress { get; private set; }
         [JsonProperty(PropertyName = "as")]
         public uint AS { get; private set; }
+        [JsonProperty(PropertyName = "id")]
         public IPAddress PeerBGPId { get; private set; }
+        [JsonIgnore]
         public DateTime DateTime { get; private set; }
 
         public void Decode(ArraySegment<byte> data)
         {
-            Type = (PeerType) data.First();
+            Type = (PeerType)data.First();
             var flags = data.ElementAt(1);
             if ((flags & (1 << 6)) != 0)
                 IsPostPolicy = true;

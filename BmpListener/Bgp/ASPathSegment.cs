@@ -3,6 +3,6 @@
     public class ASPathSegment
     {
         public SegmentType SegmentType { get; set; }
-        public uint[] ASNs { get; set; }
+        public int[] ASNs { get; set; }
     }
 }
