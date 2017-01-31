@@ -82,6 +82,8 @@ namespace BmpListener.Json
                 .FirstOrDefault()?.ASPaths.FirstOrDefault()?.ASNs;
             Attributes.AtomicAggregate =
                 bgpMsg.Attributes.OfType<PathAttrAtomicAggregate>().Any();
+            Attributes.Med = bgpMsg.Attributes.OfType<PathAttributeMultiExitDisc>()
+                .FirstOrDefault()?.Metric;
 
             PathAttributeAggregator aggregator =
                 bgpMsg.Attributes.OfType<PathAttributeAggregator>().FirstOrDefault();
@@ -125,7 +127,9 @@ namespace BmpListener.Json
             public int[] ASPath { get; set; }
             public bool AtomicAggregate { get; set; }
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-            public Aggregator Aggregator { get; set; }           
+            public Aggregator Aggregator { get; set; }
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "med")]
+            public int? Med { get; set; }
         }
 
         public class Aggregator
