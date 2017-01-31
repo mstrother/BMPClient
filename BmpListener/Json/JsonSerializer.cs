@@ -23,7 +23,7 @@ namespace BmpListener.Json
         public PathAttributes Attributes { get; private set; }
         public Dictionary<string, dynamic> Announce { get; private set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public dynamic Withdraw { get; private set; }
+        public Dictionary<string, dynamic> Withdraw { get; private set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public PeerUpNotification PeerUp { get; private set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
@@ -96,10 +96,6 @@ namespace BmpListener.Json
 
             if (bgpMsg.Attributes.OfType<PathAttributeMPReachNLRI>().Any())
             {
-                if (bgpMsg.Attributes.OfType<PathAttributeMPReachNLRI>().Count() > 1)
-                {
-                    int i = 0;
-                }
                 var nlri = bgpMsg.Attributes.OfType<PathAttributeMPReachNLRI>().First();
                 dynamic announce = new ExpandoObject();
                 announce.Nexthop = nlri.NextHop;
@@ -118,7 +114,7 @@ namespace BmpListener.Json
                 Withdraw = new Dictionary<string, dynamic>();
                 var afi = nlri.AFI.ToString().ToLower();
                 var safi = nlri.SAFI.ToString().ToLower();
-                Withdraw.Add($"{afi} {safi}", withdraw);
+                Withdraw.Add($"{afi} {safi}", withdraw);                               
             }
         }
 
