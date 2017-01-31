@@ -20,7 +20,7 @@ namespace BmpListener.Json
         public DateTime DateTime { get; private set; }
         public BmpPeerHeader Peer { get; private set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public PathAttributes Attributes { get; private set; }
+        public dynamic Attributes { get; private set; }
         public Dictionary<string, dynamic> Announce { get; private set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public dynamic Withdraw { get; private set; }
@@ -75,12 +75,13 @@ namespace BmpListener.Json
 
         public void Serialize(BgpUpdateMessage bgpMsg)
         {
-            Attributes = new PathAttributes();
-            Attributes.Origin = bgpMsg.Attributes.OfType<PathAttributeOrigin>()
+            Attributes = new ExpandoObject();
+            Attributes.origin = bgpMsg.Attributes.OfType<PathAttributeOrigin>()
                 .FirstOrDefault()?.Origin;
-
-            Attributes.ASPaths = bgpMsg.Attributes.OfType<PathAttributeASPath>()
+            Attributes.asPath = bgpMsg.Attributes.OfType<PathAttributeASPath>()
                 .FirstOrDefault()?.ASPaths.FirstOrDefault()?.ASNs;
+            Attributes.atomicAggregate =
+                bgpMsg.Attributes.OfType<PathAttrAtomicAggregate>().Any();
 
             if (bgpMsg.Attributes.OfType<PathAttributeMPReachNLRI>().Any())
             {
@@ -97,6 +98,7 @@ namespace BmpListener.Json
                 var safi = nlri.SAFI.ToString().ToLower();
                 Announce.Add($"{afi} {safi}", announce);
             }
+
             if (bgpMsg.Attributes.OfType<PathAttributeMPUnreachNLRI>().Any())
             {
                 var nlri = bgpMsg.Attributes.OfType<PathAttributeMPUnreachNLRI>().First();
