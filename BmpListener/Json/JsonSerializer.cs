@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-
+using System.Net;
 
 namespace BmpListener.Json
 {
@@ -20,7 +20,7 @@ namespace BmpListener.Json
         public DateTime DateTime { get; private set; }
         public BmpPeerHeader Peer { get; private set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public dynamic Attributes { get; private set; }
+        public PathAttributes Attributes { get; private set; }
         public Dictionary<string, dynamic> Announce { get; private set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public dynamic Withdraw { get; private set; }
@@ -75,13 +75,24 @@ namespace BmpListener.Json
 
         public void Serialize(BgpUpdateMessage bgpMsg)
         {
-            Attributes = new ExpandoObject();
-            Attributes.origin = bgpMsg.Attributes.OfType<PathAttributeOrigin>()
+            Attributes = new PathAttributes();
+            Attributes.Origin = bgpMsg.Attributes.OfType<PathAttributeOrigin>()
                 .FirstOrDefault()?.Origin;
-            Attributes.asPath = bgpMsg.Attributes.OfType<PathAttributeASPath>()
+            Attributes.ASPath = bgpMsg.Attributes.OfType<PathAttributeASPath>()
                 .FirstOrDefault()?.ASPaths.FirstOrDefault()?.ASNs;
-            Attributes.atomicAggregate =
+            Attributes.AtomicAggregate =
                 bgpMsg.Attributes.OfType<PathAttrAtomicAggregate>().Any();
+
+            PathAttributeAggregator aggregator =
+                bgpMsg.Attributes.OfType<PathAttributeAggregator>().FirstOrDefault();
+            if (aggregator != null)
+            {
+                Attributes.Aggregator = new Aggregator
+                {
+                    AS = aggregator.AS,
+                    IPAddress = aggregator.IPAddress
+                };
+            }
 
             if (bgpMsg.Attributes.OfType<PathAttributeMPReachNLRI>().Any())
             {
@@ -114,8 +125,19 @@ namespace BmpListener.Json
         public class PathAttributes
         {
             public Origin? Origin { get; set; }
-            [JsonProperty(PropertyName = "as-path")]
-            public int[] ASPaths { get; set; }
+            [JsonProperty(PropertyName = "asPath")]
+            public int[] ASPath { get; set; }
+            public bool AtomicAggregate { get; set; }
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public Aggregator Aggregator { get; set; }           
+        }
+
+        public class Aggregator
+        {
+            [JsonProperty(PropertyName = "as")]
+            public int AS { get; set; }
+            [JsonProperty(PropertyName = "ip")]
+            public IPAddress IPAddress { get; set; }
         }
     }
 }
