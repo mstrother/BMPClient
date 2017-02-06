@@ -9,7 +9,7 @@ namespace BmpListener.Serialization.JsonConverters
     public class PathAttributeJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
-        {            
+        {
             return typeof(PathAttribute).IsAssignableFrom(objectType);
         }
 
@@ -32,6 +32,9 @@ namespace BmpListener.Serialization.JsonConverters
                     break;
                 case (AttributeType.MP_UNREACH_NLRI):
                     json = Serialize((PathAttributeMPUnreachNLRI)pathAttribute);
+                    break;
+                case (AttributeType.LARGE_COMMUNITY):
+                    json = Serialize((PathAttributeLargeCommunities)pathAttribute);
                     break;
                 default:
                     json = JsonConvert.SerializeObject(pathAttribute);
@@ -74,6 +77,13 @@ namespace BmpListener.Serialization.JsonConverters
             model.Add($"{afi} {safi}", routes);
             var json = JsonConvert.SerializeObject(model);
             return json;
-        }        
+        }
+
+        public string Serialize(PathAttributeLargeCommunities pathAttribute)
+        {
+            var canonicalForm = pathAttribute.ToString();
+            var json = JsonConvert.SerializeObject(canonicalForm);
+            return json;
+        }
     }
 }
