@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using BmpListener.Json;
 using Newtonsoft.Json;
+using BmpListener.Serialization;
+using BmpListener.Serialization.JsonConverters;
 
 namespace BmpListener.Bgp
 {

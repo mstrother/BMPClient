@@ -18,7 +18,7 @@ namespace BmpListener.Bmp
         public ushort RemotePort { get; set; }
         public BgpMessage SentOpenMessage { get; set; }
         public BgpMessage ReceivedOpenMessage { get; set; }
-
+        
         public void ParseBody(ArraySegment<byte> data)
         {
             //if ((message.PeerHeader.Flags & (1 << 7)) != 0)

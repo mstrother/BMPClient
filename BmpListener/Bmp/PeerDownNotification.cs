@@ -14,7 +14,7 @@ namespace BmpListener.Bmp
 
         public short Reason { get; private set; }
         public BgpMessage BGPNotification { get; set; }
-
+        
         public void ParseBody(ArraySegment<byte> data)
         {
             Reason = data.First();

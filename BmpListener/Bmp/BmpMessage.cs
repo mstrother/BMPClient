@@ -1,8 +1,6 @@
-﻿using BmpListener.Bgp;
-using BmpListener.Json;
+﻿using BmpListener.Serialization;
 using Newtonsoft.Json;
 using System;
-using System.Dynamic;
 
 namespace BmpListener.Bmp
 {
@@ -22,13 +20,7 @@ namespace BmpListener.Bmp
 
         public BmpHeader BmpHeader { get; private set; }
         public BmpPeerHeader PeerHeader { get; set; }
-        
-        public string ToJson()
-        {
-            var serializer = new Json.JsonSerializer();
-            return serializer.ToJson(this);
-        }
-
+    
         public static BmpMessage GetBmpMessage(BmpHeader bmpHeader)
         {
             var data = new ArraySegment<byte>();

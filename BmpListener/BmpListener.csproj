@@ -90,13 +90,17 @@
     <Compile Include="Bmp\BmpPeerHeader.cs" />
     <Compile Include="Bmp\PeerUpNotification.cs" />
     <Compile Include="Bmp\BMPStatsTLV.cs" />
-    <Compile Include="Bmp\IBMPBody.cs" />
     <Compile Include="Bmp\RouteMonitoring.cs" />
     <Compile Include="Bmp\StatisticsReport.cs" />
     <Compile Include="Bmp\BmpTermination.cs" />
-    <Compile Include="Json\IPAddressJsonConverter.cs" />
-    <Compile Include="Json\JsonSerializer.cs" />
-    <Compile Include="Json\ToStringJsonConverter.cs" />
+    <Compile Include="Serialization\JsonConverters\IPAddressJsonConverter.cs" />
+    <Compile Include="Serialization\Models\JsonMessageModel.cs" />
+    <Compile Include="Serialization\BmpSerializer.cs" />
+    <Compile Include="Serialization\Models\BgpUpdateModel.cs" />
+    <Compile Include="Serialization\Models\BmpPeerHeaderModel.cs" />
+    <Compile Include="Serialization\Models\PathAttributeAggregatorModel.cs" />
+    <Compile Include="Serialization\JsonConverters\PathAttributeJsonConverter.cs" />
+    <Compile Include="Serialization\JsonConverters\ToStringJsonConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BmpListener.cs" />
   </ItemGroup>

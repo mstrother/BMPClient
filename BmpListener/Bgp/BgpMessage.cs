@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Newtonsoft.Json;
 
 namespace BmpListener.Bgp
 {
@@ -14,7 +13,6 @@ namespace BmpListener.Bgp
             data = new ArraySegment<byte>(data.Array, offset, count);
         }
 
-        [JsonIgnore]
         public BgpHeader Header { get; }
 
         public abstract void DecodeFromBytes(ArraySegment<byte> data);

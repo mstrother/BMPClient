@@ -9,7 +9,7 @@ namespace BmpListener.Bmp
         {
             BmpVersion = BmpHeader.Version;
         }
-
+        
         public int BmpVersion { get; }
     }
 }

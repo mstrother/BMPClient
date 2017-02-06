@@ -26,11 +26,7 @@ namespace BmpListener.Bgp
         }
 
         internal AttributeFlags Flags { get; }
-
-        [JsonIgnore]
         public AttributeType Type { get; }
-
-        [JsonIgnore]
         internal uint Length { get; set; }
         
         public static PathAttribute GetPathAttribute(ArraySegment<byte> data)

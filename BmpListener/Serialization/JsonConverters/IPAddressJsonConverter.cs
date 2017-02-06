@@ -3,17 +3,17 @@ using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace BmpListener.JSON
+
+namespace BmpListener.Serialization.JsonConverters
 {
-    public class IPAddressConverter : JsonConverter
+    public class IPAddressJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(IPAddress);
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
-            JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var token = JToken.Load(reader);
             return IPAddress.Parse(token.Value<string>());

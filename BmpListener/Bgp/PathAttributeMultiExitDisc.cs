@@ -9,7 +9,7 @@ namespace BmpListener.Bgp
             DecodeFromBytes(data);
         }
 
-        public int Metric { get; private set; }
+        public int? Metric { get; private set; }
 
         public void DecodeFromBytes(ArraySegment<byte> data)
         {

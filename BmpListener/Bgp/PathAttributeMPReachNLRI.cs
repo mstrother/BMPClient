@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BmpListener.Serialization;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,9 @@ namespace BmpListener.Bgp
         }
 
         public IPAddress NextHop { get; private set; }
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public IPAddress LinkLocalNextHop { get; private set; }
-
         public AddressFamily AFI { get; private set; }
-
         public SubsequentAddressFamily SAFI { get; private set; }
-
         public IPAddrPrefix[] Value { get; private set; }
 
         public void NewPrefixFromRouteFamily()

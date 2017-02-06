@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Linq;
 using BmpListener.Bgp;
-using Newtonsoft.Json;
-using System.Dynamic;
-using System.Collections.Generic;
-
 namespace BmpListener.Bmp
 {
     public class RouteMonitoring : BmpMessage
@@ -15,11 +10,11 @@ namespace BmpListener.Bmp
             ParseBody(data);
         }
 
-        public BgpUpdateMessage Update { get; set; }
-
+        public BgpMessage BgpMessage { get; set; }
+        
         public void ParseBody(ArraySegment<byte> data)
         {
-            Update = (BgpUpdateMessage)BgpMessage.GetBgpMessage(data);
+            BgpMessage = (BgpUpdateMessage)BgpMessage.GetBgpMessage(data);
         }
     }
 }
