@@ -2,7 +2,15 @@
 {
     public class ASPathSegment
     {
-        public SegmentType SegmentType { get; set; }
+        public enum Type
+        {
+            AS_SET = 1,
+            AS_SEQUENCE,
+            AS_CONFED_SEQUENCE,
+            AS_CONFED_SET
+        }
+
+        public Type SegmentType { get; set; }
         public int[] ASNs { get; set; }
     }
 }

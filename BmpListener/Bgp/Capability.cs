@@ -7,7 +7,7 @@ namespace BmpListener.Bgp
     {
         //private readonly int length;
 
-        public enum CapabilityCode : byte
+        public enum CapabilityCode
         {
             Multiprotocol = 1,
             RouteRefresh = 2,

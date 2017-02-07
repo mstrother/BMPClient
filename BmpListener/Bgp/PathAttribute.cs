@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Linq;
 
 namespace BmpListener.Bgp
@@ -9,7 +8,7 @@ namespace BmpListener.Bgp
         protected PathAttribute(ref ArraySegment<byte> data)
         {
             Flags = (AttributeFlags)data.ElementAt(0);
-            Type = (AttributeType)data.ElementAt(1);
+            AttributeType = (PathAttributeType)data.ElementAt(1);
 
             if (Flags.HasFlag(AttributeFlags.ExtendedLength))
             {
@@ -24,50 +23,59 @@ namespace BmpListener.Bgp
                 data = new ArraySegment<byte>(data.Array, data.Offset + 3, (int)Length);
             }
         }
-
-        internal AttributeFlags Flags { get; }
-        public AttributeType Type { get; }
+        
+        [Flags]
+        public enum AttributeFlags
+        {
+            ExtendedLength = 1 << 4,
+            Partial = 1 << 5,
+            Transitive = 1 << 6,
+            Optional = 1 << 7
+        }
+        
+        public AttributeFlags Flags { get; }
+        public PathAttributeType AttributeType { get; }
         internal uint Length { get; set; }
         
         public static PathAttribute GetPathAttribute(ArraySegment<byte> data)
         {
-            switch ((AttributeType)data.ElementAt(1))
+            switch ((PathAttributeType)data.ElementAt(1))
             {
-                case AttributeType.ORIGIN:
+                case PathAttributeType.ORIGIN:
                     return new PathAttributeOrigin(data);
-                case AttributeType.AS_PATH:
+                case PathAttributeType.AS_PATH:
                     return new PathAttributeASPath(data);
-                case AttributeType.NEXT_HOP:
+                case PathAttributeType.NEXT_HOP:
                     return new PathAttributeUnknown(data);
-                case AttributeType.MULTI_EXIT_DISC:
+                case PathAttributeType.MULTI_EXIT_DISC:
                     return new PathAttributeMultiExitDisc(data);
-                case AttributeType.LOCAL_PREF:
+                case PathAttributeType.LOCAL_PREF:
                     return new PathAttributeUnknown(data);
-                case AttributeType.ATOMIC_AGGREGATE:
+                case PathAttributeType.ATOMIC_AGGREGATE:
                     return new PathAttrAtomicAggregate(data);
-                case AttributeType.AGGREGATOR:
+                case PathAttributeType.AGGREGATOR:
                     return new PathAttributeAggregator(data);
-                case AttributeType.COMMUNITY:
+                case PathAttributeType.COMMUNITY:
                     return new PathAttributeUnknown(data);
-                case AttributeType.ORIGINATOR_ID:
+                case PathAttributeType.ORIGINATOR_ID:
                     return new PathAttributeUnknown(data);
-                case AttributeType.CLUSTER_LIST:
+                case PathAttributeType.CLUSTER_LIST:
                     return new PathAttributeUnknown(data);
-                case AttributeType.MP_REACH_NLRI:
+                case PathAttributeType.MP_REACH_NLRI:
                     return new PathAttributeMPReachNLRI(data);
-                case AttributeType.MP_UNREACH_NLRI:
+                case PathAttributeType.MP_UNREACH_NLRI:
                     return new PathAttributeMPUnreachNLRI(data);
-                case AttributeType.EXTENDED_COMMUNITIES:
+                case PathAttributeType.EXTENDED_COMMUNITIES:
                     return new PathAttributeUnknown(data);
-                case AttributeType.AS4_PATH:
+                case PathAttributeType.AS4_PATH:
                     return new PathAttributeUnknown(data);
-                case AttributeType.AS4_AGGREGATOR:
+                case PathAttributeType.AS4_AGGREGATOR:
                     return new PathAttributeUnknown(data);
-                case AttributeType.PMSI_TUNNEL:
+                case PathAttributeType.PMSI_TUNNEL:
                     return new PathAttributeUnknown(data);
-                case AttributeType.TUNNEL_ENCAP:
+                case PathAttributeType.TUNNEL_ENCAP:
                     return new PathAttributeUnknown(data);
-                case AttributeType.LARGE_COMMUNITY:
+                case PathAttributeType.LARGE_COMMUNITY:
                     return new PathAttributeLargeCommunities(data);
                 default:
                     return new PathAttributeUnknown(data);

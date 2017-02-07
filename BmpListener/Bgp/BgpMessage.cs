@@ -13,24 +13,33 @@ namespace BmpListener.Bgp
             data = new ArraySegment<byte>(data.Array, offset, count);
         }
 
+        public enum Type
+        {
+            Open = 1,
+            Update,
+            Notification,
+            Keepalive,
+            RouteRefresh
+        }
+
         public BgpHeader Header { get; }
 
         public abstract void DecodeFromBytes(ArraySegment<byte> data);
 
         public static BgpMessage GetBgpMessage(ArraySegment<byte> data)
         {
-            var msgType = (MessageType) data.ElementAt(18);
+            var msgType = (Type) data.ElementAt(18);
             switch (msgType)
             {
-                case MessageType.Open:
+                case Type.Open:
                     return new BgpOpenMessage(data);
-                case MessageType.Update:
+                case Type.Update:
                     return new BgpUpdateMessage(data);
-                case MessageType.Notification:
+                case Type.Notification:
                     return new BgpNotification(data);
-                case MessageType.Keepalive:
+                case Type.Keepalive:
                     throw new NotImplementedException();
-                case MessageType.RouteRefresh:
+                case Type.RouteRefresh:
                     throw new NotImplementedException();
                 default:
                     throw new NotImplementedException();

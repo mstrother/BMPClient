@@ -9,10 +9,10 @@ namespace BmpListener.Bgp
         public BgpHeader(ArraySegment<byte> data)
         {
             Length = data.ToUInt16(16);
-            Type = (MessageType)data.ElementAt(18);
+            Type = (BgpMessage.Type)data.ElementAt(18);
         }
         
         public int Length { get; }
-        public MessageType Type { get; }
+        public BgpMessage.Type Type { get; }
     }
 }

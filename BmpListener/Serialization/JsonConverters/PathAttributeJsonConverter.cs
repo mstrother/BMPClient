@@ -22,18 +22,18 @@ namespace BmpListener.Serialization.JsonConverters
         {
             string json = string.Empty;
             var pathAttribute = (PathAttribute)value;
-            switch (pathAttribute.Type)
+            switch (pathAttribute.AttributeType)
             {
-                case (AttributeType.AGGREGATOR):
+                case (PathAttributeType.AGGREGATOR):
                     json = Serialize((PathAttributeAggregator)pathAttribute);
                     break;
-                case (AttributeType.MP_REACH_NLRI):
+                case (PathAttributeType.MP_REACH_NLRI):
                     json = Serialize((PathAttributeMPReachNLRI)pathAttribute);
                     break;
-                case (AttributeType.MP_UNREACH_NLRI):
+                case (PathAttributeType.MP_UNREACH_NLRI):
                     json = Serialize((PathAttributeMPUnreachNLRI)pathAttribute);
                     break;
-                case (AttributeType.LARGE_COMMUNITY):
+                case (PathAttributeType.LARGE_COMMUNITY):
                     json = Serialize((PathAttributeLargeCommunities)pathAttribute);
                     break;
                 default:

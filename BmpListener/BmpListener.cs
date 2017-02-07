@@ -43,7 +43,7 @@ namespace BmpListener
                     await stream.ReadAsync(bmpHeaderBytes, 0, 6); //add cancellation token
                     var header = new BmpHeader(bmpHeaderBytes);
                     BmpMessage bmpMessage;
-                    if (header.Type == MessageType.Initiation)
+                    if (header.MessageType == BmpMessage.Type.Initiation)
                     {
                         bmpMessage = BmpMessage.GetBmpMessage(header);
                     }

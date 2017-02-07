@@ -7,9 +7,16 @@ namespace BmpListener.Bgp
     {
         public PathAttributeOrigin(ArraySegment<byte> data) : base(ref data)
         {
-            Origin = (Origin)data.ElementAt(0);
+            Origin = (Type)data.ElementAt(0);
         }
 
-        public Origin Origin { get; private set; }
+        public enum Type
+        {
+            IGP,
+            EGP,
+            Incomplete
+        }
+
+        public Type Origin { get; }
     }
 }

@@ -30,13 +30,15 @@ namespace BmpListener.Serialization.Models
 
             Withdraw = updateMsg.Attributes
                 .OfType<PathAttributeMPUnreachNLRI>().FirstOrDefault();
+
+            //TODO Add large community support
         }
 
         public BgpUpdateModel(RouteMonitoring message)
             : this((BgpUpdateMessage)message.BgpMessage)
         { }
 
-        public Origin? Origin { get; set; }
+        public PathAttributeOrigin.Type? Origin { get; set; }
         public int[] AsPath { get; set; }
         public int? Med { get; set; }
         public bool AtomicAggregate { get; set; }

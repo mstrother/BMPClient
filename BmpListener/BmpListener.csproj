@@ -51,8 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bgp\AddressFamily.cs" />
     <Compile Include="Bgp\ASPathSegment.cs" />
-    <Compile Include="Bgp\Bgp.cs" />
+    <Compile Include="Bgp\PathAttributeType.cs" />
     <Compile Include="Bgp\BgpHeader.cs" />
     <Compile Include="Bgp\BgpKeepAliveMessage.cs" />
     <Compile Include="Bgp\BgpMessage.cs" />
@@ -81,8 +82,8 @@
     <Compile Include="Bgp\PathAttributeMultiExitDisc.cs" />
     <Compile Include="Bgp\PathAttributeOrigin.cs" />
     <Compile Include="Bgp\PathAttributeUnknown.cs" />
+    <Compile Include="Bgp\SubsequentAddressFamily.cs" />
     <Compile Include="BitConverterExtensions.cs" />
-    <Compile Include="Bmp\Bmp.cs" />
     <Compile Include="Bmp\BmpHeader.cs" />
     <Compile Include="Bmp\BmpMessage.cs" />
     <Compile Include="Bmp\BmpInitiation.cs" />

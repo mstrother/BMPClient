@@ -1,6 +1,4 @@
-﻿using BmpListener.Serialization;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 
 namespace BmpListener.Bmp
 {
@@ -18,9 +16,20 @@ namespace BmpListener.Bmp
             BmpHeader = header;
         }
 
+        public enum Type
+        {
+            RouteMonitoring,
+            StatisticsReport,
+            PeerDown,
+            PeerUp,
+            Initiation,
+            Termination,
+            RouteMirroring
+        }
+
         public BmpHeader BmpHeader { get; private set; }
         public BmpPeerHeader PeerHeader { get; set; }
-    
+            
         public static BmpMessage GetBmpMessage(BmpHeader bmpHeader)
         {
             var data = new ArraySegment<byte>();
@@ -29,19 +38,19 @@ namespace BmpListener.Bmp
 
         public static BmpMessage GetBmpMessage(BmpHeader bmpHeader, ArraySegment<byte> data)
         {
-            switch (bmpHeader.Type)
+            switch (bmpHeader.MessageType)
             {
-                case MessageType.RouteMonitoring:
+                case Type.RouteMonitoring:
                     return new RouteMonitoring(bmpHeader, data);
-                case MessageType.StatisticsReport:
+                case Type.StatisticsReport:
                     return new StatisticsReport(bmpHeader, data);
-                case MessageType.PeerDown:
+                case Type.PeerDown:
                     return new PeerDownNotification(bmpHeader, data);
-                case MessageType.PeerUp:
+                case Type.PeerUp:
                     return new PeerUpNotification(bmpHeader, data);
-                case MessageType.Initiation:
+                case Type.Initiation:
                     return new BmpInitiation(bmpHeader);
-                case MessageType.Termination:
+                case Type.Termination:
                     return new BmpTermination(bmpHeader);
                 default:
                     throw new NotImplementedException();

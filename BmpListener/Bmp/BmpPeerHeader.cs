@@ -11,7 +11,14 @@ namespace BmpListener.Bmp
             Decode(data);
         }
 
-        public PeerType Type { get; private set; }
+        public enum Type
+        {
+            Global,
+            RD,
+            Local
+        }
+
+        public Type PeerType { get; private set; }
         public bool IsPostPolicy { get; private set; }
         public ulong PeerDistinguisher { get; private set; }
         public IPAddress PeerAddress { get; private set; }
@@ -21,7 +28,7 @@ namespace BmpListener.Bmp
 
         public void Decode(ArraySegment<byte> data)
         {
-            Type = (PeerType)data.First();
+            PeerType = (Type)data.First();
             var flags = data.ElementAt(1);
             if ((flags & (1 << 6)) != 0)
                 IsPostPolicy = true;

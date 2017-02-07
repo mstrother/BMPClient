@@ -38,7 +38,7 @@ namespace BmpListener.Bgp
             {
                 var attrBytes = new ArraySegment<byte>(data.Array, offset, i);
                 var pathAttribute = PathAttribute.GetPathAttribute(attrBytes);
-                if (pathAttribute.Flags.HasFlag(AttributeFlags.ExtendedLength))
+                if (pathAttribute.Flags.HasFlag(PathAttribute.AttributeFlags.ExtendedLength))
                 {
                     offset += (int)pathAttribute.Length + 4;
                     i -= (int)pathAttribute.Length + 4;

@@ -1,5 +1,4 @@
 ﻿using BmpListener.Bmp;
-using BmpListener.Serialization.Models;
 using System;
 
 namespace BmpListener.Serialization.Models
@@ -17,21 +16,21 @@ namespace BmpListener.Serialization.Models
                 Peer = new BmpPeerHeaderModel(msg.PeerHeader);
             }
 
-            switch (msg.BmpHeader.Type)
+            switch (msg.BmpHeader.MessageType)
             {
-                case (MessageType.Initiation):
+                case (BmpMessage.Type.Initiation):
                     Initiation = Initiation;
                     break;
-                case (MessageType.PeerUp):
+                case (BmpMessage.Type.PeerUp):
                     PeerUp = (PeerUpNotification)msg;
                     break;
-                case (MessageType.PeerDown):
+                case (BmpMessage.Type.PeerDown):
                     PeerDown = (PeerDownNotification)msg;
                     break;
-                case (MessageType.RouteMonitoring):
+                case (BmpMessage.Type.RouteMonitoring):
                     Update = new BgpUpdateModel((RouteMonitoring)msg);
                     break;
-                case (MessageType.Termination):
+                case (BmpMessage.Type.Termination):
                     break;
                 default:
                     break;

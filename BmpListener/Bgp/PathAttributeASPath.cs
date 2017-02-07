@@ -10,7 +10,7 @@ namespace BmpListener.Bgp
         {
             DecodeFromBytes(data);
         }
-
+        
         public ASPathSegment[] ASPaths { get; private set; }
 
         public void DecodeFromBytes(ArraySegment<byte> data)
@@ -22,7 +22,7 @@ namespace BmpListener.Bgp
 
             for (var offset = 0; offset < Length;)
             {
-                var asPathSegment = new ASPathSegment {SegmentType = (Bgp.SegmentType) data.ElementAt(offset)};
+                var asPathSegment = new ASPathSegment {SegmentType = (ASPathSegment.Type) data.ElementAt(offset)};
                 offset++;
                 var asCount = data.ElementAt(offset);
                 offset++;
