@@ -7,6 +7,7 @@ namespace BmpListener.Bgp
     {
         //private readonly int length;
 
+        // http://www.iana.org/assignments/capability-codes/capability-codes.xhtml
         public enum CapabilityCode
         {
             Multiprotocol = 1,
