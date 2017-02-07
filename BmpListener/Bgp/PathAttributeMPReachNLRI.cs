@@ -34,7 +34,7 @@ namespace BmpListener.Bgp
             if (nextHopLength > 0)
             {
                 var addrLength = 4;
-                if (AFI == AddressFamily.IPv6)
+                if (AFI == AddressFamily.IP6)
                     addrLength = 16;
                 NextHop = new IPAddress(data.Skip(offset).Take(addrLength).ToArray());
                 offset += addrLength;
