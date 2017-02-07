@@ -31,7 +31,8 @@ namespace BmpListener.Serialization.Models
             Withdraw = updateMsg.Attributes
                 .OfType<PathAttributeMPUnreachNLRI>().FirstOrDefault();
 
-            //TODO Add large community support
+            LargeCommunities = updateMsg.Attributes
+                .OfType<PathAttributeLargeCommunities>().FirstOrDefault();
         }
 
         public BgpUpdateModel(RouteMonitoring message)
@@ -41,6 +42,7 @@ namespace BmpListener.Serialization.Models
         public PathAttributeOrigin.Type? Origin { get; set; }
         public int[] AsPath { get; set; }
         public int? Med { get; set; }
+        public PathAttributeLargeCommunities LargeCommunities { get; set; }
         public bool AtomicAggregate { get; set; }
         public PathAttributeAggregator Aggregator { get; set; }
         public PathAttributeMPReachNLRI Announce { get; set; }
