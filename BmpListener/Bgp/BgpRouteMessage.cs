@@ -2,7 +2,7 @@
 
 namespace BmpListener.Bgp
 {
-    public class BgpRouteMessage : IMessageBody
+    public class BgpRouteMessage
     {
         public void DecodeFromBytes(ArraySegment<byte> data)
         {
