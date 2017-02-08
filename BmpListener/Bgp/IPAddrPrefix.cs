@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using Newtonsoft.Json;
-using BmpListener.Serialization;
-using BmpListener.Serialization.JsonConverters;
 
 namespace BmpListener.Bgp
 {
-    [JsonConverter(typeof(ToStringJsonConverter))]
     public class IPAddrPrefix
     {
-        public IPAddrPrefix(ArraySegment<byte> data, Bgp.AddressFamily afi = Bgp.AddressFamily.IPv4)
+        public IPAddrPrefix(ArraySegment<byte> data, Bgp.AddressFamily afi = Bgp.AddressFamily.IP)
         {
             DecodeFromBytes(data, afi);
         }
@@ -28,7 +24,7 @@ namespace BmpListener.Bgp
             //add length error check
             Length = data.ElementAt(0);
             var byteLength = (Length + 7) / 8;
-            var ipBytes = afi == Bgp.AddressFamily.IPv4
+            var ipBytes = afi == Bgp.AddressFamily.IP
                 ? new byte[4]
                 : new byte[16];
             if (Length <= 0) return;

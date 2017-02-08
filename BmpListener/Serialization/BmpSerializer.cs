@@ -15,8 +15,13 @@ namespace BmpListener.Serialization
             {
                 var settings = new JsonSerializerSettings();
                 settings.NullValueHandling = NullValueHandling.Ignore;
+                //settings.ContractResolver = new ConverterContractResolver();
                 settings.Converters.Add(new PathAttributeJsonConverter());
                 settings.Converters.Add(new IPAddressJsonConverter());
+                settings.Converters.Add(new IPAddrPrefixJsonConverter());
+                settings.Converters.Add(new BmpPeerHeaderJsonConverter());
+                settings.Converters.Add(new BgpUpdateConverter());
+                settings.Converters.Add(new BgpOpenMessageJsonConverter());
                 settings.Converters.Add(new StringEnumConverter(true));
                 settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 return settings;
@@ -25,7 +30,7 @@ namespace BmpListener.Serialization
 
         public static string ToJson(BmpMessage message)
         {
-            var jsonMsg = new JsonMessageModel(message);
+            var jsonMsg = JsonMessage.Create(message);
             var json = JsonConvert.SerializeObject(jsonMsg);
             return json;
         }

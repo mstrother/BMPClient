@@ -1,15 +1,16 @@
 ﻿using System;
 using Newtonsoft.Json;
+using BmpListener.Bgp;
 
 namespace BmpListener.Serialization.JsonConverters
 {
-    public class ToStringJsonConverter : JsonConverter
+    public class IPAddrPrefixJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
-            return true;
+            return objectType == typeof(IPAddrPrefix);
         }
-        
+
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             writer.WriteValue(value.ToString());
