@@ -83,7 +83,7 @@
     <Compile Include="Bgp\PathAttributeOrigin.cs" />
     <Compile Include="Bgp\PathAttributeUnknown.cs" />
     <Compile Include="Bgp\SubsequentAddressFamily.cs" />
-    <Compile Include="BitConverterExtensions.cs" />
+    <Compile Include="Extensions\ArraySegmentExtension.cs" />
     <Compile Include="Bmp\BmpHeader.cs" />
     <Compile Include="Bmp\BmpMessage.cs" />
     <Compile Include="Bmp\BmpInitiation.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="Bmp\RouteMonitoring.cs" />
     <Compile Include="Bmp\StatisticsReport.cs" />
     <Compile Include="Bmp\BmpTermination.cs" />
-    <Compile Include="EnumExtensions.cs" />
+    <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Serialization\ConverterContractResolver.cs" />
     <Compile Include="Serialization\JsonConverters\BgpOpenMessageJsonConverter.cs" />
     <Compile Include="Serialization\JsonConverters\BgpUpdateConverter.cs" />

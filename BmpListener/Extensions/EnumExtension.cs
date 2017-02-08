@@ -1,8 +1,8 @@
 ﻿using BmpListener.Bgp;
 
-namespace BmpListener
+namespace BmpListener.Extensions
 {
-    public static class EnumExtensions
+    public static class EnumExtension
     {
         public static string ToFriendlyString(this AddressFamily afi)
         {

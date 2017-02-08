@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Newtonsoft.Json;
+using BmpListener.Extensions;
 
 namespace BmpListener.Bgp
 {

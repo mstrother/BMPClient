@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using BmpListener;
+using BmpListener.Extensions;
 
 namespace BmpListener.Bmp
 {
