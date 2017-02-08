@@ -33,7 +33,7 @@ namespace BmpListener.Serialization.JsonConverters
 
             foreach (var capability in openMsg.Capabilities)
             {
-                if (capability.CapabilityType != Bgp.Capability.CapabilityCode.FourOctetAs)
+                if (capability.CapabilityType != CapabilityCode.FourOctetAs)
                 {
                     model.Capabilities.Add(new Capability
                     {
@@ -66,7 +66,7 @@ namespace BmpListener.Serialization.JsonConverters
         private class Capability
         {
             [JsonProperty(Order = 1)]
-            public Bgp.Capability.CapabilityCode Type { get; set; }
+            public CapabilityCode Type { get; set; }
         }
 
         private class FourOctetAsCapability : Capability
