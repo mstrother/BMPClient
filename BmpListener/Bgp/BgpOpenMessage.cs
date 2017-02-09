@@ -14,8 +14,8 @@ namespace BmpListener.Bgp
         }
 
         public byte Version { get; private set; }
-        public ushort MyAS { get; private set; }
-        public ushort HoldTime { get; private set; }
+        public int MyAS { get; private set; }
+        public int HoldTime { get; private set; }
         public IPAddress Id { get; private set; }
         public List<Capability> Capabilities { get; } = new List<Capability>();
 
@@ -23,8 +23,8 @@ namespace BmpListener.Bgp
         {
             Version = data.First();
             //TODO error if BGP version is not 4
-            MyAS = data.ToUInt16(1);
-            HoldTime = data.ToUInt16(3);
+            MyAS = data.ToInt16(1);
+            HoldTime = data.ToInt16(3);
             Id = new IPAddress(data.Skip(5).Take(4).ToArray());
 
             var offset = data.Offset + 10;

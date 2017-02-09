@@ -57,8 +57,8 @@ namespace BmpListener.Serialization.JsonConverters
         private class JsonModel
         {
             public byte Version { get; set; }
-            public ushort As { get; set; }
-            public ushort HoldTime { get; set; }
+            public int As { get; set; }
+            public int HoldTime { get; set; }
             public IPAddress Id { get; set; }
             public List<Capability> Capabilities { get; set; }
         }
@@ -72,7 +72,7 @@ namespace BmpListener.Serialization.JsonConverters
         private class FourOctetAsCapability : Capability
         {
             [JsonProperty(Order = 2)]
-            public uint As { get; set; }
+            public int As { get; set; }
         }
     }
 }

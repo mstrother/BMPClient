@@ -36,7 +36,7 @@ namespace BmpListener.Serialization.JsonConverters
 
         private class JsonModel
         {
-            public uint Asn { get; set; }
+            public int Asn { get; set; }
             public IPAddress Ip { get; set; }
             public IPAddress Id { get; set; }
             public ulong Distinguisher { get; set; }

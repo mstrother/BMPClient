@@ -8,7 +8,7 @@ namespace BmpListener.Bgp
     {
         public CapabilityMultiProtocol(ArraySegment<byte> data) : base(data)
         {
-            var afi = data.ToUInt16(2);
+            var afi = data.ToInt16(2);
             var safi = data.ElementAt(4);
         }
     }

@@ -27,7 +27,7 @@ namespace BmpListener.Bgp
 
         public void DecodeFromBytes(ArraySegment<byte> data)
         {
-            AFI = (AddressFamily)data.ToUInt16(0);
+            AFI = (AddressFamily)data.ToInt16(0);
             SAFI = (SubsequentAddressFamily)data.ElementAt(2);
             int nextHopLength = data.ElementAt(3);
             var offset = 4;

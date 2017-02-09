@@ -84,10 +84,10 @@ namespace BmpListener.Serialization.Models
             public IPAddress LocalAddress { get; }
 
             [JsonProperty(Order = 6)]
-            public ushort LocalPort { get; }
+            public int LocalPort { get; }
 
             [JsonProperty(Order = 7)]
-            public ushort RemotePort { get; }
+            public int RemotePort { get; }
 
             [JsonProperty(Order = 8)]
             public BgpMessage SentOpenMessage { get; }

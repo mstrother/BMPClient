@@ -19,8 +19,8 @@ namespace BmpListener.Bgp
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
-            var withdrawnRoutesLength = data.ToUInt16(0);
-            var totalPathAttributeLength = data.ToUInt16(2);
+            var withdrawnRoutesLength = data.ToInt16(0);
+            var totalPathAttributeLength = data.ToInt16(2);
             var offset = data.Offset + 4;
 
             for (int i = withdrawnRoutesLength; i < withdrawnRoutesLength;)

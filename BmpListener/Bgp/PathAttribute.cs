@@ -15,7 +15,7 @@ namespace BmpListener.Bgp
             {
                 if (data.Count < 4)
                     throw new Exception();
-                Length = data.ToUInt16(2);
+                Length = data.ToInt16(2);
                 data = new ArraySegment<byte>(data.Array, data.Offset + 4, (int)Length);
             }
             else
@@ -36,7 +36,7 @@ namespace BmpListener.Bgp
         
         public AttributeFlags Flags { get; }
         public PathAttributeType AttributeType { get; }
-        internal uint Length { get; set; }
+        public int Length { get; set; }
         
         public static PathAttribute GetPathAttribute(ArraySegment<byte> data)
         {

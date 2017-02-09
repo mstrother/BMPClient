@@ -21,7 +21,7 @@ namespace BmpListener.Bgp
         public void DecodeFromBytes(ArraySegment<byte> data)
         {
             var ipAddrPrefixes = new List<IPAddrPrefix>();
-            AFI = (AddressFamily) data.ToUInt16(0);
+            AFI = (AddressFamily) data.ToInt16(0);
             SAFI = (SubsequentAddressFamily) data.ElementAt(2);
 
             for (var i = 3; i < data.Count;)

@@ -15,8 +15,8 @@ namespace BmpListener.Bmp
         }
 
         public IPAddress LocalAddress { get; set; }
-        public ushort LocalPort { get; set; }
-        public ushort RemotePort { get; set; }
+        public int LocalPort { get; set; }
+        public int RemotePort { get; set; }
         public BgpMessage SentOpenMessage { get; set; }
         public BgpMessage ReceivedOpenMessage { get; set; }
         
@@ -27,8 +27,8 @@ namespace BmpListener.Bmp
             LocalAddress = new IPAddress(data.Take(16).ToArray());
             //}
 
-            LocalPort = data.ToUInt16(16);
-            RemotePort = data.ToUInt16(18);
+            LocalPort = data.ToInt16(16);
+            RemotePort = data.ToInt16(18);
 
             var offset = data.Offset + 20;
             var count = data.Count - 20;

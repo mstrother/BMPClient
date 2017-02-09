@@ -10,6 +10,6 @@ namespace BmpListener.Bgp
             CapabilityValue = data.ToInt32(2);
         }
 
-        public uint CapabilityValue { get; }
+        public int CapabilityValue { get; }
     }
 }
