@@ -23,7 +23,7 @@ namespace BmpListener.Bmp
         public bool IsPostPolicy { get; private set; }
         public ulong PeerDistinguisher { get; private set; }
         public IPAddress PeerAddress { get; private set; }
-        public uint AS { get; private set; }
+        public int AS { get; private set; }
         public IPAddress PeerBGPId { get; private set; }
         public DateTime DateTime { get; private set; }
 
@@ -46,11 +46,11 @@ namespace BmpListener.Bmp
             }
 
             PeerDistinguisher = BitConverter.ToUInt64(data.Skip(2).Take(8).Reverse().ToArray(), 0);
-            AS = data.ToUInt32(26);
+            AS = data.ToInt32(26);
             PeerBGPId = new IPAddress(data.Skip(30).Take(4).ToArray());
 
-            var seconds = data.ToUInt32(34);
-            var microSeconds = data.ToUInt32(38);
+            var seconds = data.ToInt32(34);
+            var microSeconds = data.ToInt32(38);
             DateTime =
                 DateTimeOffset.FromUnixTimeSeconds(seconds).AddTicks(microSeconds * 10).DateTime.ToUniversalTime();
         }

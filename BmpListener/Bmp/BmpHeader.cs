@@ -14,12 +14,12 @@ namespace BmpListener.Bmp
             //{
             //    throw new Exception("invalid BMP version");
             //}
-            Length = data.ToUInt32(1);
+            Length = data.ToInt32(1);
             MessageType = (BmpMessage.Type)data.ElementAt(5);
         }
 
         public byte Version { get; }
-        public uint Length { get; }
+        public int Length { get; }
         public BmpMessage.Type MessageType { get; }
     }
 }

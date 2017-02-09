@@ -21,13 +21,13 @@ namespace BmpListener.Bgp
         {
             if (data.Count == 6)
             {
-                AS = (int)data.ToUInt16(0);
+                AS = data.ToInt16(0);
                 var ipBytes = data.Skip(2).ToArray();
                 IPAddress = new IPAddress(ipBytes);
             }
             else
             {
-                AS = (int)data.ToUInt32(0);
+                AS = data.ToInt32(0);
                 var ipBytes = data.Skip(4).ToArray();
                 IPAddress = new IPAddress(ipBytes);
             }
