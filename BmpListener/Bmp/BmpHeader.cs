@@ -7,13 +7,15 @@ namespace BmpListener.Bmp
 {
     public class BmpHeader
     {
+        private readonly int bmpVersion = 3;
+
         public BmpHeader(byte[] data)
         {
             Version = data.First();
-            //if (Version != 3)
-            //{
-            //    throw new Exception("invalid BMP version");
-            //}
+            if (Version != bmpVersion)
+            {
+                throw new NotSupportedException("version error");
+            }
             Length = data.ToInt32(1);
             MessageType = (BmpMessage.Type)data.ElementAt(5);
         }
