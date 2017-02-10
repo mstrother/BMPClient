@@ -57,7 +57,14 @@ namespace BmpListener
                     BmpMessage bmpMessage;
                     if (header.MessageType == BmpMessage.Type.Initiation)
                     {
-                        bmpMessage = BmpMessage.GetBmpMessage(header);
+                        try
+                        {
+                            bmpMessage = BmpMessage.GetBmpMessage(header);
+                        }
+                        catch (NotSupportedException ex)
+                        {
+                            return;
+                        }
                     }
                     else
                     {
