@@ -10,7 +10,7 @@ namespace BmpListener.Serialization.Models
     {
         public JsonMessage(BmpMessage msg)
         {
-            Version = "0.0.2";
+            Version = BmpListener.Version;                
             Id = Guid.NewGuid().ToString("N");
             DateTime = msg?.PeerHeader?.DateTime ?? DateTime.UtcNow;
             Peer = msg.PeerHeader;
@@ -72,28 +72,11 @@ namespace BmpListener.Serialization.Models
         {
             public PeerUpMessage(BmpMessage msg) : base(msg)
             {
-                var peerUpNotification = (PeerUpNotification)msg;
-                LocalAddress = peerUpNotification.LocalAddress;
-                LocalPort = peerUpNotification.LocalPort;
-                RemotePort = peerUpNotification.RemotePort;
-                SentOpenMessage = peerUpNotification.SentOpenMessage;
-                ReceivedOpenMessage = peerUpNotification.ReceivedOpenMessage;
+                PeerUp = (PeerUpNotification)msg;
             }
 
             [JsonProperty(Order = 5)]
-            public IPAddress LocalAddress { get; }
-
-            [JsonProperty(Order = 6)]
-            public int LocalPort { get; }
-
-            [JsonProperty(Order = 7)]
-            public int RemotePort { get; }
-
-            [JsonProperty(Order = 8)]
-            public BgpMessage SentOpenMessage { get; }
-
-            [JsonProperty(Order = 9)]
-            public BgpMessage ReceivedOpenMessage { get; }
+            public PeerUpNotification PeerUp { get; }
         }
 
         private sealed class PeerDownMessage : JsonMessage

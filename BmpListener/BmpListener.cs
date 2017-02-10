@@ -3,12 +3,24 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using BmpListener.Bmp;
+using System.Diagnostics;
 
 namespace BmpListener
 {
     public class BmpListener
     {
         private readonly TcpListener tcpListener;
+        private static readonly string semVer;
+
+        static BmpListener()
+        {
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var assemblyName = assembly.GetName().Name;
+            var gitVersionInformationType = assembly.GetType(assemblyName + ".GitVersionInformation");
+            semVer = (string)gitVersionInformationType.GetField("SemVer").GetValue(null);
+        }
+
+        public static string Version { get { return semVer; } }
 
         public BmpListener(IPAddress ip, int port = 11019)
         {

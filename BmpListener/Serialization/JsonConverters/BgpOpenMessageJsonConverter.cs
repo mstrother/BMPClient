@@ -25,7 +25,7 @@ namespace BmpListener.Serialization.JsonConverters
             var model = new JsonModel
             {
                 Version = openMsg.Version,
-                As = openMsg.MyAS,
+                Asn = openMsg.MyAS,
                 HoldTime = openMsg.HoldTime,
                 Id = openMsg.Id,
                 Capabilities = new List<Capability>()
@@ -57,7 +57,7 @@ namespace BmpListener.Serialization.JsonConverters
         private class JsonModel
         {
             public byte Version { get; set; }
-            public int As { get; set; }
+            public int Asn { get; set; }
             public int HoldTime { get; set; }
             public IPAddress Id { get; set; }
             public List<Capability> Capabilities { get; set; }

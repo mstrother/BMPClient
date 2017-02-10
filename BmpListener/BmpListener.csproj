@@ -102,6 +102,7 @@
     <Compile Include="Serialization\JsonConverters\BgpUpdateConverter.cs" />
     <Compile Include="Serialization\JsonConverters\BmpPeerHeaderJsonConverter.cs" />
     <Compile Include="Serialization\JsonConverters\IPAddressJsonConverter.cs" />
+    <Compile Include="Serialization\JsonConverters\PeerUpNotificationJsonConverter.cs" />
     <Compile Include="Serialization\JsonMessage.cs" />
     <Compile Include="Serialization\BmpSerializer.cs" />
     <Compile Include="Serialization\JsonConverters\PathAttributeJsonConverter.cs" />
