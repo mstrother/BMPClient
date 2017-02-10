@@ -64,7 +64,7 @@ namespace BmpListener
                         var bmpMsgBytes = new byte[header.Length - 6];
                         await stream.ReadAsync(bmpMsgBytes, 0, bmpMsgBytes.Length);
                         var data = new ArraySegment<byte>(bmpMsgBytes);
-                        bmpMessage = BmpMessage.GetBmpMessage(header, data);
+                        bmpMessage = BmpMessage.Create(header, data);
                     }
                     action?.Invoke(bmpMessage);
                 }
