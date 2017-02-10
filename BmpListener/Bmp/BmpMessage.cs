@@ -33,7 +33,7 @@ namespace BmpListener.Bmp
         public static BmpMessage GetBmpMessage(BmpHeader bmpHeader)
         {
             var data = new ArraySegment<byte>();
-            return GetBmpMessage(bmpHeader, data);
+            return Create(bmpHeader, data);
         }
 
         public static BmpMessage Create(BmpHeader bmpHeader, ArraySegment<byte> data)
