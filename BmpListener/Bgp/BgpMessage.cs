@@ -5,11 +5,13 @@ namespace BmpListener.Bgp
 {
     public abstract class BgpMessage
     {
+        private const int BgpHeaderLength = 19;
+
         protected BgpMessage(ref ArraySegment<byte> data)
         {
             Header = new BgpHeader(data);
-            var offset = data.Offset + 19;
-            var count = Header.Length - 19;
+            var offset = data.Offset + BgpHeaderLength;
+            var count = Header.Length - BgpHeaderLength;
             data = new ArraySegment<byte>(data.Array, offset, count);
         }
 

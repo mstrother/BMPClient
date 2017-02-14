@@ -7,7 +7,7 @@ namespace BmpListener.Bmp
 {
     public class BmpPeerHeader
     {
-        const long TicksPerMicrosecond = 10;
+        private const long TicksPerMicrosecond = 10;
 
         public BmpPeerHeader(ArraySegment<byte> data)
         {
