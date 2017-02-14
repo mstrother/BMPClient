@@ -7,6 +7,8 @@ namespace BmpListener.Bmp
 {
     public class BmpPeerHeader
     {
+        const long TicksPerMicrosecond = 10;
+
         public BmpPeerHeader(ArraySegment<byte> data)
         {
             Decode(data);
@@ -25,7 +27,7 @@ namespace BmpListener.Bmp
         public IPAddress PeerAddress { get; private set; }
         public int AS { get; private set; }
         public IPAddress PeerBGPId { get; private set; }
-        public DateTime DateTime { get; private set; }
+        public DateTimeOffset DateTime { get; private set; }
 
         public void Decode(ArraySegment<byte> data)
         {
@@ -51,8 +53,9 @@ namespace BmpListener.Bmp
 
             var seconds = data.ToInt32(34);
             var microSeconds = data.ToInt32(38);
-            DateTime =
-                DateTimeOffset.FromUnixTimeSeconds(seconds).AddTicks(microSeconds * 10).DateTime.ToUniversalTime();
+            var ticks = microSeconds * TicksPerMicrosecond;
+            DateTime = DateTimeOffset.FromUnixTimeSeconds(seconds)
+                .AddTicks(ticks).UtcDateTime;
         }
     }
 }

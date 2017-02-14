@@ -12,7 +12,7 @@ namespace BmpListener.Serialization.Models
         {
             Version = BmpListener.Version;                
             Id = Guid.NewGuid().ToString("N");
-            DateTime = msg?.PeerHeader?.DateTime ?? DateTime.UtcNow;
+            DateTime = msg?.PeerHeader?.DateTime ?? System.DateTime.UtcNow;
             Peer = msg.PeerHeader;
         }
 
@@ -23,7 +23,7 @@ namespace BmpListener.Serialization.Models
         public string Id { get; private set; }
 
         [JsonProperty(Order = 3)]
-        public DateTime DateTime { get; set; }
+        public DateTimeOffset DateTime { get; set; }
 
         [JsonProperty(Order = 4)]
         public BmpPeerHeader Peer { get; }
