@@ -45,7 +45,7 @@ namespace BmpListener.Serialization.JsonConverters
                     model.Capabilities.Add(new FourOctetAsCapability
                     {
                         Type = capability.CapabilityType,
-                        As = ((CapabilityFourOctetAsNumber)capability).CapabilityValue
+                        Asn = ((CapabilityFourOctetAsNumber)capability).CapabilityValue
                     });
                 }
             }
@@ -72,7 +72,7 @@ namespace BmpListener.Serialization.JsonConverters
         private class FourOctetAsCapability : Capability
         {
             [JsonProperty(Order = 2)]
-            public int As { get; set; }
+            public int Asn { get; set; }
         }
     }
 }
