@@ -6,7 +6,8 @@ namespace BmpListener.Bgp
 {
     public class IPAddrPrefix
     {
-        public IPAddrPrefix(ArraySegment<byte> data, Bgp.AddressFamily afi = Bgp.AddressFamily.IP)
+        //TODO add offset to ctor
+        public IPAddrPrefix(ArraySegment<byte> data, int offset = 0, AddressFamily afi = AddressFamily.IP)
         {
             DecodeFromBytes(data, afi);
         }
