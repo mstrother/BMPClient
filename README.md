@@ -7,7 +7,7 @@ BMPListener provides a convenient library for the collection of BGP routing info
 
 # Example Output
 ```
-{"version":"0.0.1","id":"0d45ba4da1a84ab1a44b24871bff2d14","dateTime":"2017-01-25T21:40:31Z","peer":{"type":"global","isPostPolicy":false,"distinguisher":0,"ip":"2001:470:d6:70::1","as":6939,"id":"64.71.128.26"},"attributes":{"origin":"igp","asPath":[6939,8881,48778],"atomicAggregate":true,"aggregator":{"as":48778,"ip":"141.88.254.253"}},"announce":{"ipv6 unicast":{"nexthop":"2001:470:d6:70::1","routes":["2001:67c:19c0::/48"]}}}
+{"version":"0.1.0","id":"0a19386080b44429b146ab121cc58843","dateTime":"2017-02-17T07:43:47+00:00","peer":{"asn":64515,"ip":"169.254.169.254","id":"45.63.33.43","distinguisher":0,"type":"global","postPolicy":false},"update":{"origin":"igp","asPath":[64515,20473,2914,3491,4760],"atomicAggregate":false,"announce":{"nexthop":"127.0.0.1","routes":{"iPv4 Unicast":["220.246.224.0/19"]}}}}
 ```
 
 # Router Configurations
