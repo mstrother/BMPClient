@@ -16,7 +16,7 @@ namespace BmpListener.Bgp
 
         public AddressFamily AFI { get; private set; }
         public SubsequentAddressFamily SAFI { get; private set; }
-        public IPAddrPrefix[] Value { get; private set; }
+        public IPAddrPrefix[] WithdrawnRoutes { get; private set; }
 
         public void DecodeFromBytes(ArraySegment<byte> data)
         {
@@ -24,20 +24,19 @@ namespace BmpListener.Bgp
             AFI = (AddressFamily) data.ToInt16(0);
             SAFI = (SubsequentAddressFamily) data.ElementAt(2);
 
-            for (var i = 3; i < data.Count;)
+            data = new ArraySegment<byte>(data.Array, data.Offset + 3, data.Count - 3);
+
+            while (data.Count > 0)
             {
-                int length = data.ElementAt(i);
+                int length = data.First();
                 if (length == 0) return;
-                length = (length + 7) / 8;
-                length++;
-                var offset = data.Offset + i;
-                var prefixSegment = new ArraySegment<byte>(data.Array, offset, length);
-                var ipAddrPrefix = new IPAddrPrefix(prefixSegment, AFI);
+                length = 1 + ((length + 7) / 8);
+                var ipAddrPrefix = new IPAddrPrefix(data, AFI);
                 ipAddrPrefixes.Add(ipAddrPrefix);
-                i += prefixSegment.Count;
+                data = new ArraySegment<byte>(data.Array, data.Offset + length, data.Count - length);
             }
 
-            Value = ipAddrPrefixes.ToArray();
+            WithdrawnRoutes = ipAddrPrefixes.ToArray();
         }
     }
 }

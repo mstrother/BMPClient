@@ -5,7 +5,7 @@ namespace BmpListener.Bgp
 {
     public abstract class BgpMessage
     {
-        private const int BgpHeaderLength = 19;
+        protected const int BgpHeaderLength = 19;
 
         protected BgpMessage(ref ArraySegment<byte> data)
         {

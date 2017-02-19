@@ -1,7 +1,10 @@
 ﻿using BmpListener.Bgp;
+using BmpListener.Extensions;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace BmpListener.Serialization.JsonConverters
 {
@@ -37,14 +40,22 @@ namespace BmpListener.Serialization.JsonConverters
             model.Aggregator = updateMsg.Attributes
                 .OfType<PathAttributeAggregator>().FirstOrDefault();
 
-            model.Announce = updateMsg.Attributes
-               .OfType<PathAttributeMPReachNLRI>().FirstOrDefault();
-
             model.Withdraw = updateMsg.Attributes
                 .OfType<PathAttributeMPUnreachNLRI>().FirstOrDefault();
 
             model.LargeCommunities = updateMsg.Attributes
                 .OfType<PathAttributeLargeCommunities>().FirstOrDefault();
+
+            var pathAttributeMPReadNLRI = updateMsg.Attributes
+                .OfType<PathAttributeMPReachNLRI>().FirstOrDefault();
+            if (pathAttributeMPReadNLRI != null)
+            {
+                model.Announce = new AnnounceModel(pathAttributeMPReadNLRI);
+            }
+            else
+            {
+                model.Announce = new AnnounceModel(updateMsg.NLRI);
+            }
 
             var json = JsonConvert.SerializeObject(model);
             writer.WriteRawValue(json);
@@ -58,8 +69,38 @@ namespace BmpListener.Serialization.JsonConverters
             public PathAttributeLargeCommunities LargeCommunities { get; set; }
             public bool AtomicAggregate { get; set; }
             public PathAttributeAggregator Aggregator { get; set; }
-            public PathAttributeMPReachNLRI Announce { get; set; }
+            public AnnounceModel Announce { get; set; }
             public PathAttributeMPUnreachNLRI Withdraw { get; set; }
+        }
+
+        private class AnnounceModel
+        {
+            public AnnounceModel(PathAttributeMPReachNLRI nlri)
+            {
+                var afi = nlri.AFI.ToFriendlyString();
+                var safi = nlri.SAFI.ToFriendlyString();
+                Nexthop = nlri.NextHop;
+                LinkLocalNextHop = nlri.LinkLocalNextHop;
+                Routes = new Dictionary<string, IPAddrPrefix[]>
+                {
+                    { $"{afi} {safi}", nlri.Value }
+                };
+            }
+
+            public AnnounceModel(List<IPAddrPrefix> nlri)
+            {
+                var afi = AddressFamily.IP.ToFriendlyString();
+                var safi = SubsequentAddressFamily.Unicast.ToFriendlyString();
+                Nexthop = IPAddress.Parse("127.0.0.1");
+                Routes = new Dictionary<string, IPAddrPrefix[]>
+                {
+                    { $"{afi} {safi}", nlri.ToArray()}
+                };
+            }
+
+            public IPAddress Nexthop { get; set; }
+            public IPAddress LinkLocalNextHop { get; set; }
+            public Dictionary<string, IPAddrPrefix[]> Routes { get; set; }
         }
     }
 }

@@ -6,53 +6,83 @@ namespace BmpListener.Bgp
 {
     public sealed class BgpUpdateMessage : BgpMessage
     {
-        private readonly List<PathAttribute> pathAttributes = new List<PathAttribute>();
-        private readonly List<IPAddrPrefix> withDrawnRoutes = new List<IPAddrPrefix>();
-
         public BgpUpdateMessage(ArraySegment<byte> data) : base(ref data)
         {
             Attributes = new List<PathAttribute>();
+            NLRI = new List<IPAddrPrefix>();
+            WithdrawnRoutes = new List<IPAddrPrefix>();
             DecodeFromBytes(data);
+            IsEndofRib = WithdrawnRoutes.Count == 00 && NLRI.Count == 0;
+            if (IsEndofRib)
+            {
+                int i = 0;
+            }
         }
-        
-        public List<PathAttribute> Attributes { get; private set; } 
+
+        public int WithdrawnRoutesLength { get; private set; }
+        public int PathAttributeLength { get; private set; }
+        public List<PathAttribute> Attributes { get; private set; }
+        public List<IPAddrPrefix> WithdrawnRoutes { get; private set; }
+        public List<IPAddrPrefix> NLRI { get; private set; }
+        public bool IsEndofRib { get; }
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
-            var withdrawnRoutesLength = data.ToInt16(0);
-            var totalPathAttributeLength = data.ToInt16(2);
-            var offset = data.Offset + 4;
+            WithdrawnRoutesLength = data.ToInt16(0);
+            PathAttributeLength = data.ToInt16(2);
+            data = new ArraySegment<byte>(data.Array, data.Offset + 4, data.Count - 4);
+            SetwithdrawnRoutes(data);
+            SetPathAttributes(data);
+            SetNlri(data);
+        }
 
-            for (int i = withdrawnRoutesLength; i < withdrawnRoutesLength;)
+        public void SetwithdrawnRoutes(ArraySegment<byte> data)
+        {
+            var offset = data.Offset;
+            var count = WithdrawnRoutesLength;
+            data = new ArraySegment<byte>(data.Array, offset, count);
+            while (data.Count > 0)
             {
-                //var prefix = new byte[5];
-                //Buffer.BlockCopy(data.ToArray(), offset, prefix, 0, 5);
-                //var segment = new ArraySegment<byte>(data);
-                //var ipAddrPrefix = new IPAddrPrefix(prefix);
-                //withDrawnRoutes.Add(ipAddrPrefix);
-                ////TODO check the prefix length
-                //i -= 5;
-                //offset += 5;
+                var prefix = new IPAddrPrefix(data);
+                WithdrawnRoutes.Add(prefix);
+                var byteLength = prefix.GetByteLength();
+                offset = data.Offset + byteLength;
+                count = data.Count - byteLength;
+                data = new ArraySegment<byte>(data.Array, offset, count);
             }
+        }
 
-            for (int i = totalPathAttributeLength; i > 0;)
+        public void SetPathAttributes(ArraySegment<byte> data)
+        {
+            var offset = data.Offset + WithdrawnRoutesLength;
+            data = new ArraySegment<byte>(data.Array, offset, PathAttributeLength);
+            while (data.Count > 0)
             {
-                var attrBytes = new ArraySegment<byte>(data.Array, offset, i);
-                var pathAttribute = PathAttribute.GetPathAttribute(attrBytes);
-                if (pathAttribute.Flags.HasFlag(PathAttribute.AttributeFlags.ExtendedLength))
-                {
-                    offset += (int)pathAttribute.Length + 4;
-                    i -= (int)pathAttribute.Length + 4;
-                }
-                else
-                {
-                    offset += (int)pathAttribute.Length + 3;
-                    i -= (int)pathAttribute.Length + 3;
-                }
+                var pathAttribute = PathAttribute.GetPathAttribute(data);
                 Attributes.Add(pathAttribute);
+                var pathLength = pathAttribute.Length;
+                var extLength = pathAttribute.Flags.HasFlag(PathAttribute.AttributeFlags.ExtendedLength);
+                pathLength += extLength ? +4 : +3;
+                offset = data.Offset + pathLength;
+                var count = data.Count - pathLength;
+                data = new ArraySegment<byte>(data.Array, offset, count);
             }
-            
-            var nlriLength = data.Array.Length - 23 - totalPathAttributeLength - withdrawnRoutesLength;
+        }
+
+        public void SetNlri(ArraySegment<byte> data)
+        {
+            var offset = data.Offset + WithdrawnRoutesLength + PathAttributeLength;
+            var count = data.Count - WithdrawnRoutesLength - PathAttributeLength;
+            data = new ArraySegment<byte>(data.Array, offset, count);
+            while (data.Count > 0)
+            {
+                var prefix = new IPAddrPrefix(data);
+                NLRI.Add(prefix);
+                var byteLength = prefix.GetByteLength();
+                offset = data.Offset + byteLength;
+                count = data.Count - byteLength;
+                data = new ArraySegment<byte>(data.Array, offset, count);
+            }
         }
     }
 }

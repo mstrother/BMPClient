@@ -74,7 +74,7 @@ namespace BmpListener.Serialization.JsonConverters
 
         public string Serialize(PathAttributeMPUnreachNLRI pathAttribute)
         {
-            var routes = pathAttribute.Value;
+            var routes = pathAttribute.WithdrawnRoutes;
             var model = new Dictionary<string, IPAddrPrefix[]>();
             var afi = pathAttribute.AFI.ToFriendlyString();
             var safi = pathAttribute.SAFI.ToFriendlyString();
