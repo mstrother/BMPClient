@@ -24,7 +24,6 @@ namespace BmpListener.Serialization
                 settings.Converters.Add(new BgpOpenMessageJsonConverter());
                 settings.Converters.Add(new PeerUpNotificationJsonConverter());
                 settings.Converters.Add(new StringEnumConverter(true));
-                settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 return settings;
             };
         }
