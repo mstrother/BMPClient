@@ -24,7 +24,7 @@ namespace BmpListener.Bgp
                 data = new ArraySegment<byte>(data.Array, data.Offset + 3, (int)Length);
             }
         }
-        
+
         [Flags]
         public enum AttributeFlags
         {
@@ -33,11 +33,11 @@ namespace BmpListener.Bgp
             Transitive = 1 << 6,
             Optional = 1 << 7
         }
-        
+
         public AttributeFlags Flags { get; }
         public PathAttributeType AttributeType { get; }
         public int Length { get; set; }
-        
+
         public static PathAttribute GetPathAttribute(ArraySegment<byte> data)
         {
             switch ((PathAttributeType)data.ElementAt(1))
@@ -47,7 +47,7 @@ namespace BmpListener.Bgp
                 case PathAttributeType.AS_PATH:
                     return new PathAttributeASPath(data);
                 case PathAttributeType.NEXT_HOP:
-                    return new PathAttributeUnknown(data);
+                    return new PathAttributeNextHop(data);
                 case PathAttributeType.MULTI_EXIT_DISC:
                     return new PathAttributeMultiExitDisc(data);
                 case PathAttributeType.LOCAL_PREF:

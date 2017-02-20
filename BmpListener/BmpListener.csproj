@@ -56,6 +56,7 @@
     <Compile Include="Bgp\AddressFamily.cs" />
     <Compile Include="Bgp\ASPathSegment.cs" />
     <Compile Include="Bgp\CapabilityCode.cs" />
+    <Compile Include="Bgp\PathAttributeNextHop.cs" />
     <Compile Include="Bgp\PathAttributeType.cs" />
     <Compile Include="Bgp\BgpHeader.cs" />
     <Compile Include="Bgp\BgpKeepAliveMessage.cs" />

@@ -54,7 +54,9 @@ namespace BmpListener.Serialization.JsonConverters
             }
             else
             {
-                model.Announce = new AnnounceModel(updateMsg.NLRI);
+                var nexthop = updateMsg.Attributes
+                    .OfType<PathAttributeNextHop>().FirstOrDefault()?.NextHop;
+                model.Announce = new AnnounceModel(nexthop, updateMsg.NLRI);
             }
 
             var json = JsonConvert.SerializeObject(model);
@@ -87,11 +89,11 @@ namespace BmpListener.Serialization.JsonConverters
                 };
             }
 
-            public AnnounceModel(List<IPAddrPrefix> nlri)
+            public AnnounceModel(IPAddress nexthop, List<IPAddrPrefix> nlri)
             {
                 var afi = AddressFamily.IP.ToFriendlyString();
                 var safi = SubsequentAddressFamily.Unicast.ToFriendlyString();
-                Nexthop = IPAddress.Parse("127.0.0.1");
+                Nexthop = nexthop;
                 Routes = new Dictionary<string, IPAddrPrefix[]>
                 {
                     { $"{afi} {safi}", nlri.ToArray()}
