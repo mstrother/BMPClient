@@ -2,7 +2,9 @@
 ![BuildStatus](https://9909877.visualstudio.com/_apis/public/build/definitions/59a45cee-5267-4662-9f5b-121e6552c3cf/1/badge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-BMPListener provides a convenient library for the collection of BGP routing information via ([BGP Monitoring Protocol](https://tools.ietf.org/html/rfc7854)). A single instance of BMPListener can handle multiple BMP devices.
+BMPListener provides a convenient library for the collection and serialization of BGP routing information via ([BGP Monitoring Protocol](https://tools.ietf.org/html/rfc7854)). A single instance of BMPListener can handle multiple BMP devices.
+
+BMPListener includes a JSON serializer.
 
 
 # Example Output
