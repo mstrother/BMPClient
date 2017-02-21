@@ -1,5 +1,6 @@
 ﻿namespace BmpListener.Bgp
 {
+    // http://www.iana.org/assignments/bgp-parameters/bgp-parameters.xhtml#bgp-parameters-2
     public enum PathAttributeType
     {
         ORIGIN = 1,
