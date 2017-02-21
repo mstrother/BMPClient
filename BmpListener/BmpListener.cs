@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using BmpListener.Bmp;
-using System.Diagnostics;
 
 namespace BmpListener
 {
