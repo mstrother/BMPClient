@@ -57,7 +57,7 @@ namespace BmpListener.Bgp
                 case PathAttributeType.AGGREGATOR:
                     return new PathAttributeAggregator(data);
                 case PathAttributeType.COMMUNITY:
-                    return new PathAttributeUnknown(data);
+                    return new PathAttributeCommunity(data);
                 case PathAttributeType.ORIGINATOR_ID:
                     return new PathAttributeUnknown(data);
                 case PathAttributeType.CLUSTER_LIST:

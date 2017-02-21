@@ -46,6 +46,9 @@ namespace BmpListener.Serialization.JsonConverters
             model.LargeCommunities = updateMsg.Attributes
                 .OfType<PathAttributeLargeCommunities>().FirstOrDefault();
 
+            model.Communities = updateMsg.Attributes
+                .OfType<PathAttributeCommunity>().ToList();
+
             var pathAttributeMPReadNLRI = updateMsg.Attributes
                 .OfType<PathAttributeMPReachNLRI>().FirstOrDefault();
             if (pathAttributeMPReadNLRI != null)
@@ -58,7 +61,7 @@ namespace BmpListener.Serialization.JsonConverters
                     .OfType<PathAttributeNextHop>().FirstOrDefault()?.NextHop;
                 model.Announce = new AnnounceModel(nexthop, updateMsg.NLRI);
             }
-
+            
             var json = JsonConvert.SerializeObject(model);
             writer.WriteRawValue(json);
         }
@@ -68,6 +71,7 @@ namespace BmpListener.Serialization.JsonConverters
             public PathAttributeOrigin.Type? Origin { get; set; }
             public int[] AsPath { get; set; }
             public int? Med { get; set; }
+            public List<PathAttributeCommunity> Communities { get; set; }
             public PathAttributeLargeCommunities LargeCommunities { get; set; }
             public bool AtomicAggregate { get; set; }
             public PathAttributeAggregator Aggregator { get; set; }
@@ -104,6 +108,19 @@ namespace BmpListener.Serialization.JsonConverters
             public IPAddress LinkLocalNextHop { get; set; }
             public Dictionary<string, IPAddrPrefix[]> Routes { get; set; }
         }
+
+        //private class CommunityModel
+        //{
+        //    public CommunityModel(uint community)
+        //    {
+        //        byte[] bytes = BitConverter.GetBytes(community);
+        //        Asn = BitConverter.ToInt16(bytes, 0);
+        //        Community = BitConverter.ToUInt16(bytes, 2);
+        //    }
+        //    public int Asn { get; set; }
+        //    public int Community { get; set; }
+        //}
+
     }
 }
 

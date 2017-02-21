@@ -60,12 +60,11 @@ namespace BmpListener.Bgp
             {
                 var pathAttribute = PathAttribute.GetPathAttribute(data);
                 Attributes.Add(pathAttribute);
-                var pathLength = pathAttribute.Length;
                 var extLength = pathAttribute.Flags.HasFlag(PathAttribute.AttributeFlags.ExtendedLength);
-                pathLength += extLength ? +4 : +3;
+                var pathLength = pathAttribute.Length + (extLength ? +4 : +3);
                 offset = data.Offset + pathLength;
                 var count = data.Count - pathLength;
-                data = new ArraySegment<byte>(data.Array, offset, count);
+                data = new ArraySegment<byte>(data.Array, offset, count);                
             }
         }
 

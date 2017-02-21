@@ -23,23 +23,25 @@ namespace BmpListener.Serialization.JsonConverters
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             string json;
-            var pathAttribute = (PathAttribute)value;
-            switch (pathAttribute.AttributeType)
+            switch (((PathAttribute)value).AttributeType)
             {
                 case (PathAttributeType.AGGREGATOR):
-                    json = Serialize((PathAttributeAggregator)pathAttribute);
+                    json = Serialize((PathAttributeAggregator)value);
                     break;
-                case (PathAttributeType.MP_REACH_NLRI):
-                    json = Serialize((PathAttributeMPReachNLRI)pathAttribute);
-                    break;
-                case (PathAttributeType.MP_UNREACH_NLRI):
-                    json = Serialize((PathAttributeMPUnreachNLRI)pathAttribute);
+                case (PathAttributeType.COMMUNITY):
+                    json = Serialize((PathAttributeCommunity)value);
                     break;
                 case (PathAttributeType.LARGE_COMMUNITY):
-                    json = Serialize((PathAttributeLargeCommunities)pathAttribute);
+                    json = Serialize((PathAttributeCommunity)value);
+                    break;
+                case (PathAttributeType.MP_REACH_NLRI):
+                    json = Serialize((PathAttributeMPReachNLRI)value);
+                    break;
+                case (PathAttributeType.MP_UNREACH_NLRI):
+                    json = Serialize((PathAttributeMPUnreachNLRI)value);
                     break;
                 default:
-                    json = JsonConvert.SerializeObject(pathAttribute);
+                    json = JsonConvert.SerializeObject(value);
                     break;
             }
             writer.WriteRawValue(json);
@@ -51,6 +53,20 @@ namespace BmpListener.Serialization.JsonConverters
             model.asn = pathAttribute.AS;
             model.ip = pathAttribute.IPAddress;
             var json = JsonConvert.SerializeObject(model);
+            return json;
+        }
+
+        public string Serialize(PathAttributeCommunity pathAttribute)
+        {
+            var model = new CommunityModel(pathAttribute.Community);
+            var json = JsonConvert.SerializeObject(model);
+            return json;
+        }
+
+        public string Serialize(PathAttributeLargeCommunities pathAttribute)
+        {
+            var canonicalForm = pathAttribute.ToString();
+            var json = JsonConvert.SerializeObject(canonicalForm);
             return json;
         }
 
@@ -83,18 +99,24 @@ namespace BmpListener.Serialization.JsonConverters
             return json;
         }
 
-        public string Serialize(PathAttributeLargeCommunities pathAttribute)
-        {
-            var canonicalForm = pathAttribute.ToString();
-            var json = JsonConvert.SerializeObject(canonicalForm);
-            return json;
-        }
-        
         private class AnnounceModel
         {
             public IPAddress Nexthop { get; set; }
             public IPAddress LinkLocalNextHop { get; set; }
             public Dictionary<string, IPAddrPrefix[]> Routes { get; set; }
+        }
+
+        private class CommunityModel
+        {
+            public CommunityModel(uint community)
+            {
+                byte[] bytes = BitConverter.GetBytes(community);
+                Asn = BitConverter.ToInt16(bytes, 0);
+                Community = BitConverter.ToUInt16(bytes, 2);
+            }
+
+            public int Asn { get; }
+            public int Community { get; }
         }
     }
 }
