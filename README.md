@@ -15,3 +15,23 @@ BMPListener includes a JSON serializer.
 # Router Configurations
 
 BMP is currently supported on Cisco devices running IOS XE 3.12.0/15.4.2 or above, Cisco devices running IOS XR 5.2.2, Juniper devices running JunOS 13.3 or above, and [GoBGP](http://osrg.github.io/gobgp/).
+
+#### Cisco IOS XE (3.12.0/15.4.2 or above)
+
+This example shows how to enter BMP configuration mode and configure a Cisco IOS XE device to send BMP message to a monitoring station running on IP address 10.1.1.1, port 11019.
+
+```
+Device(config)# router bgp 65000
+Device(config-router)# bmp server 1
+Device(config-router-bmpsrvr)# address 10.1.1.1 port-number 11019
+Device(config-router-bmpsrvr)# description LINE SERVER1
+Device(config-router-bmpsrvr)# failure-retry-delay 60
+Device(config-router-bmpsrvr)# flapping-delay 120
+Device(config-router-bmpsrvr)# initial-delay 10
+Device(config-router-bmpsrvr)# set ip dscp 5
+Device(config-router-bmpsrvr)# stats-reporting-period 300
+Device(config-router-bmpsrvr)# update-source GigabitEthernet1
+Device(config-router-bmpsrvr)# activate
+Device(config-router-bmpsrvr)# exit-bmp-server-mode
+Device(config-router)# bmp-activate all
+```
