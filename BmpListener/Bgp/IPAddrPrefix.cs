@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 
 namespace BmpListener.Bgp
 {
     public class IPAddrPrefix
     {
-        public IPAddrPrefix(ArraySegment<byte> data, AddressFamily afi = AddressFamily.IP)
+        public IPAddrPrefix(byte[] data, AddressFamily afi = AddressFamily.IP)
         {
             DecodeFromBytes(data, afi);
         }
@@ -24,7 +23,7 @@ namespace BmpListener.Bgp
             return 1 + (Length + 7) / 8;
         }
         
-        public void DecodeFromBytes(ArraySegment<byte> data, Bgp.AddressFamily afi)
+        public void DecodeFromBytes(byte[] data, AddressFamily afi)
         {
             Length = data.ElementAt(0);
             if (Length <= 0) return;
@@ -32,7 +31,7 @@ namespace BmpListener.Bgp
             var ipBytes = afi == AddressFamily.IP
                 ? new byte[4]
                 : new byte[16];
-            Buffer.BlockCopy(data.ToArray(), 1, ipBytes, 0, byteLength);
+            Buffer.BlockCopy(data, 1, ipBytes, 0, byteLength);
             Prefix = new IPAddress(ipBytes);
         }
     }
