@@ -1,5 +1,4 @@
-﻿using BmpListener.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace BmpListener.Bgp
@@ -12,11 +11,6 @@ namespace BmpListener.Bgp
             NLRI = new List<IPAddrPrefix>();
             WithdrawnRoutes = new List<IPAddrPrefix>();
             DecodeFromBytes(data);
-            IsEndofRib = WithdrawnRoutes.Count == 00 && NLRI.Count == 0;
-            if (IsEndofRib)
-            {
-                int i = 0;
-            }
         }
 
         public int WithdrawnRoutesLength { get; private set; }
@@ -28,9 +22,20 @@ namespace BmpListener.Bgp
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
-            WithdrawnRoutesLength = data.ToInt16(0);
-            PathAttributeLength = data.ToInt16(2);
-            data = new ArraySegment<byte>(data.Array, data.Offset + 4, data.Count - 4);
+            var withdrawnRoutesLength = new byte[2];
+            Array.Copy(data.Array, data.Offset, withdrawnRoutesLength, 0, 2);
+            Array.Reverse(withdrawnRoutesLength);
+            WithdrawnRoutesLength = BitConverter.ToInt16(withdrawnRoutesLength, 0);
+
+            var pathAttributeLength = new byte[2];
+            Array.Copy(data.Array, data.Offset + 2, pathAttributeLength, 0, 2);
+            Array.Reverse(pathAttributeLength);
+            PathAttributeLength = BitConverter.ToInt16(pathAttributeLength, 0);
+            
+            var offset = data.Offset + 4;
+            var count = data.Count - 4;
+            data = new ArraySegment<byte>(data.Array, offset, count);
+
             SetwithdrawnRoutes(data);
             SetPathAttributes(data);
             SetNlri(data);
@@ -55,7 +60,8 @@ namespace BmpListener.Bgp
         public void SetPathAttributes(ArraySegment<byte> data)
         {
             var offset = data.Offset + WithdrawnRoutesLength;
-            data = new ArraySegment<byte>(data.Array, offset, PathAttributeLength);
+            var count = PathAttributeLength;
+            data = new ArraySegment<byte>(data.Array, data.Offset, count);
             while (data.Count > 0)
             {
                 var pathAttribute = PathAttribute.GetPathAttribute(data);
@@ -63,8 +69,8 @@ namespace BmpListener.Bgp
                 var extLength = pathAttribute.Flags.HasFlag(PathAttribute.AttributeFlags.ExtendedLength);
                 var pathLength = pathAttribute.Length + (extLength ? +4 : +3);
                 offset = data.Offset + pathLength;
-                var count = data.Count - pathLength;
-                data = new ArraySegment<byte>(data.Array, offset, count);                
+                count = data.Count - pathLength;
+                data = new ArraySegment<byte>(data.Array, offset, count);
             }
         }
 
