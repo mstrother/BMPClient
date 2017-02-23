@@ -25,7 +25,7 @@ namespace BmpListener.Bgp
         
         public void DecodeFromBytes(byte[] data, AddressFamily afi)
         {
-            Length = data.ElementAt(0);
+            Length = data[0];
             if (Length <= 0) return;
             var byteLength = (Length + 7) / 8;
             var ipBytes = afi == AddressFamily.IP
