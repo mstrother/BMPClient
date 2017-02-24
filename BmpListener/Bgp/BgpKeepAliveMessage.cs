@@ -6,7 +6,6 @@ namespace BmpListener.Bgp
     {
         public void DecodeFromBytes(ArraySegment<byte> data)
         {
-            throw new NotImplementedException();
         }
     }
 }
