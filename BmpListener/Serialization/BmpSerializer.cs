@@ -23,7 +23,7 @@ namespace BmpListener.Serialization
                 settings.Converters.Add(new BgpUpdateConverter());
                 settings.Converters.Add(new BgpOpenMessageJsonConverter());
                 settings.Converters.Add(new PeerUpNotificationJsonConverter());
-                settings.Converters.Add(new StringEnumConverter(true));
+                settings.Converters.Add(new StringEnumConverter());
                 settings.Converters.Add(new PathAttributeJsonConverter());
                 return settings;
             };
