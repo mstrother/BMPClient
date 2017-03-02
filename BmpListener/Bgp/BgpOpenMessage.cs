@@ -1,7 +1,5 @@
-﻿using BmpListener.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 
 namespace BmpListener.Bgp
@@ -10,6 +8,7 @@ namespace BmpListener.Bgp
     {
         public BgpOpenMessage(ArraySegment<byte> data) : base(ref data)
         {
+            Capabilities = new List<Capability>();
             DecodeFromBytes(data);
         }
 
@@ -17,63 +16,57 @@ namespace BmpListener.Bgp
         public int MyAS { get; private set; }
         public int HoldTime { get; private set; }
         public IPAddress Id { get; private set; }
-        public List<Capability> Capabilities { get; } = new List<Capability>();
+        public List<Capability> Capabilities { get; }
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
-            Version = data.First();
-            //TODO error if BGP version is not 4
-            MyAS = data.ToInt16(1);
-            HoldTime = data.ToInt16(3);
-            Id = new IPAddress(data.Skip(5).Take(4).ToArray());
+            var offset = data.Offset;
+            Version = data.Array[offset];
+            offset++;
 
-            var offset = data.Offset + 10;
-            var count = (int) data.ElementAt(9);
-            data = new ArraySegment<byte>(data.Array, offset, count);
+            var asBytes = new byte[2];
+            Array.Copy(data.Array, offset, asBytes, 0, 2);
+            Array.Reverse(asBytes);
+            MyAS = BitConverter.ToInt16(asBytes, 0);
+            offset += 2;
+
+            var holdTimeBytes = new byte[2];
+            Array.Copy(data.Array, offset, holdTimeBytes, 0, 2);
+            Array.Reverse(holdTimeBytes);
+            HoldTime = BitConverter.ToInt16(holdTimeBytes, 0);
+            offset += 2;
+
+            var ipBytes = new byte[4];
+            Array.Copy(data.Array, offset, ipBytes, 0, 4);
+            Id = new IPAddress(ipBytes);
+            offset += 4;
+
+            var optionalParametersLength = (int)data.Array[offset];
+            offset++;
+
+            data = new ArraySegment<byte>(data.Array, offset, optionalParametersLength);
 
             while (data.Count > 0)
             {
-                var length = data.ElementAt(1);
-                offset += 2;
-                count -= 2;
-                if (data.First() == 2)
+                var paramType = data.Array[offset];
+                offset++;
+                var paramLength = data.Array[offset];
+                offset++;
+                // use enum for clarity
+                if (paramType == 2)
                 {
-                    var optParamData = new ArraySegment<byte>(data.Array, offset, length);
+                    var optParamData = new ArraySegment<byte>(data.Array, offset, paramLength);
                     var capabilities = new CapabilitiesOptionalParameter(optParamData);
                     Capabilities.AddRange(capabilities.Capabilities);
-                    offset += length;
-                    count -= length;
+                    offset += paramLength;
+                    var count = optionalParametersLength - (paramLength + 2);
+                    data = new ArraySegment<byte>(data.Array, offset, count);
                 }
-                data = new ArraySegment<byte>(data.Array, offset, count);
+                else
+                {
+                    throw new NotSupportedException();
+                }
             }
-
-            //while (data.Count > 0)
-            //{
-            //    var paramType = data.First();
-            //    length = data.ElementAt(1);
-            //    if (paramType == 2)
-            //    {
-            //        offset += 2;
-            //        data = new ArraySegment<byte>(data.Array, offset, length);
-            //        var x = new OptionalParameterCapability(data);
-            //        OptionalParameters.Add(x);
-            //    }
-            //    offset += length;
-            //    length -= length;
-            //    data = new ArraySegment<byte>(data.Array, offset, length);
-            //}
-
-            //var optParam = OptionalParameter.GetOptionalParameter(data);
-            //OptionalParameters.Add(optParam);
         }
-
-
-        //}
-        //        .ToList();
-        //        .Where(y => y.ParameterType == OptionalParameter.Type.Capabilities)
-        //    var capabilities = OptionalParameters
-        //{
-
-        //private void FlatterOptionalParameters()
     }
 }
