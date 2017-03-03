@@ -26,7 +26,7 @@ namespace BmpListener.Serialization.Models
         public DateTimeOffset DateTime { get; set; }
 
         [JsonProperty(Order = 4)]
-        public BmpPeerHeader Peer { get; }
+        public PerPeerHeader Peer { get; }
 
         public static JsonMessage Create(BmpMessage msg)
         {

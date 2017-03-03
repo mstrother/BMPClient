@@ -25,6 +25,9 @@ namespace BmpListener.Serialization.JsonConverters
             string json;
             switch (((PathAttribute)value).AttributeType)
             {
+                case (PathAttributeType.AS_PATH):
+                    json = Serialize((PathAttributeASPath)value);
+                    break;
                 case (PathAttributeType.AGGREGATOR):
                     json = Serialize((PathAttributeAggregator)value);
                     break;
@@ -45,6 +48,15 @@ namespace BmpListener.Serialization.JsonConverters
                     break;
             }
             writer.WriteRawValue(json);
+        }
+
+        public string Serialize(PathAttributeASPath pathAttribute)
+        {
+            //dynamic model = new ExpandoObject();
+            //model.asn = pathAttribute.AS;
+            //model.ip = pathAttribute.IPAddress;
+            var json = JsonConvert.SerializeObject(pathAttribute.ASPaths);
+            return json;
         }
 
         public string Serialize(PathAttributeAggregator pathAttribute)
@@ -78,9 +90,9 @@ namespace BmpListener.Serialization.JsonConverters
             {
                 Nexthop = pathAttribute.NextHop,
                 LinkLocalNextHop = pathAttribute.LinkLocalNextHop,
-                Routes = new Dictionary<string, IPAddrPrefix[]>
+                Routes = new Dictionary<string, IList<IPAddrPrefix>>
                     {
-                        { $"{afi} {safi}", pathAttribute.Value }
+                        { $"{afi} {safi}", pathAttribute.NLRI }
                     }
             };
             var json = JsonConvert.SerializeObject(model);
@@ -91,7 +103,7 @@ namespace BmpListener.Serialization.JsonConverters
         public string Serialize(PathAttributeMPUnreachNLRI pathAttribute)
         {
             var routes = pathAttribute.WithdrawnRoutes;
-            var model = new Dictionary<string, IPAddrPrefix[]>();
+            var model = new Dictionary<string, IList<IPAddrPrefix>>();
             var afi = pathAttribute.AFI.ToFriendlyString();
             var safi = pathAttribute.SAFI.ToFriendlyString();
             model.Add($"{afi} {safi}", routes);
@@ -103,7 +115,7 @@ namespace BmpListener.Serialization.JsonConverters
         {
             public IPAddress Nexthop { get; set; }
             public IPAddress LinkLocalNextHop { get; set; }
-            public Dictionary<string, IPAddrPrefix[]> Routes { get; set; }
+            public Dictionary<string, IList<IPAddrPrefix>> Routes { get; set; }
         }
 
         private class CommunityModel
@@ -111,8 +123,8 @@ namespace BmpListener.Serialization.JsonConverters
             public CommunityModel(uint community)
             {
                 byte[] bytes = BitConverter.GetBytes(community);
-                Asn = BitConverter.ToInt16(bytes, 0);
-                Community = BitConverter.ToUInt16(bytes, 2);
+                Community = BitConverter.ToInt16(bytes, 0);
+                Asn = BitConverter.ToUInt16(bytes, 2);
             }
 
             public int Asn { get; }

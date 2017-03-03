@@ -28,8 +28,8 @@ namespace BmpListener.Serialization.JsonConverters
             model.Origin = updateMsg.Attributes.OfType<PathAttributeOrigin>()
                 .FirstOrDefault()?.Origin;
 
-            model.AsPath = updateMsg.Attributes.OfType<PathAttributeASPath>()
-                .FirstOrDefault()?.ASPaths.FirstOrDefault()?.ASNs;
+            // TODO: multiple AS paths in message
+            model.AsPath = updateMsg.Attributes.OfType<PathAttributeASPath>();
 
             model.Med = updateMsg.Attributes.OfType<PathAttributeMultiExitDisc>()
                 .FirstOrDefault()?.Metric;
@@ -43,8 +43,8 @@ namespace BmpListener.Serialization.JsonConverters
             model.Withdraw = updateMsg.Attributes
                 .OfType<PathAttributeMPUnreachNLRI>().FirstOrDefault();
 
-            model.LargeCommunities = updateMsg.Attributes
-                .OfType<PathAttributeLargeCommunities>().FirstOrDefault();
+            //model.LargeCommunities = updateMsg.Attributes
+            //    .OfType<PathAttributeLargeCommunities>().FirstOrDefault();
 
             model.Communities = updateMsg.Attributes
                 .OfType<PathAttributeCommunity>().ToList();
@@ -59,7 +59,7 @@ namespace BmpListener.Serialization.JsonConverters
             {
                 var nexthop = updateMsg.Attributes
                     .OfType<PathAttributeNextHop>().FirstOrDefault()?.NextHop;
-                model.Announce = new AnnounceModel(nexthop, updateMsg.NLRI);
+                model.Announce = new AnnounceModel(nexthop, updateMsg.Nlri);
             }
             
             var json = JsonConvert.SerializeObject(model);
@@ -69,7 +69,7 @@ namespace BmpListener.Serialization.JsonConverters
         private class JsonModel
         {
             public PathAttributeOrigin.Type? Origin { get; set; }
-            public int[] AsPath { get; set; }
+            public IEnumerable<PathAttributeASPath> AsPath { get; set; }
             public int? Med { get; set; }
             public List<PathAttributeCommunity> Communities { get; set; }
             public PathAttributeLargeCommunities LargeCommunities { get; set; }
@@ -87,40 +87,27 @@ namespace BmpListener.Serialization.JsonConverters
                 var safi = nlri.SAFI.ToFriendlyString();
                 Nexthop = nlri.NextHop;
                 LinkLocalNextHop = nlri.LinkLocalNextHop;
-                Routes = new Dictionary<string, IPAddrPrefix[]>
+                Routes = new Dictionary<string, IList<IPAddrPrefix>>
                 {
-                    { $"{afi} {safi}", nlri.Value }
+                    { $"{afi} {safi}", nlri.NLRI }
                 };
             }
 
-            public AnnounceModel(IPAddress nexthop, List<IPAddrPrefix> nlri)
+            public AnnounceModel(IPAddress nexthop, IList<IPAddrPrefix> nlri)
             {
                 var afi = AddressFamily.IP.ToFriendlyString();
                 var safi = SubsequentAddressFamily.Unicast.ToFriendlyString();
                 Nexthop = nexthop;
-                Routes = new Dictionary<string, IPAddrPrefix[]>
+                Routes = new Dictionary<string, IList<IPAddrPrefix>>
                 {
-                    { $"{afi} {safi}", nlri.ToArray()}
+                    { $"{afi} {safi}", nlri}
                 };
             }
 
             public IPAddress Nexthop { get; set; }
             public IPAddress LinkLocalNextHop { get; set; }
-            public Dictionary<string, IPAddrPrefix[]> Routes { get; set; }
+            public Dictionary<string, IList<IPAddrPrefix>> Routes { get; set; }
         }
-
-        //private class CommunityModel
-        //{
-        //    public CommunityModel(uint community)
-        //    {
-        //        byte[] bytes = BitConverter.GetBytes(community);
-        //        Asn = BitConverter.ToInt16(bytes, 0);
-        //        Community = BitConverter.ToUInt16(bytes, 2);
-        //    }
-        //    public int Asn { get; set; }
-        //    public int Community { get; set; }
-        //}
-
     }
 }
 

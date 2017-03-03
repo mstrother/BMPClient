@@ -58,7 +58,7 @@ namespace BmpListener
                     {
                         try
                         {
-                            bmpMessage = BmpMessage.GetBmpMessage(header);
+                            bmpMessage = BmpMessage.Create(header);
                         }
                         catch (NotSupportedException ex)
                         {
@@ -67,10 +67,9 @@ namespace BmpListener
                     }
                     else
                     {
-                        var bmpMsgBytes = new byte[header.Length - 6];
+                        var bmpMsgBytes = new byte[header.MessageLength - 6];
                         await stream.ReadAsync(bmpMsgBytes, 0, bmpMsgBytes.Length);
-                        var data = new ArraySegment<byte>(bmpMsgBytes);
-                        bmpMessage = BmpMessage.Create(header, data);
+                        bmpMessage = BmpMessage.Create(header, bmpMsgBytes);
                     }
                     action?.Invoke(bmpMessage);
                 }

@@ -9,7 +9,7 @@ namespace BmpListener.Serialization.JsonConverters
     {
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(BmpPeerHeader);
+            return objectType == typeof(PerPeerHeader);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -19,7 +19,7 @@ namespace BmpListener.Serialization.JsonConverters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var peerHeader = (BmpPeerHeader)value;
+            var peerHeader = (PerPeerHeader)value;
             var model = new JsonModel
             {
                 Asn = peerHeader.AS,
@@ -40,7 +40,7 @@ namespace BmpListener.Serialization.JsonConverters
             public IPAddress Ip { get; set; }
             public IPAddress Id { get; set; }
             public ulong Distinguisher { get; set; }
-            public BmpPeerHeader.Type Type { get; set; }
+            public PerPeerHeader.Type Type { get; set; }
             public bool PostPolicy { get; set; }
         }
     }
