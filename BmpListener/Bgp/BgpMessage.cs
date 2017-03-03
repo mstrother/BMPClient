@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {
@@ -7,12 +6,12 @@ namespace BmpListener.Bgp
     {
         protected const int BgpHeaderLength = 19;
 
-        protected BgpMessage(ref ArraySegment<byte> data)
+        protected BgpMessage(ArraySegment<byte> data)
         {
             Header = new BgpHeader(data);
             var offset = data.Offset + BgpHeaderLength;
             var count = Header.Length - BgpHeaderLength;
-            data = new ArraySegment<byte>(data.Array, offset, count);
+            MessageData = new ArraySegment<byte>(data.Array, offset, count);
         }
 
         public enum Type
@@ -24,13 +23,13 @@ namespace BmpListener.Bgp
             RouteRefresh
         }
 
+        protected ArraySegment<byte> MessageData { get; }
         public BgpHeader Header { get; }
-
         public abstract void DecodeFromBytes(ArraySegment<byte> data);
 
         public static BgpMessage GetBgpMessage(ArraySegment<byte> data)
         {
-            var msgType = (Type) data.ElementAt(18);
+            var msgType = (Type)data.Array[data.Offset + 18];
             switch (msgType)
             {
                 case Type.Open:
