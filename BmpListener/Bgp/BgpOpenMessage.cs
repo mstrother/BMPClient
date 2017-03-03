@@ -6,10 +6,10 @@ namespace BmpListener.Bgp
 {
     public sealed class BgpOpenMessage : BgpMessage
     {
-        public BgpOpenMessage(ArraySegment<byte> data) : base(ref data)
+        public BgpOpenMessage(ArraySegment<byte> data) : base(data)
         {
             Capabilities = new List<Capability>();
-            DecodeFromBytes(data);
+            DecodeFromBytes(MessageData);
         }
 
         public byte Version { get; private set; }
@@ -24,18 +24,14 @@ namespace BmpListener.Bgp
             Version = data.Array[offset];
             offset++;
 
-            var asBytes = new byte[2];
-            Array.Copy(data.Array, offset, asBytes, 0, 2);
-            Array.Reverse(asBytes);
-            MyAS = BitConverter.ToInt16(asBytes, 0);
+            Array.Reverse(data.Array, offset, 2);
+            MyAS = BitConverter.ToUInt16(data.Array, offset);
             offset += 2;
 
-            var holdTimeBytes = new byte[2];
-            Array.Copy(data.Array, offset, holdTimeBytes, 0, 2);
-            Array.Reverse(holdTimeBytes);
-            HoldTime = BitConverter.ToInt16(holdTimeBytes, 0);
+            Array.Reverse(data.Array, offset, 2);
+            HoldTime = BitConverter.ToInt16(data.Array, offset);
             offset += 2;
-
+            
             var ipBytes = new byte[4];
             Array.Copy(data.Array, offset, ipBytes, 0, 4);
             Id = new IPAddress(ipBytes);

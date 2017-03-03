@@ -5,89 +5,103 @@ namespace BmpListener.Bgp
 {
     public sealed class BgpUpdateMessage : BgpMessage
     {
-        public BgpUpdateMessage(ArraySegment<byte> data) : base(ref data)
+        int offset;
+
+        public BgpUpdateMessage(ArraySegment<byte> data) : base(data)
         {
+            offset = MessageData.Offset;
             Attributes = new List<PathAttribute>();
-            NLRI = new List<IPAddrPrefix>();
             WithdrawnRoutes = new List<IPAddrPrefix>();
-            DecodeFromBytes(data);
+            Nlri = new List<IPAddrPrefix>();
+            DecodeFromBytes(MessageData);
         }
 
         public int WithdrawnRoutesLength { get; private set; }
         public int PathAttributeLength { get; private set; }
-        public List<PathAttribute> Attributes { get; private set; }
-        public List<IPAddrPrefix> WithdrawnRoutes { get; private set; }
-        public List<IPAddrPrefix> NLRI { get; private set; }
-        public bool IsEndofRib { get; }
+        public List<PathAttribute> Attributes { get; }
+        public List<IPAddrPrefix> WithdrawnRoutes { get; }
+        public List<IPAddrPrefix> Nlri { get; }
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
-            var withdrawnRoutesLength = new byte[2];
-            Array.Copy(data.Array, data.Offset, withdrawnRoutesLength, 0, 2);
-            Array.Reverse(withdrawnRoutesLength);
-            WithdrawnRoutesLength = BitConverter.ToInt16(withdrawnRoutesLength, 0);
+            Array.Reverse(data.Array, offset, 2);
+            WithdrawnRoutesLength = BitConverter.ToInt16(data.Array, offset);
+            offset += 2;
 
-            var pathAttributeLength = new byte[2];
-            Array.Copy(data.Array, data.Offset + 2, pathAttributeLength, 0, 2);
-            Array.Reverse(pathAttributeLength);
-            PathAttributeLength = BitConverter.ToInt16(pathAttributeLength, 0);
-            
-            var offset = data.Offset + 4;
-            var count = data.Count - 4;
-            data = new ArraySegment<byte>(data.Array, offset, count);
+            if (WithdrawnRoutesLength > 0)
+            {
+                SetwithdrawnRoutes(data);
+            }
 
-            SetwithdrawnRoutes(data);
+            if (offset == data.Array.Length)
+            {
+                // End-of-RIB
+                return;
+            }
+
+            Array.Reverse(data.Array, offset, 2);
+            PathAttributeLength = BitConverter.ToInt16(data.Array, offset);
+            offset += 2;
+
+            data = new ArraySegment<byte>(data.Array, offset, PathAttributeLength);
             SetPathAttributes(data);
+
+            // RFC 4721 - The length, in octets, of the Network Layer
+            // Reachability Information is not encoded explicitly,
+            // but can be calculated as:
+            //
+            // UPDATE message Length - 23 - Total Path Attributes Length - Withdrawn Routes Length
+            //
+            // where UPDATE message Length is the value encoded in the fixed-
+            // size BGP header, Total Path Attribute Length, and Withdrawn
+            // Routes Length are the values encoded in the variable part of
+            // the UPDATE message, and 23 is a combined length of the fixed-
+            // size BGP header, the Total Path Attribute Length field, and the
+            // Withdrawn Routes Length field.
+
+            var nlriLength = Header.Length - 23 - WithdrawnRoutesLength - PathAttributeLength;
+            data = new ArraySegment<byte>(data.Array, offset, nlriLength);
             SetNlri(data);
         }
 
         public void SetwithdrawnRoutes(ArraySegment<byte> data)
         {
-            var offset = data.Offset;
-            var count = WithdrawnRoutesLength;
-            data = new ArraySegment<byte>(data.Array, offset, count);
             while (data.Count > 0)
             {
                 var prefix = new IPAddrPrefix(data);
                 WithdrawnRoutes.Add(prefix);
-                var byteLength = prefix.GetByteLength();
-                offset = data.Offset + byteLength;
-                count = data.Count - byteLength;
+                offset += prefix.ByteLength;
+                var count = data.Count - prefix.ByteLength;
                 data = new ArraySegment<byte>(data.Array, offset, count);
             }
         }
 
         public void SetPathAttributes(ArraySegment<byte> data)
         {
-            var offset = data.Offset + WithdrawnRoutesLength;
-            var count = PathAttributeLength;
-            data = new ArraySegment<byte>(data.Array, data.Offset, count);
             while (data.Count > 0)
             {
-                var pathAttribute = PathAttribute.GetPathAttribute(data);
+                var pathAttribute = PathAttribute.Create(data);
                 Attributes.Add(pathAttribute);
                 var extLength = pathAttribute.Flags.HasFlag(PathAttribute.AttributeFlags.ExtendedLength);
                 var pathLength = pathAttribute.Length + (extLength ? +4 : +3);
                 offset = data.Offset + pathLength;
-                count = data.Count - pathLength;
+                var count = data.Count - pathLength;
                 data = new ArraySegment<byte>(data.Array, offset, count);
             }
         }
 
         public void SetNlri(ArraySegment<byte> data)
         {
-            var offset = data.Offset + WithdrawnRoutesLength + PathAttributeLength;
-            var count = data.Count - WithdrawnRoutesLength - PathAttributeLength;
-            data = new ArraySegment<byte>(data.Array, offset, count);
             while (data.Count > 0)
             {
                 var prefix = new IPAddrPrefix(data);
-                NLRI.Add(prefix);
-                var byteLength = prefix.GetByteLength();
-                offset = data.Offset + byteLength;
-                count = data.Count - byteLength;
+                Nlri.Add(prefix);
+                offset += prefix.ByteLength;
+                var count = data.Count - prefix.ByteLength;
                 data = new ArraySegment<byte>(data.Array, offset, count);
             }
         }
     }
 }
+
+
