@@ -2,6 +2,12 @@
 {
     public class ASPathSegment
     {
+        public ASPathSegment(Type type, int[] asns)
+        {
+            SegmentType = Type;
+            ASNs = asns;
+        }
+
         public enum Type
         {
             AS_SET = 1,
