@@ -1,53 +1,71 @@
-﻿using BmpListener.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public class PathAttributeASPath : PathAttribute
     {
-        public PathAttributeASPath(ArraySegment<byte> data) : base(ref data)
+        public PathAttributeASPath(ArraySegment<byte> data) : base(data)
         {
-            DecodeFromBytes(data);
+            ASPaths = new List<ASPathSegment>();
+            Decode(AttributeValue);
         }
-        
-        public ASPathSegment[] ASPaths { get; private set; }
 
-        public void DecodeFromBytes(ArraySegment<byte> data)
+        public IList<ASPathSegment> ASPaths { get; }
+
+        protected void Decode(ArraySegment<byte> data)
         {
-            if (data.Count < 2)
-                Environment.Exit(0);
+            int offset = data.Offset;
+            int count = Length;
 
-            var asPathSegments = new List<ASPathSegment>();
-
-            for (var offset = 0; offset < Length;)
+            while (data.Count > 0)
             {
-                var asPathSegment = new ASPathSegment {SegmentType = (ASPathSegment.Type) data.ElementAt(offset)};
+                ValidateASPath(data);
+
+                var pathSegmentType = (ASPathSegment.Type)data.Array[offset];
                 offset++;
-                var asCount = data.ElementAt(offset);
+                var asnCount = data.Array[offset];
                 offset++;
-                offset += asCount * 4;
+                var asns = new List<int>();
 
-                //if (data.Length - 2 < asPathSegment.Length * 4)
-                //{
-                //    param bmpHeader length is too short
-                //    Environment.Exit(0);
-                //}
-
-                var asList = new int[asCount];
-
-                for (var i = 0; i < asCount; i++)
+                //TO DO 2 byte asn data
+                for (int i = 0; i < asnCount; i++)
                 {
-                    var asNum = data.ToInt32(4 * i + 2);
-                    asList[i] = asNum;
+                    var index = 4 * i + offset;
+                    Array.Reverse(data.Array, index, 4);
+                    var asn = BitConverter.ToInt32(data.Array, index);
+                    asns.Add(asn);
                 }
 
-                asPathSegment.ASNs = asList;
-                asPathSegments.Add(asPathSegment);
-            }
+                var asPathSegment = new ASPathSegment(pathSegmentType, asns);
+                ASPaths.Add(asPathSegment);
 
-            ASPaths = asPathSegments.ToArray();
+                offset += asnCount * 4;
+                count -= (asnCount * 4) + 2;
+                data = new ArraySegment<byte>(data.Array, offset, count);
+            }
+        }
+
+        public bool ValidateASPath(ArraySegment<byte> data)
+        {
+            if (data.Array.Length % 2 != 0 || data.Count < 2)
+            {
+                return false;
+            }
+            if (data.Array[data.Offset] == 0 || data.Array[data.Offset] > 4)
+            {
+                return false;
+            }
+            var asnCount = data.Array[data.Offset + 1];
+            if (asnCount == 0)
+            {
+                return false;
+            }
+            if (2 + asnCount * 4 > data.Count)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

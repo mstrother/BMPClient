@@ -1,28 +1,12 @@
-﻿using BmpListener.Extensions;
-using System;
-using System.Linq;
+﻿using System;
 
 namespace BmpListener.Bgp
 {
     public abstract class PathAttribute
     {
-        protected PathAttribute(ref ArraySegment<byte> data)
+        protected PathAttribute(ArraySegment<byte> data)
         {
-            Flags = (AttributeFlags)data.ElementAt(0);
-            AttributeType = (PathAttributeType)data.ElementAt(1);
-
-            if (Flags.HasFlag(AttributeFlags.ExtendedLength))
-            {
-                if (data.Count < 4)
-                    throw new Exception();
-                Length = data.ToInt16(2);
-                data = new ArraySegment<byte>(data.Array, data.Offset + 4, (int)Length);
-            }
-            else
-            {
-                Length = data.ElementAt(2);
-                data = new ArraySegment<byte>(data.Array, data.Offset + 3, (int)Length);
-            }
+            AttributeValue = SetValue(data);
         }
 
         [Flags]
@@ -34,13 +18,36 @@ namespace BmpListener.Bgp
             Optional = 1 << 7
         }
 
-        public AttributeFlags Flags { get; }
-        public PathAttributeType AttributeType { get; }
-        public int Length { get; set; }
+        protected ArraySegment<byte> AttributeValue { get; private set; }
 
-        public static PathAttribute GetPathAttribute(ArraySegment<byte> data)
+        public AttributeFlags Flags { get; private set; }
+        public PathAttributeType AttributeType { get; private set; }
+        public int Length { get; private set; }
+
+
+        public ArraySegment<byte> SetValue(ArraySegment<byte> data)
         {
-            switch ((PathAttributeType)data.ElementAt(1))
+            var offset = data.Offset;
+            Flags = (AttributeFlags)data.Array[offset];
+            AttributeType = (PathAttributeType)data.Array[offset + 1];
+
+            if (Flags.HasFlag(AttributeFlags.ExtendedLength))
+            {
+                Array.Reverse(data.Array, offset + 2, 2);
+                Length = BitConverter.ToInt16(data.Array, offset + 2);
+                return new ArraySegment<byte>(data.Array, offset + 4, Length);
+            }
+            Length = data.Array[offset + 2];
+            return new ArraySegment<byte>(data.Array, offset + 3, Length);
+
+        }
+
+        public static PathAttribute Create(ArraySegment<byte> data)
+        {
+            var offset = data.Offset + 1;
+            var attributeType = (PathAttributeType)data.Array[offset];
+
+            switch (attributeType)
             {
                 case PathAttributeType.ORIGIN:
                     return new PathAttributeOrigin(data);

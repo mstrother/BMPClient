@@ -1,20 +1,20 @@
-﻿using BmpListener.Extensions;
-using System;
+﻿using System;
 
 namespace BmpListener.Bgp
 {
     internal class PathAttributeMultiExitDisc : PathAttribute
     {
-        public PathAttributeMultiExitDisc(ArraySegment<byte> data) : base(ref data)
+        public PathAttributeMultiExitDisc(ArraySegment<byte> data) : base(data)
         {
-            DecodeFromBytes(data);
+            Decode(AttributeValue);
         }
 
         public int? Metric { get; private set; }
 
-        public void DecodeFromBytes(ArraySegment<byte> data)
+        protected void Decode(ArraySegment<byte> data)
         {
-            Metric = data.ToInt32(0);
+            Array.Reverse(data.Array, data.Offset, 0);
+            Metric = BitConverter.ToInt32(data.Array, 0);
         }
     }
 }

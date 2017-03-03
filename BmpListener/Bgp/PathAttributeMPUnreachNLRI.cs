@@ -1,42 +1,39 @@
-﻿using BmpListener.Extensions;
-using BmpListener.Serialization;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public class PathAttributeMPUnreachNLRI : PathAttribute
     {
-        public PathAttributeMPUnreachNLRI(ArraySegment<byte> data) : base(ref data)
+        public PathAttributeMPUnreachNLRI(ArraySegment<byte> data) : base(data)
         {
-            DecodeFromBytes(data);
+            WithdrawnRoutes = new List<IPAddrPrefix>();
+            Decode(AttributeValue);
         }
 
         public AddressFamily AFI { get; private set; }
         public SubsequentAddressFamily SAFI { get; private set; }
-        public IPAddrPrefix[] WithdrawnRoutes { get; private set; }
+        public IList<IPAddrPrefix> WithdrawnRoutes { get; }
 
-        public void DecodeFromBytes(ArraySegment<byte> data)
+        protected void Decode(ArraySegment<byte> data)
         {
-            var ipAddrPrefixes = new List<IPAddrPrefix>();
-            AFI = (AddressFamily) data.ToInt16(0);
-            SAFI = (SubsequentAddressFamily) data.ElementAt(2);
+            var offset = data.Offset;
+            Array.Reverse(data.Array, offset, 2);
+            AFI = (AddressFamily)BitConverter.ToInt16(data.Array, offset);          
+            SAFI = (SubsequentAddressFamily)data.Array[offset + 2];
+            offset += 2;
 
-            data = new ArraySegment<byte>(data.Array, data.Offset + 3, data.Count - 3);
+            var count = data.Array.Length - offset;
+            var withdrawnRouteData = new ArraySegment<byte>(data.Array, offset, count);
 
-            while (data.Count > 0)
+            while (withdrawnRouteData.Count > 0)
             {
-                int length = data.First();
-                if (length == 0) return;
-                length = 1 + ((length + 7) / 8);
-                var ipAddrPrefix = new IPAddrPrefix(data, AFI);
-                ipAddrPrefixes.Add(ipAddrPrefix);
-                data = new ArraySegment<byte>(data.Array, data.Offset + length, data.Count - length);
+                var prefix = new IPAddrPrefix(withdrawnRouteData);
+                offset += prefix.ByteLength;
+                count = withdrawnRouteData.Count - prefix.ByteLength;
+                withdrawnRouteData = new ArraySegment<byte>(withdrawnRouteData.Array, offset, count);
             }
-
-            WithdrawnRoutes = ipAddrPrefixes.ToArray();
         }
     }
 }
+

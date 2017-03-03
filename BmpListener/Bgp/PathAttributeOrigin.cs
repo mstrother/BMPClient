@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public class PathAttributeOrigin : PathAttribute
     {
-        public PathAttributeOrigin(ArraySegment<byte> data) : base(ref data)
+        public PathAttributeOrigin(ArraySegment<byte> data) : base(data)
         {
-            Origin = (Type)data.ElementAt(0);
+            Decode(AttributeValue);
         }
 
         public enum Type
@@ -17,6 +16,11 @@ namespace BmpListener.Bgp
             Incomplete
         }
 
-        public Type Origin { get; }
+        public Type Origin { get; private set; }
+
+        protected void Decode(ArraySegment<byte> data)
+        {
+            Origin = (Type)data.Array[data.Offset];
+        }
     }
 }

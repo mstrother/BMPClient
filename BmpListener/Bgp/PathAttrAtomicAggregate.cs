@@ -4,8 +4,8 @@ namespace BmpListener.Bgp
 {
     public class PathAttrAtomicAggregate : PathAttribute
     {
-        public PathAttrAtomicAggregate(ArraySegment<byte> data) : base(ref data)
+        public PathAttrAtomicAggregate(ArraySegment<byte> data) : base(data)
         {
-        }
+        }        
     }
 }

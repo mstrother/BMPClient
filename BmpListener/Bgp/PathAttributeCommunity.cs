@@ -1,23 +1,20 @@
-﻿using BmpListener.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 
 namespace BmpListener.Bgp
 {
     public class PathAttributeCommunity : PathAttribute
     {
-        public PathAttributeCommunity(ArraySegment<byte> data) : base(ref data)
+        public PathAttributeCommunity(ArraySegment<byte> data) : base(data)
         {
-            DecodeFromByes(data);
+            Decode(AttributeValue);
         }
 
         public uint Community { get; private set; }
 
-        public void DecodeFromByes(ArraySegment<byte> data)
+        protected void Decode(ArraySegment<byte> data)
         {
-            var bytes = data.Reverse().Skip(0).Take(4).ToArray();
-            Community = BitConverter.ToUInt32(bytes, 0);
+            Array.Reverse(data.Array, data.Offset, 4);
+            Community = BitConverter.ToUInt32(data.Array, data.Offset);
         }
     }
 }
