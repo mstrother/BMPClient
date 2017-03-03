@@ -1,29 +1,24 @@
 ﻿using System;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public abstract class Capability
     {
-        //private readonly int length;            
-
         protected Capability(ArraySegment<byte> data)
         {
-            CapabilityType = (CapabilityCode)data.First();
-            Length = data.ElementAt(1);
+            var offset = data.Offset;
+            CapabilityType = (CapabilityCode)data.Array[offset];
+            Length = data.Array[data.Offset + 1];
         }
 
         public CapabilityCode CapabilityType { get; }
         public int Length { get; }
-
-        public bool ShouldSerializeLength()
-        {
-            return false;
-        }
-
+        
         public static Capability GetCapability(ArraySegment<byte> data)
         {
-            var capabilityType = (CapabilityCode)data.First();
+            var offset = data.Offset;
+            var capabilityType = (CapabilityCode)data.Array[offset];
+
             switch (capabilityType)
             {
                 case CapabilityCode.Multiprotocol:
