@@ -1,10 +1,12 @@
-﻿namespace BmpListener.Bgp
+﻿using System.Collections.Generic;
+
+namespace BmpListener.Bgp
 {
     public class ASPathSegment
     {
-        public ASPathSegment(Type type, int[] asns)
+        public ASPathSegment(Type type, IList<int> asns)
         {
-            SegmentType = Type;
+            SegmentType = type;
             ASNs = asns;
         }
 
@@ -17,6 +19,6 @@
         }
 
         public Type SegmentType { get; set; }
-        public int[] ASNs { get; set; }
+        public IList<int> ASNs { get; set; }
     }
 }
