@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using BmpListener;
-using BmpListener.Extensions;
 
 namespace BmpListener.Bmp
 {
@@ -11,13 +8,15 @@ namespace BmpListener.Bmp
 
         public BmpHeader(byte[] data)
         {
-            Version = data.First();
+            Version = data[0];
             if (Version != bmpVersion)
             {
                 throw new NotSupportedException("version error");
             }
-            MessageLength = data.ToInt32(1);
-            MessageType = (BmpMessage.Type)data.ElementAt(5);
+
+            Array.Reverse(data, 1, 4);
+            MessageLength = BitConverter.ToInt32(data, 1);
+            MessageType = (BmpMessage.Type)data[5];
         }
 
         public byte Version { get; }
