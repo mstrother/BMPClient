@@ -24,6 +24,12 @@ namespace BmpListener.Bgp
 
         public override void DecodeFromBytes(ArraySegment<byte> data)
         {
+            if (Header.Length == 23)
+            {
+                // End-of-RIB
+                return;
+            }
+
             Array.Reverse(data.Array, offset, 2);
             WithdrawnRoutesLength = BitConverter.ToInt16(data.Array, offset);
             offset += 2;
@@ -31,13 +37,7 @@ namespace BmpListener.Bgp
             if (WithdrawnRoutesLength > 0)
             {
                 SetwithdrawnRoutes(data);
-            }
-
-            if (offset == data.Array.Length)
-            {
-                // End-of-RIB
-                return;
-            }
+            }                      
 
             Array.Reverse(data.Array, offset, 2);
             PathAttributeLength = BitConverter.ToInt16(data.Array, offset);
