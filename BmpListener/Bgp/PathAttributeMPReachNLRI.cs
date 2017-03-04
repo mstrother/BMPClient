@@ -17,7 +17,7 @@ namespace BmpListener.Bgp
         public IPAddress NextHop { get; private set; }
         public IPAddress LinkLocalNextHop { get; private set; }
         public IList<IPAddrPrefix> NLRI { get; }
-        
+
         protected void Decode(ArraySegment<byte> data)
         {
             var offset = data.Offset;
@@ -25,7 +25,7 @@ namespace BmpListener.Bgp
             AFI = (AddressFamily)BitConverter.ToInt16(data.Array, offset);
             SAFI = (SubsequentAddressFamily)data.Array[offset + 2];
             var nextHopLength = data.Array[offset + 3];
-            offset += 3;
+            offset += 4;
 
             if (nextHopLength > 0)
             {
