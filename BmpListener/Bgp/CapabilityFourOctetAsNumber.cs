@@ -1,5 +1,4 @@
-﻿using BmpListener.Extensions;
-using System;
+﻿using System;
 
 namespace BmpListener.Bgp
 {
@@ -7,9 +6,15 @@ namespace BmpListener.Bgp
     {
         public CapabilityFourOctetAsNumber(ArraySegment<byte> data) : base(data)
         {
-            CapabilityValue = data.ToInt32(2);
+            Decode(CapabilityValue);
         }
 
-        public int CapabilityValue { get; }
+        public int Asn { get; private set; }
+        
+        public void Decode(ArraySegment<byte> data)
+        {
+            Array.Reverse(CapabilityValue.Array, data.Offset, 4);
+            Asn = BitConverter.ToInt32(data.Array, data.Offset);
+        }
     }
 }

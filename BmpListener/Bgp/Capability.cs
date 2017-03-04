@@ -8,12 +8,18 @@ namespace BmpListener.Bgp
         {
             var offset = data.Offset;
             CapabilityType = (CapabilityCode)data.Array[offset];
-            Length = data.Array[data.Offset + 1];
+            offset++;
+            CapabilityLength = data.Array[offset];
+            offset++;
+            CapabilityValue =
+                new ArraySegment<byte>(data.Array, offset, CapabilityLength);
         }
 
+        protected ArraySegment<byte> CapabilityValue { get; set; }
+
         public CapabilityCode CapabilityType { get; }
-        public int Length { get; }
-        
+        public int CapabilityLength { get; }
+
         public static Capability GetCapability(ArraySegment<byte> data)
         {
             var offset = data.Offset;
