@@ -28,27 +28,8 @@ namespace BmpListener.Serialization.JsonConverters
                 Asn = openMsg.MyAS,
                 HoldTime = openMsg.HoldTime,
                 Id = openMsg.Id,
-                Capabilities = new List<Capability>()
+                Capabilities = openMsg.Capabilities
             };
-
-            foreach (var capability in openMsg.Capabilities)
-            {
-                if (capability.CapabilityType != CapabilityCode.FourOctetAs)
-                {
-                    model.Capabilities.Add(new Capability
-                    {
-                        Type = capability.CapabilityType
-                    });
-                }
-                else
-                {
-                    model.Capabilities.Add(new FourOctetAsCapability
-                    {
-                        Type = capability.CapabilityType,
-                        Asn = ((CapabilityFourOctetAsNumber)capability).CapabilityValue
-                    });
-                }
-            }
 
             var json = JsonConvert.SerializeObject(model);
             writer.WriteRawValue(json);
@@ -60,7 +41,7 @@ namespace BmpListener.Serialization.JsonConverters
             public int Asn { get; set; }
             public int HoldTime { get; set; }
             public IPAddress Id { get; set; }
-            public List<Capability> Capabilities { get; set; }
+            public IList<Bgp.Capability> Capabilities { get; set; }
         }
 
         private class Capability

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Newtonsoft.Json;
-using BmpListener.Extensions;
 
 namespace BmpListener.Bgp
 {
@@ -9,11 +6,17 @@ namespace BmpListener.Bgp
     {
         public BgpHeader(ArraySegment<byte> data)
         {
-            Length = data.ToInt16(16);
-            Type = (BgpMessage.Type)data.ElementAt(18);
+            Decode(data);
         }
-        
-        public int Length { get; }
-        public BgpMessage.Type Type { get; }
+
+        public int Length { get; private set; }
+        public BgpMessage.Type Type { get; private set; }
+
+        public void Decode(ArraySegment<byte> data)
+        {
+            Array.Reverse(data.Array, data.Offset + 16, 2);
+            Length = BitConverter.ToInt16(data.Array, data.Offset + 16);
+            Type = (BgpMessage.Type)data.Array[data.Offset + 18];
+        }
     }
 }

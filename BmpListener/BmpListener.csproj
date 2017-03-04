@@ -87,7 +87,6 @@
     <Compile Include="Bgp\PathAttributeOrigin.cs" />
     <Compile Include="Bgp\PathAttributeUnknown.cs" />
     <Compile Include="Bgp\SubsequentAddressFamily.cs" />
-    <Compile Include="Extensions\ArraySegmentExtension.cs" />
     <Compile Include="Bmp\BmpHeader.cs" />
     <Compile Include="Bmp\BmpMessage.cs" />
     <Compile Include="Bmp\BmpInitiation.cs" />
