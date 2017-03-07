@@ -97,6 +97,7 @@
     <Compile Include="Bmp\RouteMonitoring.cs" />
     <Compile Include="Bmp\StatisticsReport.cs" />
     <Compile Include="Bmp\BmpTermination.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Serialization\ConverterContractResolver.cs" />
     <Compile Include="Serialization\JsonConverters\BgpOpenMessageJsonConverter.cs" />
