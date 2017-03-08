@@ -5,12 +5,9 @@ namespace BmpListener.Bgp
 {
     public class IPAddrPrefix
     {
-        public IPAddrPrefix(ArraySegment<byte> data, AddressFamily afi = AddressFamily.IP)
+        public IPAddrPrefix(byte[] data, int offset, AddressFamily afi = AddressFamily.IP)
         {
-            Length = data.Array[data.Offset];
-            var ipBytes = new byte[ByteLength - 1];
-            Array.Copy(data.Array, data.Offset + 1, ipBytes, 0, ipBytes.Length);
-            DecodeFromBytes(ipBytes, afi);
+            DecodeFromBytes(data, offset, afi);
         }
 
         internal int ByteLength { get { return 1 + (Length + 7) / 8; } }
@@ -22,12 +19,14 @@ namespace BmpListener.Bgp
             return ($"{Prefix}/{Length}");
         }
 
-        public void DecodeFromBytes(byte[] data, AddressFamily afi = AddressFamily.IP)
+        public void DecodeFromBytes(byte[] data, int offset, AddressFamily afi = AddressFamily.IP)
         {
+            Length = data[offset];
+            var byteLength = (Length + 7) / 8;
             var ipBytes = afi == AddressFamily.IP
                 ? new byte[4]
                 : new byte[16];
-            Array.Copy(data, 0, ipBytes, 0, data.Length);
+            Array.Copy(data, offset + 1, ipBytes, 0, byteLength);
             Prefix = new IPAddress(ipBytes);
         }
     }

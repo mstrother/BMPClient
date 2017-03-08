@@ -4,7 +4,8 @@ namespace BmpListener.Bgp
 {
     public class CapabilityCiscoRouteRefresh : Capability
     {
-        public CapabilityCiscoRouteRefresh(ArraySegment<byte> data) : base(data)
+        public CapabilityCiscoRouteRefresh(byte[] data, int offset) 
+            : base(data, offset)
         {
         }
     }

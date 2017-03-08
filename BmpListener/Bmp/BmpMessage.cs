@@ -4,16 +4,10 @@ namespace BmpListener.Bmp
 {
     public abstract class BmpMessage
     {
-        // RFC 7854
-        private const int PerPeerHeaderLength = 42;
-
-        protected BmpMessage(BmpHeader header, ArraySegment<byte> data)
+        protected BmpMessage(BmpHeader header, byte[] data)
         {
             BmpHeader = header;
             PeerHeader = new PerPeerHeader(data);
-            var offset = PerPeerHeaderLength;
-            var count = data.Array.Length - offset;
-            MessageData = new ArraySegment<byte>(data.Array, offset, count);
         }
 
         protected BmpMessage(BmpHeader header)
@@ -31,10 +25,9 @@ namespace BmpListener.Bmp
             Termination,
             RouteMirroring
         }
-
-        protected ArraySegment<byte> MessageData { get; }
-        public BmpHeader BmpHeader { get; private set; }
-        public PerPeerHeader PeerHeader { get; private set; }
+        
+        public BmpHeader BmpHeader { get; }
+        public PerPeerHeader PeerHeader { get; }
 
         public static BmpMessage Create(BmpHeader bmpHeader)
         {
@@ -43,21 +36,20 @@ namespace BmpListener.Bmp
 
         public static BmpMessage Create(BmpHeader bmpHeader, byte[] data)
         {
-            var msg = new ArraySegment<byte>(data);
             switch (bmpHeader.MessageType)
             {
                 case Type.RouteMonitoring:
-                    return new RouteMonitoring(bmpHeader, msg);
+                    return new RouteMonitoring(bmpHeader, data);
                 case Type.StatisticsReport:
-                    return new StatisticsReport(bmpHeader, msg);
+                    return new StatisticsReport(bmpHeader, data);
                 case Type.PeerDown:
-                    return new PeerDownNotification(bmpHeader, msg);
+                    return new PeerDownNotification(bmpHeader, data);
                 case Type.PeerUp:
-                    return new PeerUpNotification(bmpHeader, msg);
+                    return new PeerUpNotification(bmpHeader, data);
                 case Type.Initiation:
                     return new BmpInitiation(bmpHeader);
                 case Type.Termination:
-                    return new BmpTermination(bmpHeader);
+                    throw new NotImplementedException();
                 default:
                     throw new NotImplementedException();
             }

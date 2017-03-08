@@ -4,14 +4,9 @@ namespace BmpListener.Bgp
 {
     public abstract class BgpMessage
     {
-        protected const int BgpHeaderLength = 19;
-
-        protected BgpMessage(ArraySegment<byte> data)
+        protected BgpMessage(BgpHeader bgpHeader)
         {
-            Header = new BgpHeader(data);
-            var offset = data.Offset + BgpHeaderLength;
-            var count = Header.Length - BgpHeaderLength;
-            MessageData = new ArraySegment<byte>(data.Array, offset, count);
+            Header = bgpHeader;
         }
 
         public enum Type
@@ -22,22 +17,28 @@ namespace BmpListener.Bgp
             Keepalive,
             RouteRefresh
         }
-
-        protected ArraySegment<byte> MessageData { get; }
+        
         public BgpHeader Header { get; }
-        public abstract void DecodeFromBytes(ArraySegment<byte> data);
 
-        public static BgpMessage GetBgpMessage(ArraySegment<byte> data)
+        public static BgpMessage GetBgpMessage(byte[] data)
         {
-            var msgType = (Type)data.Array[data.Offset + 18];
-            switch (msgType)
+            return GetBgpMessage(data, 0);
+        }
+
+        public static BgpMessage GetBgpMessage(byte[] data, int offset)
+        {
+
+            var bgpHeader = new BgpHeader(data, offset);
+            offset += Constants.BgpHeaderLength;
+
+            switch (bgpHeader.Type)
             {
                 case Type.Open:
-                    return new BgpOpenMessage(data);
+                    return new BgpOpenMessage(bgpHeader, data, offset);
                 case Type.Update:
-                    return new BgpUpdateMessage(data);
+                    return new BgpUpdateMessage(bgpHeader, data, offset);
                 case Type.Notification:
-                    return new BgpNotification(data);
+                    return new BgpNotification(bgpHeader, data);
                 case Type.Keepalive:
                     throw new NotImplementedException();
                 case Type.RouteRefresh:

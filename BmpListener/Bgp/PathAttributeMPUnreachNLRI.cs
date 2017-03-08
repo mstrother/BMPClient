@@ -5,33 +5,29 @@ namespace BmpListener.Bgp
 {
     public class PathAttributeMPUnreachNLRI : PathAttribute
     {
-        public PathAttributeMPUnreachNLRI(ArraySegment<byte> data) : base(data)
+        public PathAttributeMPUnreachNLRI(byte[] data, int offset)
+            : base(data, offset)
         {
             WithdrawnRoutes = new List<IPAddrPrefix>();
-            Decode(AttributeValue);
+            Decode(data, Offset);
         }
 
         public AddressFamily AFI { get; private set; }
         public SubsequentAddressFamily SAFI { get; private set; }
         public IList<IPAddrPrefix> WithdrawnRoutes { get; }
 
-        protected void Decode(ArraySegment<byte> data)
+        protected void Decode(byte[] data, int offset)
         {
-            var offset = data.Offset;
-            Array.Reverse(data.Array, offset, 2);
-            AFI = (AddressFamily)BitConverter.ToInt16(data.Array, offset);          
-            SAFI = (SubsequentAddressFamily)data.Array[offset + 2];
-            offset += 2;
+            Array.Reverse(data, offset, 2);
+            AFI = (AddressFamily)BitConverter.ToInt16(data, offset);
+            SAFI = (SubsequentAddressFamily)data[offset + 2];
+            offset += 3;
 
-            var count = data.Array.Length - offset;
-            var withdrawnRouteData = new ArraySegment<byte>(data.Array, offset, count);
-
-            while (withdrawnRouteData.Count > 0)
+            var maxOffset = Length - offset;
+            while (offset < maxOffset)
             {
-                var prefix = new IPAddrPrefix(withdrawnRouteData);
+                var prefix = new IPAddrPrefix(data, offset, AFI);
                 offset += prefix.ByteLength;
-                count = withdrawnRouteData.Count - prefix.ByteLength;
-                withdrawnRouteData = new ArraySegment<byte>(withdrawnRouteData.Array, offset, count);
             }
         }
     }

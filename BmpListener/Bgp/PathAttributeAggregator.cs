@@ -5,15 +5,15 @@ namespace BmpListener.Bgp
 {
     public class PathAttributeAggregator : PathAttribute
     {
-        public PathAttributeAggregator(ArraySegment<byte> data) : base(data)
+        public PathAttributeAggregator(byte[] data, int offset) : base(data, offset)
         {
-            Decode(AttributeValue);
+            Decode(data, Offset);
         }
 
         public int AS { get; private set; }
         public IPAddress IPAddress { get; private set; }
 
-        protected void Decode(ArraySegment<byte> data)
+        protected void Decode(byte[] data, int offset)
         {
             // TODO: fix
             //AS = BitConverter.ToInt16(data, 0);

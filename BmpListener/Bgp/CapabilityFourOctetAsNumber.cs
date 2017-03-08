@@ -4,17 +4,17 @@ namespace BmpListener.Bgp
 {
     public class CapabilityFourOctetAsNumber : Capability
     {
-        public CapabilityFourOctetAsNumber(ArraySegment<byte> data) : base(data)
+        public CapabilityFourOctetAsNumber(byte[] data, int offset) : base(data, offset)
         {
-            Decode(CapabilityValue);
+            Decode(data, offset + 2);
         }
 
         public int Asn { get; private set; }
-        
-        public void Decode(ArraySegment<byte> data)
+
+        public void Decode(byte[] data, int offset)
         {
-            Array.Reverse(CapabilityValue.Array, data.Offset, 4);
-            Asn = BitConverter.ToInt32(data.Array, data.Offset);
+            Array.Reverse(data, offset, 4);
+            Asn = BitConverter.ToInt32(data, offset);
         }
     }
 }

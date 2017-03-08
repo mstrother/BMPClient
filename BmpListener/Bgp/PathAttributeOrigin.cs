@@ -4,9 +4,10 @@ namespace BmpListener.Bgp
 {
     public class PathAttributeOrigin : PathAttribute
     {
-        public PathAttributeOrigin(ArraySegment<byte> data) : base(data)
+        public PathAttributeOrigin(byte[] data, int offset) 
+            : base(data, offset)
         {
-            Decode(AttributeValue);
+            Decode(data, Offset);
         }
 
         public enum Type
@@ -18,9 +19,9 @@ namespace BmpListener.Bgp
 
         public Type Origin { get; private set; }
 
-        protected void Decode(ArraySegment<byte> data)
+        protected void Decode(byte[] data, int offset)
         {
-            Origin = (Type)data.Array[data.Offset];
+            Origin = (Type)data[offset];
         }
     }
 }

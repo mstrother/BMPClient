@@ -1,23 +1,22 @@
 ﻿using System;
-using System.Linq;
 using BmpListener.Bgp;
 
 namespace BmpListener.Bmp
 {
     public class PeerDownNotification : BmpMessage
     {
-        public PeerDownNotification(BmpHeader bmpHeader, ArraySegment<byte> data)
-            : base(bmpHeader)
+        public PeerDownNotification(BmpHeader bmpHeader, byte[] data)
+            : base(bmpHeader, data)
         {
-            ParseBody(data);
+            Decode(data);
         }
 
         public short Reason { get; private set; }
         public BgpMessage BGPNotification { get; set; }
         
-        public void ParseBody(ArraySegment<byte> data)
+        public void Decode(byte[] data)
         {
-            Reason = data.First();
+            Reason = data[0];
         }
     }
 }

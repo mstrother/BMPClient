@@ -7,15 +7,16 @@ namespace BmpListener.ConsoleExample
     internal class Program
     {
         private static void Main()
-        {       
+        {
             var bmpListener = new BmpListener();
             bmpListener.Start(WriteJson).Wait();
         }
 
         private static void WriteJson(BmpMessage msg)
         {
-            var json = BmpSerializer.ToJson(msg);
-            Console.WriteLine(json);
+            return;
+            //var json = BmpSerializer.ToJson(msg);
+            //Console.WriteLine(json);
         }
     }
 }

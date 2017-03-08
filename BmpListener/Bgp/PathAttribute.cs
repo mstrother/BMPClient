@@ -4,9 +4,21 @@ namespace BmpListener.Bgp
 {
     public abstract class PathAttribute
     {
-        protected PathAttribute(ArraySegment<byte> data)
+        protected PathAttribute(byte[] data, int offset)
         {
-            AttributeValue = SetValue(data);
+            Flags = (AttributeFlags)data[offset];
+            AttributeType = (PathAttributeType)data[offset + 1];
+            bool extLength = (data[offset] & (1 << 4)) != 0;
+            if (extLength)
+            {
+                Array.Reverse(data, offset + 2, 2);
+                Length = BitConverter.ToUInt16(data, offset + 2);
+            }
+            else
+            {
+                Length = data[offset + 2];
+            }
+            offset = extLength ? offset += 2 : offset += 1;
         }
 
         [Flags]
@@ -18,75 +30,56 @@ namespace BmpListener.Bgp
             Optional = 1 << 7
         }
 
-        protected ArraySegment<byte> AttributeValue { get; private set; }
+        protected int Offset { get; }
 
         public AttributeFlags Flags { get; private set; }
         public PathAttributeType AttributeType { get; private set; }
         public int Length { get; private set; }
 
-
-        public ArraySegment<byte> SetValue(ArraySegment<byte> data)
+        public static PathAttribute Create(byte[] data, int offset)
         {
-            var offset = data.Offset;
-            Flags = (AttributeFlags)data.Array[offset];
-            AttributeType = (PathAttributeType)data.Array[offset + 1];
-
-            if (Flags.HasFlag(AttributeFlags.ExtendedLength))
-            {
-                Array.Reverse(data.Array, offset + 2, 2);
-                Length = BitConverter.ToInt16(data.Array, offset + 2);
-                return new ArraySegment<byte>(data.Array, offset + 4, Length);
-            }
-            Length = data.Array[offset + 2];
-            return new ArraySegment<byte>(data.Array, offset + 3, Length);
-
-        }
-
-        public static PathAttribute Create(ArraySegment<byte> data)
-        {
-            var offset = data.Offset + 1;
-            var attributeType = (PathAttributeType)data.Array[offset];
+            var attributeType = (PathAttributeType)data[offset + 1];
 
             switch (attributeType)
             {
                 case PathAttributeType.ORIGIN:
-                    return new PathAttributeOrigin(data);
+                    return new PathAttributeOrigin(data, offset);
                 case PathAttributeType.AS_PATH:
-                    return new PathAttributeASPath(data);
+                    return new PathAttributeASPath(data, offset);
                 case PathAttributeType.NEXT_HOP:
-                    return new PathAttributeNextHop(data);
+                    return new PathAttributeNextHop(data, offset);
                 case PathAttributeType.MULTI_EXIT_DISC:
-                    return new PathAttributeMultiExitDisc(data);
+                    return new PathAttributeMultiExitDisc(data, offset);
                 case PathAttributeType.LOCAL_PREF:
-                    return new PathAttributeUnknown(data);
+                    return new PathAttributeUnknown(data, offset);
                 case PathAttributeType.ATOMIC_AGGREGATE:
-                    return new PathAttrAtomicAggregate(data);
+                    return new PathAttrAtomicAggregate(data, offset);
                 case PathAttributeType.AGGREGATOR:
-                    return new PathAttributeAggregator(data);
+                    return new PathAttributeAggregator(data, offset);
                 case PathAttributeType.COMMUNITY:
-                    return new PathAttributeCommunity(data);
+                    return new PathAttributeCommunity(data, offset);
                 case PathAttributeType.ORIGINATOR_ID:
-                    return new PathAttributeUnknown(data);
+                    return new PathAttributeUnknown(data, offset);
                 case PathAttributeType.CLUSTER_LIST:
-                    return new PathAttributeUnknown(data);
+                    return new PathAttributeUnknown(data, offset);
                 case PathAttributeType.MP_REACH_NLRI:
-                    return new PathAttributeMPReachNLRI(data);
+                    return new PathAttributeMPReachNLRI(data, offset);
                 case PathAttributeType.MP_UNREACH_NLRI:
-                    return new PathAttributeMPUnreachNLRI(data);
+                    return new PathAttributeMPUnreachNLRI(data, offset);
                 case PathAttributeType.EXTENDED_COMMUNITIES:
-                    return new PathAttributeUnknown(data);
+                    return new PathAttributeUnknown(data, offset);
                 case PathAttributeType.AS4_PATH:
-                    return new PathAttributeUnknown(data);
+                    return new PathAttributeUnknown(data, offset);
                 case PathAttributeType.AS4_AGGREGATOR:
-                    return new PathAttributeUnknown(data);
+                    return new PathAttributeUnknown(data, offset);
                 case PathAttributeType.PMSI_TUNNEL:
-                    return new PathAttributeUnknown(data);
+                    return new PathAttributeUnknown(data, offset);
                 case PathAttributeType.TUNNEL_ENCAP:
-                    return new PathAttributeUnknown(data);
+                    return new PathAttributeUnknown(data, offset);
                 case PathAttributeType.LARGE_COMMUNITY:
-                    return new PathAttributeLargeCommunities(data);
+                    return new PathAttributeLargeCommunities(data, offset);
                 default:
-                    return new PathAttributeUnknown(data);
+                    return new PathAttributeUnknown(data, offset);
             }
         }
     }

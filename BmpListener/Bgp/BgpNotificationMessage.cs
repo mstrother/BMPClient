@@ -4,12 +4,13 @@ namespace BmpListener.Bgp
 {
     public sealed class BgpNotification : BgpMessage
     {
-        public BgpNotification(ArraySegment<byte> data) : base(data)
+        public BgpNotification(BgpHeader bgpHeader, byte[] data) 
+            : base(bgpHeader)
         {
-            DecodeFromBytes(MessageData);
+            DecodeFromBytes(data);
         }
 
-        public override void DecodeFromBytes(ArraySegment<byte> data)
+        public void DecodeFromBytes(byte[] data)
         {
             throw new NotImplementedException();
         }

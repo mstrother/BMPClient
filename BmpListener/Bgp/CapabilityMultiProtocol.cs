@@ -4,9 +4,10 @@ namespace BmpListener.Bgp
 {
     public class CapabilityMultiProtocol : Capability
     {
-        public CapabilityMultiProtocol(ArraySegment<byte> data) : base(data)
+        public CapabilityMultiProtocol(byte[] data, int offset) 
+            : base(data, offset)
         {
-            Decode(CapabilityValue);
+            Decode(data, offset + 2);
         }
 
         public AddressFamily Afi { get; set; }
@@ -16,11 +17,11 @@ namespace BmpListener.Bgp
         // sender and ignored by the receiver.
         public byte Res { get { return 0; } }
 
-        public void Decode(ArraySegment<byte> data)
+        public void Decode(byte[] data, int offset)
         {
-            Array.Reverse(CapabilityValue.Array, data.Offset, 2);
-            Afi = (AddressFamily)BitConverter.ToInt16(data.Array, data.Offset);
-            Safi = (SubsequentAddressFamily)data.Array[data.Offset + 3];
+            Array.Reverse(data, offset, 2);
+            Afi = (AddressFamily)BitConverter.ToInt16(data, offset);
+            Safi = (SubsequentAddressFamily)data[offset + 3];
         }
     }
 }

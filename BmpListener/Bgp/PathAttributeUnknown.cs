@@ -4,7 +4,8 @@ namespace BmpListener.Bgp
 {
     public class PathAttributeUnknown : PathAttribute
     {
-        public PathAttributeUnknown(ArraySegment<byte> data) : base(data)
+        public PathAttributeUnknown(byte[] data, int offset) 
+            : base(data, offset)
         {
         }        
     }

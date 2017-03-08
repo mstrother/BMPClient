@@ -50,8 +50,8 @@ namespace BmpListener
             {
                 while (true)
                 {
-                    var bmpHeaderBytes = new byte[6];
-                    await stream.ReadAsync(bmpHeaderBytes, 0, 6); //add cancellation token
+                    var bmpHeaderBytes = new byte[Constants.BmpCommonHeaderLength];
+                    await stream.ReadAsync(bmpHeaderBytes, 0, Constants.BmpCommonHeaderLength); //add cancellation token
                     var header = new BmpHeader(bmpHeaderBytes);
                     BmpMessage bmpMessage;
                     if (header.MessageType == BmpMessage.Type.Initiation)
@@ -67,7 +67,7 @@ namespace BmpListener
                     }
                     else
                     {
-                        var bmpMsgBytes = new byte[header.MessageLength - 6];
+                        var bmpMsgBytes = new byte[header.MessageLength - Constants.BmpCommonHeaderLength];
                         await stream.ReadAsync(bmpMsgBytes, 0, bmpMsgBytes.Length);
                         bmpMessage = BmpMessage.Create(header, bmpMsgBytes);
                     }

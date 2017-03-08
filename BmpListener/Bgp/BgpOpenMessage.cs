@@ -6,10 +6,11 @@ namespace BmpListener.Bgp
 {
     public sealed class BgpOpenMessage : BgpMessage
     {
-        public BgpOpenMessage(ArraySegment<byte> data) : base(data)
+        public BgpOpenMessage(BgpHeader bgpHeader, byte[] data, int offset)
+            : base(bgpHeader)
         {
             Capabilities = new List<Capability>();
-            DecodeFromBytes(MessageData);
+            DecodeFromBytes(data, offset);
         }
 
         public byte Version { get; private set; }
@@ -18,50 +19,48 @@ namespace BmpListener.Bgp
         public IPAddress Id { get; private set; }
         public List<Capability> Capabilities { get; }
 
-        public override void DecodeFromBytes(ArraySegment<byte> data)
+        public void DecodeFromBytes(byte[] data, int offset)
         {
-            var offset = data.Offset;
-            Version = data.Array[offset];
-            offset++;
+            Version = data[offset];
 
-            Array.Reverse(data.Array, offset, 2);
-            MyAS = BitConverter.ToUInt16(data.Array, offset);
-            offset += 2;
+            Array.Reverse(data, offset + 1, 2);
+            MyAS = BitConverter.ToUInt16(data, offset + 1);
 
-            Array.Reverse(data.Array, offset, 2);
-            HoldTime = BitConverter.ToInt16(data.Array, offset);
-            offset += 2;
-            
+            Array.Reverse(data, offset + 3, 2);
+            HoldTime = BitConverter.ToInt16(data, offset + 3);
+
             var ipBytes = new byte[4];
-            Array.Copy(data.Array, offset, ipBytes, 0, 4);
+            Array.Copy(data, offset + 5, ipBytes, 0, 4);
             Id = new IPAddress(ipBytes);
-            offset += 4;
 
-            var optionalParametersLength = (int)data.Array[offset];
-            offset++;
+            var optionalParametersLength = (int)data[offset + 9];
 
-            data = new ArraySegment<byte>(data.Array, offset, optionalParametersLength);
-
-            while (data.Count > 0)
+            for (int i = 0; i < optionalParametersLength;)
             {
-                var paramType = data.Array[offset];
-                offset++;
-                var paramLength = data.Array[offset];
-                offset++;
-                // use enum for clarity
-                if (paramType == 2)
+                if (i < 2)
                 {
-                    var optParamData = new ArraySegment<byte>(data.Array, offset, paramLength);
-                    var capabilities = new CapabilitiesOptionalParameter(optParamData);
-                    Capabilities.AddRange(capabilities.Capabilities);
-                    offset += paramLength;
-                    var count = optionalParametersLength - (paramLength + 2);
-                    data = new ArraySegment<byte>(data.Array, offset, count);
+                    // Malformed BGP Open message
                 }
-                else
+                var paramType = data[offset + 10];
+                var paramLength = data[offset + 11];
+                if (i < paramLength + 2)
                 {
-                    throw new NotSupportedException();
+                    // Malformed BGP Open message
                 }
+                {
+                    // use enum for clarity
+                    if (paramType == 2)
+                    {
+                        offset += 12 + i;
+                        var capabilities = new CapabilitiesOptionalParameter(data, offset, paramLength);
+                        Capabilities.AddRange(capabilities.Capabilities);
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
+                }                
+                i += paramLength + 2;
             }
         }
     }

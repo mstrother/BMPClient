@@ -4,7 +4,8 @@ namespace BmpListener.Bgp
 {
     public class CapabilityAddPath : Capability
     {
-        public CapabilityAddPath(ArraySegment<byte> data) : base(data)
+        public CapabilityAddPath(byte[] data, int offset) 
+            : base(data, offset)
         {
         }
     }
