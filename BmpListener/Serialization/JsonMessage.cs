@@ -10,7 +10,7 @@ namespace BmpListener.Serialization.Models
     {
         public JsonMessage(BmpMessage msg)
         {
-            Version = BmpListener.Version;                
+            //Version = BmpListener.Version;                
             Id = Guid.NewGuid().ToString("N");
             DateTime = msg?.PeerHeader?.DateTime ?? System.DateTime.UtcNow;
             Peer = msg.PeerHeader;
@@ -32,15 +32,15 @@ namespace BmpListener.Serialization.Models
         {
             switch (msg.BmpHeader.MessageType)
             {
-                case (BmpMessage.Type.Initiation):
+                case (BmpMessageType.Initiation):
                     return new InitiationMessage(msg);
-                case (BmpMessage.Type.PeerUp):
+                case (BmpMessageType.PeerUp):
                     return new PeerUpMessage(msg);
-                case (BmpMessage.Type.PeerDown):
+                case (BmpMessageType.PeerDown):
                     return new PeerDownMessage(msg);
-                case (BmpMessage.Type.RouteMonitoring):
+                case (BmpMessageType.RouteMonitoring):
                     return new RouteMonitoringMessage(msg);
-                case (BmpMessage.Type.Termination):
+                case (BmpMessageType.Termination):
                     return null;
                 default:
                     return null;

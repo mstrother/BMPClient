@@ -94,6 +94,7 @@
     <Compile Include="Bmp\BmpHeader.cs" />
     <Compile Include="Bmp\BmpMessage.cs" />
     <Compile Include="Bmp\BmpInitiation.cs" />
+    <Compile Include="Bmp\BmpMessageType.cs" />
     <Compile Include="Bmp\PeerDownNotification.cs" />
     <Compile Include="Bmp\PerPeerHeader.cs" />
     <Compile Include="Bmp\PeerUpNotification.cs" />

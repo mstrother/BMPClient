@@ -28,7 +28,7 @@ namespace BmpListener.Serialization.JsonConverters
                 Asn = openMsg.MyAS,
                 HoldTime = openMsg.HoldTime,
                 Id = openMsg.Id,
-                Capabilities = openMsg.Capabilities
+                //Capabilities = openMsg.Capabilities
             };
 
             var json = JsonConvert.SerializeObject(model);

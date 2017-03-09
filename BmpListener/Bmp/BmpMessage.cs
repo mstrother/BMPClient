@@ -14,18 +14,7 @@ namespace BmpListener.Bmp
         {
             BmpHeader = header;
         }
-
-        public enum Type
-        {
-            RouteMonitoring,
-            StatisticsReport,
-            PeerDown,
-            PeerUp,
-            Initiation,
-            Termination,
-            RouteMirroring
-        }
-        
+                
         public BmpHeader BmpHeader { get; }
         public PerPeerHeader PeerHeader { get; }
 
@@ -38,17 +27,17 @@ namespace BmpListener.Bmp
         {
             switch (bmpHeader.MessageType)
             {
-                case Type.RouteMonitoring:
+                case BmpMessageType.RouteMonitoring:
                     return new RouteMonitoring(bmpHeader, data);
-                case Type.StatisticsReport:
+                case BmpMessageType.StatisticsReport:
                     return new StatisticsReport(bmpHeader, data);
-                case Type.PeerDown:
+                case BmpMessageType.PeerDown:
                     return new PeerDownNotification(bmpHeader, data);
-                case Type.PeerUp:
+                case BmpMessageType.PeerUp:
                     return new PeerUpNotification(bmpHeader, data);
-                case Type.Initiation:
+                case BmpMessageType.Initiation:
                     return new BmpInitiation(bmpHeader);
-                case Type.Termination:
+                case BmpMessageType.Termination:
                     throw new NotImplementedException();
                 default:
                     throw new NotImplementedException();
