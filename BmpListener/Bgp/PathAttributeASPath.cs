@@ -24,11 +24,9 @@ namespace BmpListener.Bgp
                 var asnCount = data[offset + 1];
                 var asnList = new List<int>();
 
-
                 //TO DO 2 byte asn data
                 offset += 2;
-                var maxOffset = 4 * asnCount + offset;
-                while (offset < maxOffset)
+                for (int maxOffset = 4 * asnCount + offset; offset < maxOffset;)
                 {
                     Array.Reverse(data, offset, 4);
                     var asn = BitConverter.ToInt32(data, offset);
@@ -39,7 +37,7 @@ namespace BmpListener.Bgp
                 var asPathSegment = new ASPathSegment(segmentType, asnList);
                 ASPaths.Add(asPathSegment);
 
-                i += maxOffset;
+                i += 4 * asnCount + 2;
             }
         }
 
