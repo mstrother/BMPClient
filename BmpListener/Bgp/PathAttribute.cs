@@ -8,6 +8,7 @@ namespace BmpListener.Bgp
         {
             Flags = (AttributeFlags)data[offset];
             AttributeType = (PathAttributeType)data[offset + 1];
+
             bool extLength = (data[offset] & (1 << 4)) != 0;
             if (extLength)
             {
@@ -18,7 +19,8 @@ namespace BmpListener.Bgp
             {
                 Length = data[offset + 2];
             }
-            offset = extLength ? offset += 2 : offset += 1;
+
+            Offset = extLength ? offset += 4 : offset += 3;
         }
 
         [Flags]
