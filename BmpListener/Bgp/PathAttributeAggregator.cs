@@ -1,11 +1,11 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 
 namespace BmpListener.Bgp
 {
     public class PathAttributeAggregator : PathAttribute
     {
-        public PathAttributeAggregator(byte[] data, int offset) : base(data, offset)
+        public PathAttributeAggregator(byte[] data, int offset)
+            : base(data, offset)
         {
             Decode(data, Offset);
         }
