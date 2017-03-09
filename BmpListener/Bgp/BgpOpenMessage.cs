@@ -9,7 +9,7 @@ namespace BmpListener.Bgp
         public BgpOpenMessage(BgpHeader bgpHeader, byte[] data, int offset)
             : base(bgpHeader)
         {
-            Capabilities = new List<Capability>();
+            OptionalParameters = new List<OptionalParameter>();
             DecodeFromBytes(data, offset);
         }
 
@@ -17,7 +17,7 @@ namespace BmpListener.Bgp
         public int MyAS { get; private set; }
         public int HoldTime { get; private set; }
         public IPAddress Id { get; private set; }
-        public List<Capability> Capabilities { get; }
+        public IList<OptionalParameter> OptionalParameters { get; }
 
         public void DecodeFromBytes(byte[] data, int offset)
         {
@@ -33,7 +33,9 @@ namespace BmpListener.Bgp
             Array.Copy(data, offset + 5, ipBytes, 0, 4);
             Id = new IPAddress(ipBytes);
 
-            var optionalParametersLength = (int)data[offset + 9];
+            var optionalParametersLength = data[offset + 9];
+
+            offset += 10;
 
             for (int i = 0; i < optionalParametersLength;)
             {
@@ -41,26 +43,20 @@ namespace BmpListener.Bgp
                 {
                     // Malformed BGP Open message
                 }
-                var paramType = data[offset + 10];
-                var paramLength = data[offset + 11];
-                if (i < paramLength + 2)
+
+                OptionalParameter optParam;
+                if (data[offset] == 2)
                 {
-                    // Malformed BGP Open message
+                    optParam = new CapabilitiesOptionalParameter(data, offset);
                 }
+                else
                 {
-                    // use enum for clarity
-                    if (paramType == 2)
-                    {
-                        offset += 12 + i;
-                        var capabilities = new CapabilitiesOptionalParameter(data, offset, paramLength);
-                        Capabilities.AddRange(capabilities.Capabilities);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException();
-                    }
-                }                
-                i += paramLength + 2;
+                    optParam = new CapabilitiesOptionalParameter(data, offset);
+                }
+                OptionalParameters.Add(optParam);
+
+                offset += optParam.ParameterLength + 2;
+                i += optParam.ParameterLength + 2;
             }
         }
     }
