@@ -31,10 +31,7 @@ namespace BmpListener.Bgp
             Array.Reverse(data, offset, 2);
             WithdrawnRoutesLength = BitConverter.ToInt16(data, offset);
             offset += WithdrawnRoutesLength + 2;
-            if (WithdrawnRoutesLength > 0)
-            {
-                SetwithdrawnRoutes(data, offset);
-            }
+            SetwithdrawnRoutes(data, offset);
 
             Array.Reverse(data, offset, 2);
             PathAttributeLength = BitConverter.ToInt16(data, offset);
