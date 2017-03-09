@@ -7,12 +7,6 @@ namespace BmpListener.Bmp
         public StatisticsReport(BmpHeader bmpHeader, byte[] data)
             : base(bmpHeader, data)
         {
-            throw new NotImplementedException();
-        }
-
-        public BmpMessage ParseBody()
-        {
-            throw new NotImplementedException();
-        }
+        }        
     }
 }
