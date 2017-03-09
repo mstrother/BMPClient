@@ -10,7 +10,7 @@ namespace BmpListener
     {
         private readonly TcpListener tcpListener;
         private static readonly string semVer;
-        
+
         public static string Version { get { return semVer; } }
 
         public BmpListener(IPAddress ip, int port = 11019)
@@ -48,14 +48,7 @@ namespace BmpListener
                     BmpMessage bmpMessage;
                     if (header.MessageType == BmpMessage.Type.Initiation)
                     {
-                        try
-                        {
-                            bmpMessage = BmpMessage.Create(header);
-                        }
-                        catch (NotSupportedException ex)
-                        {
-                            return;
-                        }
+                        bmpMessage = BmpMessage.Create(header);
                     }
                     else
                     {
