@@ -27,7 +27,6 @@ namespace BmpListener.Bgp
 
         public static BgpMessage GetBgpMessage(byte[] data, int offset)
         {
-
             var bgpHeader = new BgpHeader(data, offset);
             offset += Constants.BgpHeaderLength;
 
@@ -40,7 +39,7 @@ namespace BmpListener.Bgp
                 case Type.Notification:
                     return new BgpNotification(bgpHeader, data);
                 case Type.Keepalive:
-                    throw new NotImplementedException();
+                    return new BgpKeepAliveMessage(bgpHeader);
                 case Type.RouteRefresh:
                     throw new NotImplementedException();
                 default:

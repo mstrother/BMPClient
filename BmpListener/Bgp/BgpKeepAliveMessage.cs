@@ -2,9 +2,10 @@
 
 namespace BmpListener.Bgp
 {
-    public class BgpKeepAliveMessage
+    public class BgpKeepAliveMessage : BgpMessage
     {
-        public void DecodeFromBytes(ArraySegment<byte> data)
+        public BgpKeepAliveMessage(BgpHeader bgpHeader)
+            : base(bgpHeader)
         {
         }
     }
