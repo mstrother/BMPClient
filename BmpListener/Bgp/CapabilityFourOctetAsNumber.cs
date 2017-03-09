@@ -4,7 +4,8 @@ namespace BmpListener.Bgp
 {
     public class CapabilityFourOctetAsNumber : Capability
     {
-        public CapabilityFourOctetAsNumber(byte[] data, int offset) : base(data, offset)
+        public CapabilityFourOctetAsNumber(byte[] data, int offset) 
+            : base(data, offset)
         {
             Decode(data, offset + 2);
         }
