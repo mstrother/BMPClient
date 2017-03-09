@@ -59,7 +59,7 @@ namespace BmpListener.Bgp
         {
             for (int i = 0; i < PathAttributeLength;)
             {
-                var attr = PathAttribute.Create(data, offset);
+                var attr = PathAttribute.Create(data, offset + i);
                 Attributes.Add(attr);
                 i += (data[offset] & (1 << 4)) != 0
                     ? attr.Length + 4 : attr.Length + 3;
