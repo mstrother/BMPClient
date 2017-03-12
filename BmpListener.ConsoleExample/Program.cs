@@ -14,9 +14,8 @@ namespace BmpListener.ConsoleExample
 
         private static void WriteJson(BmpMessage msg)
         {
-            return;
-            //var json = BmpSerializer.ToJson(msg);
-            //Console.WriteLine(json);
+            var json = BmpJsonSerializer.Serialize(msg);
+            Console.WriteLine(json);
         }
     }
 }

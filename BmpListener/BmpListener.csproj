@@ -104,18 +104,13 @@
     <Compile Include="Bmp\BmpTermination.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
-    <Compile Include="Serialization\ConverterContractResolver.cs" />
-    <Compile Include="Serialization\JsonConverters\BgpOpenMessageJsonConverter.cs" />
-    <Compile Include="Serialization\JsonConverters\BgpUpdateConverter.cs" />
-    <Compile Include="Serialization\JsonConverters\BmpPeerHeaderJsonConverter.cs" />
-    <Compile Include="Serialization\JsonConverters\IPAddressJsonConverter.cs" />
-    <Compile Include="Serialization\JsonConverters\PeerUpNotificationJsonConverter.cs" />
-    <Compile Include="Serialization\JsonMessage.cs" />
-    <Compile Include="Serialization\BmpSerializer.cs" />
-    <Compile Include="Serialization\JsonConverters\PathAttributeJsonConverter.cs" />
-    <Compile Include="Serialization\JsonConverters\IPAddrPrefixJsonConverter.cs" />
+    <Compile Include="Serialization\AnnounceModel.cs" />
+    <Compile Include="Serialization\BgpOpenModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BmpListener.cs" />
+    <Compile Include="Serialization\BmpJsonSerializer.cs" />
+    <Compile Include="Serialization\PeerUpModel.cs" />
+    <Compile Include="Serialization\RouteMonitoringModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
