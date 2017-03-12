@@ -1,5 +1,4 @@
 ﻿using System;
-using BmpListener.Bmp;
 using BmpListener.Serialization;
 
 namespace BmpListener.ConsoleExample
@@ -9,13 +8,15 @@ namespace BmpListener.ConsoleExample
         private static void Main()
         {
             var bmpListener = new BmpListener();
-            bmpListener.Start(WriteJson).Wait();
+            bmpListener.OnMessageReceived += WriteJson;
+            bmpListener.Start().Wait();
         }
 
-        private static void WriteJson(BmpMessage msg)
+        private static void WriteJson(object sender, MessageReceivedEventArgs e)
         {
-            var json = BmpJsonSerializer.Serialize(msg);
+            var json = BmpJsonSerializer.Serialize(e.BmpMessage);
             Console.WriteLine(json);
+            return;
         }
     }
 }

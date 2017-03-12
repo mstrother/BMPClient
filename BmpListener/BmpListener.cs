@@ -3,13 +3,15 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using BmpListener.Bmp;
+using System.Diagnostics;
+using BmpListener.Bgp;
 
 namespace BmpListener
 {
     public class BmpListener
     {
         private readonly TcpListener tcpListener;
-        
+
         public BmpListener(IPAddress ip, int port = 11019)
         {
             tcpListener = new TcpListener(ip, port);
@@ -23,17 +25,19 @@ namespace BmpListener
             tcpListener.Start();
         }
 
-        public async Task Start(Action<BmpMessage> action)
+        public event EventHandler<MessageReceivedEventArgs> OnMessageReceived;
+
+        public async Task Start()
         {
             while (true)
             {
                 var tcpClient = await tcpListener.AcceptTcpClientAsync();
-                var task = Task.Run(() => ProcessClientAsync(tcpClient, action));
+                var task = Task.Run(() => ProcessClientAsync(tcpClient));
                 await task;
             }
         }
 
-        private async Task ProcessClientAsync(TcpClient tcpClient, Action<BmpMessage> action)
+        private async Task ProcessClientAsync(TcpClient tcpClient)
         {
             using (var stream = tcpClient.GetStream())
             {
@@ -52,8 +56,8 @@ namespace BmpListener
                         var bmpMsgBytes = new byte[header.MessageLength - Constants.BmpCommonHeaderLength];
                         await stream.ReadAsync(bmpMsgBytes, 0, bmpMsgBytes.Length);
                         bmpMessage = BmpMessage.Create(header, bmpMsgBytes);
+                        OnMessageReceived?.Invoke(this, new MessageReceivedEventArgs(bmpMessage));
                     }
-                    action?.Invoke(bmpMessage);
                 }
             }
         }

@@ -104,6 +104,7 @@
     <Compile Include="Bmp\BmpTermination.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
+    <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="Serialization\AnnounceModel.cs" />
     <Compile Include="Serialization\BgpOpenModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
