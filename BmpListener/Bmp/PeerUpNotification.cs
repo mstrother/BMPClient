@@ -17,8 +17,8 @@ namespace BmpListener.Bmp
         public IPAddress LocalAddress { get; set; }
         public int LocalPort { get; set; }
         public int RemotePort { get; set; }
-        public BgpMessage SentOpenMessage { get; set; }
-        public BgpMessage ReceivedOpenMessage { get; set; }
+        public BgpOpenMessage SentOpenMessage { get; set; }
+        public BgpOpenMessage ReceivedOpenMessage { get; set; }
 
         public void Decode(byte[] data, int offset)
         {
@@ -43,9 +43,9 @@ namespace BmpListener.Bmp
             RemotePort = BitConverter.ToUInt16(data, offset + 18);
 
             offset += 20;
-            SentOpenMessage = BgpMessage.GetBgpMessage(data, offset);
+            SentOpenMessage = BgpMessage.GetBgpMessage(data, offset) as BgpOpenMessage;
             offset += SentOpenMessage.Header.Length;
-            ReceivedOpenMessage = BgpMessage.GetBgpMessage(data, offset);
+            ReceivedOpenMessage = BgpMessage.GetBgpMessage(data, offset) as BgpOpenMessage;
         }
     }
 }
