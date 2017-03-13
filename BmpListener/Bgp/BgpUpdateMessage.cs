@@ -30,9 +30,10 @@ namespace BmpListener.Bgp
 
             Array.Reverse(data, offset, 2);
             WithdrawnRoutesLength = BitConverter.ToInt16(data, offset);
-            offset += WithdrawnRoutesLength + 2;
+            offset += 2;
             SetwithdrawnRoutes(data, offset);
-
+            offset += WithdrawnRoutesLength;
+            
             Array.Reverse(data, offset, 2);
             PathAttributeLength = BitConverter.ToInt16(data, offset);
             offset += 2;
@@ -48,7 +49,8 @@ namespace BmpListener.Bgp
             {
                 var prefix = new IPAddrPrefix(data, offset);
                 WithdrawnRoutes.Add(prefix);
-                i += 1 + ((prefix.Length + 7) / 8);
+                offset += prefix.ByteLength;
+                i += prefix.ByteLength;
             }
         }
 
