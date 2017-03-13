@@ -33,7 +33,6 @@ namespace BmpListener
             {
                 var tcpClient = await tcpListener.AcceptTcpClientAsync();
                 var task = Task.Run(() => ProcessClientAsync(tcpClient));
-                await task;
             }
         }
 
