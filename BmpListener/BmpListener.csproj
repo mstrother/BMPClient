@@ -1,140 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{77CDFB9B-DAF0-4910-AC2E-A6DE4A3CCAAF}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BmpListener</RootNamespace>
-    <AssemblyName>BmpListener</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
+    <TargetFramework>net462</TargetFramework>
+    <PackageProjectUrl>https://github.com/mstrother/BmpListener</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/mstrother/BmpListener/blob/master/LICENSE</PackageLicenseUrl>
+    <Authors>Mark Strother</Authors>
+    <Company>Mark Strother</Company>
+    <PackageId>BmpListener</PackageId>
+    <Product>BmpListener</Product>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="GitVersionTask" Version="4.0.0-beta0011">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bgp\AddressFamily.cs" />
-    <Compile Include="Bgp\ASPathSegment.cs" />
-    <Compile Include="Bgp\CapabilityCode.cs" />
-    <Compile Include="Bgp\OptionalParameter.cs" />
-    <Compile Include="Bgp\OptionalParameterType.cs" />
-    <Compile Include="Bgp\OptionalParameterUnknown.cs" />
-    <Compile Include="Bgp\OptionParameterCapability.cs" />
-    <Compile Include="Bgp\PathAttributeCommunity.cs" />
-    <Compile Include="Bgp\PathAttributeNextHop.cs" />
-    <Compile Include="Bgp\PathAttributeType.cs" />
-    <Compile Include="Bgp\BgpHeader.cs" />
-    <Compile Include="Bgp\BgpKeepAliveMessage.cs" />
-    <Compile Include="Bgp\BgpMessage.cs" />
-    <Compile Include="Bgp\BgpNotificationMessage.cs" />
-    <Compile Include="Bgp\BgpOpenMessage.cs" />
-    <Compile Include="Bgp\PathAttrAtomicAggregate.cs" />
-    <Compile Include="Bgp\PathAttribute.cs" />
-    <Compile Include="Bgp\BgpRouteMessage.cs" />
-    <Compile Include="Bgp\BgpUpdateMessage.cs" />
-    <Compile Include="Bgp\CapabilityAddPath.cs" />
-    <Compile Include="Bgp\CapabilityCiscoRouteRefresh.cs" />
-    <Compile Include="Bgp\CapabilityEnhancedRouteRefresh.cs" />
-    <Compile Include="Bgp\CapabilityFourOctetAsNumber.cs" />
-    <Compile Include="Bgp\CapabilityGracefulRestart.cs" />
-    <Compile Include="Bgp\CapabilityMultiProtocol.cs" />
-    <Compile Include="Bgp\Capability.cs" />
-    <Compile Include="Bgp\CapabilityRouteRefresh.cs" />
-    <Compile Include="Bgp\IPAddrPrefix.cs" />
-    <Compile Include="Bgp\CapabilitiesOptionalParameter.cs" />
-    <Compile Include="Bgp\PathAttributeAggregator.cs" />
-    <Compile Include="Bgp\PathAttributeASPath.cs" />
-    <Compile Include="Bgp\PathAttributeLargeCommunities.cs" />
-    <Compile Include="Bgp\PathAttributeMPReachNLRI.cs" />
-    <Compile Include="Bgp\PathAttributeMPUnreachNLRI.cs" />
-    <Compile Include="Bgp\PathAttributeMultiExitDisc.cs" />
-    <Compile Include="Bgp\PathAttributeOrigin.cs" />
-    <Compile Include="Bgp\PathAttributeUnknown.cs" />
-    <Compile Include="Bgp\SubsequentAddressFamily.cs" />
-    <Compile Include="Bmp\BmpHeader.cs" />
-    <Compile Include="Bmp\BmpMessage.cs" />
-    <Compile Include="Bmp\BmpInitiation.cs" />
-    <Compile Include="Bmp\BmpMessageType.cs" />
-    <Compile Include="Bmp\PeerDownNotification.cs" />
-    <Compile Include="Bmp\PerPeerHeader.cs" />
-    <Compile Include="Bmp\PeerUpNotification.cs" />
-    <Compile Include="Bmp\BMPStatsTLV.cs" />
-    <Compile Include="Bmp\RouteMonitoring.cs" />
-    <Compile Include="Bmp\StatisticsReport.cs" />
-    <Compile Include="Bmp\BmpTermination.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="Extensions\EnumExtension.cs" />
-    <Compile Include="MessageReceivedEventArgs.cs" />
-    <Compile Include="Serialization\AnnounceModel.cs" />
-    <Compile Include="Serialization\BgpOpenModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BmpListener.cs" />
-    <Compile Include="Serialization\BmpJsonSerializer.cs" />
-    <Compile Include="Serialization\PeerUpModel.cs" />
-    <Compile Include="Serialization\RouteMonitoringModel.cs" />
+    <Folder Include="Properties\" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Build\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\GitVersionTask.3.6.5\build\dotnet\GitVersionTask.targets" Condition="Exists('..\packages\GitVersionTask.3.6.5\build\dotnet\GitVersionTask.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\GitVersionTask.3.6.5\build\dotnet\GitVersionTask.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GitVersionTask.3.6.5\build\dotnet\GitVersionTask.targets'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
