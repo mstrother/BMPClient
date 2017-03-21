@@ -3,6 +3,14 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net462</TargetFramework>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE;DEBUG;NET462</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\BmpListener\BmpListener.csproj" />
   </ItemGroup>

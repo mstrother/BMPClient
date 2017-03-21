@@ -1,22 +1,39 @@
 ﻿using System;
-using BmpListener.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BmpListener.ConsoleExample
 {
     internal class Program
     {
+        static int port = 11019;
+
         private static void Main()
         {
-            var bmpListener = new BmpListener();
-            bmpListener.OnMessageReceived += WriteJson;
-            bmpListener.Start().Wait();
-        }
+            // optimize IOCP performance
+            int minWorkerThreads;
+            int minCompletionPortThreads;
+            ThreadPool.GetMinThreads(out minWorkerThreads, out minCompletionPortThreads);
+            ThreadPool.SetMinThreads(minWorkerThreads, Math.Max(16, minCompletionPortThreads));
 
-        private static void WriteJson(object sender, MessageReceivedEventArgs e)
-        {
-            var json = BmpJsonSerializer.Serialize(e.BmpMessage);
-            Console.WriteLine(json);
-            return;
+            int threadCount = Environment.ProcessorCount;
+
+            var cts = new CancellationTokenSource();
+            var bmpListener = new BmpStation(port);
+
+            Console.WriteLine($"Starting new BMP agent on port {port}.");
+            Task.Run(() => bmpListener.StartAsync(cts.Token), cts.Token);
+            Console.WriteLine($"BMP agent started at {DateTime.UtcNow.ToString("hh\\:mm\\:ss")} (UTC).");
+            Console.WriteLine();
+            Console.WriteLine("Press any key to shutdown.");
+
+            var logger = new ConsoleLogger();
+            bmpListener.OnMessageReceived += logger.LogMessage;
+            Task.Run(() => logger.StartAsync(cts.Token), cts.Token);
+
+            Console.ReadKey(true);
+            cts.Cancel();
+            bmpListener.CloseCompletion.Wait(TimeSpan.FromSeconds(20));
         }
     }
 }
