@@ -6,10 +6,10 @@ namespace BmpListener.Bmp
     public class PerPeerHeader
     {
         private const long TicksPerMicrosecond = 10;
-        
-        public PerPeerHeader(byte[] data)
+
+        public PerPeerHeader(byte[] data, int offset)
         {
-            Decode(data);
+            Decode(data, offset);
         }
 
         public enum Type
@@ -28,43 +28,50 @@ namespace BmpListener.Bmp
         public IPAddress PeerBGPId { get; private set; }
         public DateTimeOffset DateTime { get; private set; }
 
-        public void Decode(byte[] data)
+        public void Decode(byte[] data, int offset)
         {
-            PeerType = (Type)data[0];
+            PeerType = (Type)data[offset];
+            offset++;
 
-            Flags = data[1];
+            Flags = data[offset];
             if ((Flags & (1 << 6)) != 0)
             {
                 IsPostPolicy = true;
             }
+            offset++;
 
-            Array.Reverse(data, 2, 8);
-            PeerDistinguisher = BitConverter.ToUInt64(data, 2);
+            Array.Reverse(data, offset, offset + 8);
+            PeerDistinguisher = BitConverter.ToUInt64(data, offset);
+            offset += 8;
 
             if ((Flags & (1 << 7)) != 0)
             {
                 var ipBytes = new byte[16];
-                Array.Copy(data, 10, ipBytes, 0, 16);
+                Array.Copy(data, offset, ipBytes, 0, 16);
                 PeerAddress = new IPAddress(ipBytes);
             }
             else
             {
                 var ipBytes = new byte[4];
-                Array.Copy(data, 22, ipBytes, 0, 4);
+                Array.Copy(data, offset + 12, ipBytes, 0, 4);
                 PeerAddress = new IPAddress(ipBytes);
             }
+            offset += 16;
 
-            Array.Reverse(data, 26, 4);
-            AS = BitConverter.ToInt32(data, 26);
+            Array.Reverse(data, offset, 4);
+            AS = BitConverter.ToInt32(data, offset);
+            offset += 4;
 
             var peerIdBytes = new byte[4];
-            Array.Copy(data, 30, peerIdBytes, 0, 4);
+            Array.Copy(data, offset, peerIdBytes, 0, 4);
             PeerBGPId = new IPAddress(peerIdBytes);
+            offset += 4;
 
-            Array.Reverse(data, 34, 4);
+            Array.Reverse(data, offset, 4);
             var seconds = BitConverter.ToInt32(data, 34);
+            offset += 4;
 
-            Array.Reverse(data, 38, 4);
+            Array.Reverse(data, offset, 4);
             var microSeconds = BitConverter.ToInt32(data, 38);
 
             var ticks = microSeconds * TicksPerMicrosecond;

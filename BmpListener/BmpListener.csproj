@@ -10,6 +10,8 @@
     <Product>BmpListener</Product>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="DotNetty.Codecs" Version="0.4.2" />
+    <PackageReference Include="DotNetty.Transport" Version="0.4.2" />
     <PackageReference Include="GitVersionTask" Version="4.0.0-beta0011">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>

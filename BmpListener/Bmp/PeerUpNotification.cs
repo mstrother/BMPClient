@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using BmpListener.Bgp;
-using BmpListener.Extensions;
 
 namespace BmpListener.Bmp
 {
@@ -11,7 +9,8 @@ namespace BmpListener.Bmp
         public PeerUpNotification(BmpHeader bmpHeader, byte[] data)
             : base(bmpHeader, data)
         {
-            Decode(data, Constants.BmpPerPeerHeaderLength);
+            var offset = Constants.BmpCommonHeaderLength + Constants.BmpPerPeerHeaderLength;
+            Decode(data, offset);
         }
 
         public IPAddress LocalAddress { get; set; }
