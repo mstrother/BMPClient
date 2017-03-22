@@ -26,7 +26,7 @@ namespace BmpListener
                 case BmpMessageType.Termination:
                     throw new NotImplementedException();
                 default:
-                    throw new NotImplementedException();
+                    return null;
             }
         }
 
