@@ -5,12 +5,13 @@ namespace BmpListener.Bgp
 {
     public sealed class BgpUpdateMessage : BgpMessage
     {
-        public BgpUpdateMessage(BgpHeader bgpHeader, byte[] data, int offset)
-             : base(bgpHeader)
+        public BgpUpdateMessage(byte[] data, int offset)
+             : base(data, offset)
         {
             Attributes = new List<PathAttribute>();
             WithdrawnRoutes = new List<IPAddrPrefix>();
             Nlri = new List<IPAddrPrefix>();
+            offset += Constants.BgpHeaderLength;
             DecodeFromBytes(data, offset);
         }
 

@@ -4,37 +4,34 @@ namespace BmpListener.Bgp
 {
     public abstract class BgpMessage
     {
-        protected BgpMessage(BgpHeader bgpHeader)
+        protected BgpMessage(byte[] data, int offset)
         {
-            Header = bgpHeader;
+            Header = new BgpHeader(data, offset);
         }   
         
         public BgpHeader Header { get; }
 
         public static BgpMessage GetBgpMessage(byte[] data)
         {
-            return GetBgpMessage(data, 0);
+            return Create(data, 0);
         }
 
-        public static BgpMessage GetBgpMessage(byte[] data, int offset)
+        public static BgpMessage Create(byte[] data, int offset)
         {
-            var bgpHeader = new BgpHeader(data, offset);
-            offset += Constants.BgpHeaderLength;
-
-            switch (bgpHeader.Type)
+            switch ((BgpMessageType)data[offset + 18])
             {
                 case BgpMessageType.Open:
-                    return new BgpOpenMessage(bgpHeader, data, offset);
+                    return new BgpOpenMessage(data, offset);
                 case BgpMessageType.Update:
-                    return new BgpUpdateMessage(bgpHeader, data, offset);
+                    return new BgpUpdateMessage(data, offset);
                 case BgpMessageType.Notification:
-                    return new BgpNotification(bgpHeader, data);
+                    return new BgpNotification(data, offset);
                 case BgpMessageType.Keepalive:
-                    return new BgpKeepAliveMessage(bgpHeader);
+                    return new BgpKeepAliveMessage(data, offset);
                 case BgpMessageType.RouteRefresh:
                     throw new NotImplementedException();
                 default:
-                    throw new NotImplementedException();
+                    return null;
             }
         }
     }

@@ -4,8 +4,8 @@ namespace BmpListener.Bgp
 {
     public class BgpKeepAliveMessage : BgpMessage
     {
-        public BgpKeepAliveMessage(BgpHeader bgpHeader)
-            : base(bgpHeader)
+        public BgpKeepAliveMessage(byte[] data, int offset)
+            : base(data, offset)
         {
         }
     }

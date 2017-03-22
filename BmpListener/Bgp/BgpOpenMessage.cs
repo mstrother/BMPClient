@@ -6,10 +6,11 @@ namespace BmpListener.Bgp
 {
     public sealed class BgpOpenMessage : BgpMessage
     {
-        public BgpOpenMessage(BgpHeader bgpHeader, byte[] data, int offset)
-            : base(bgpHeader)
+        public BgpOpenMessage(byte[] data, int offset)
+            : base(data, offset)
         {
             OptionalParameters = new List<OptionalParameter>();
+            offset += Constants.BgpHeaderLength;
             DecodeFromBytes(data, offset);
         }
 

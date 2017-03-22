@@ -42,9 +42,9 @@ namespace BmpListener.Bmp
             RemotePort = BitConverter.ToUInt16(data, offset + 18);
 
             offset += 20;
-            SentOpenMessage = BgpMessage.GetBgpMessage(data, offset) as BgpOpenMessage;
+            SentOpenMessage = BgpMessage.Create(data, offset) as BgpOpenMessage;
             offset += SentOpenMessage.Header.Length;
-            ReceivedOpenMessage = BgpMessage.GetBgpMessage(data, offset) as BgpOpenMessage;
+            ReceivedOpenMessage = BgpMessage.Create(data, offset) as BgpOpenMessage;
         }
     }
 }

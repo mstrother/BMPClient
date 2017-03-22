@@ -4,9 +4,10 @@ namespace BmpListener.Bgp
 {
     public sealed class BgpNotification : BgpMessage
     {
-        public BgpNotification(BgpHeader bgpHeader, byte[] data) 
-            : base(bgpHeader)
+        public BgpNotification(byte[] data, int offset) 
+            : base(data, offset)
         {
+            offset += Constants.BgpHeaderLength;
             DecodeFromBytes(data);
         }
 
