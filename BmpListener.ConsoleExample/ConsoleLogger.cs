@@ -1,5 +1,9 @@
-﻿using BmpListener.Bmp;
+﻿using BmpListener.Bgp;
+using BmpListener.Bmp;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,13 +14,23 @@ namespace BmpListener.ConsoleExample
         DateTime serverStartTime = DateTime.Now;
 
         int msgTotalCounter;
-        int initiationMsgTotalCounter;
-        int peerDownMsgTotalCounter;
-        int peerUpMsgTotalCounter;
-        int routeMonitoringMsgTotalCounter;
-        int statisticsReportMsgTotalCounter;
-        int terminationMsgTotalCounter;
-        
+        int initiationMsgCounter;
+        int peerDownMsgCounter;
+        int peerUpMsgCounter;
+        int routeMonitoringMsgCounter;
+        int statisticsReportMsgCounter;
+        int terminationMsgCounter;
+        int bgpUpdateCounter;
+        int prefixUpdateCounter;
+        int prefixWithdrawCounter;
+
+        HashSet<int> asns;
+
+        public ConsoleLogger()
+        {
+            asns = new HashSet<int>();
+        }
+
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             await Task.Yield();
@@ -24,20 +38,25 @@ namespace BmpListener.ConsoleExample
             while (!cancellationToken.IsCancellationRequested)
             {
                 var runtime = DateTime.Now - serverStartTime;
-                var msgsPerSec = (msgTotalCounter / (decimal)runtime.TotalSeconds).ToString("0.##");
+                var bmpMsgsPerSec = ((double)msgTotalCounter / runtime.TotalSeconds).ToString("F");
+                var bgpUpdateMsgsPerSec = ((double)bgpUpdateCounter / runtime.TotalSeconds).ToString("F");
 
                 Console.SetCursorPosition(0, 5);
                 Console.WriteLine($"Runtime : {FormatRuntime(runtime)}");
                 Console.WriteLine();
-                Console.WriteLine($"{msgTotalCounter} BMP messages received:");
-                Console.WriteLine($"  {routeMonitoringMsgTotalCounter} Route Monitoring Messages");
-                Console.WriteLine($"  {statisticsReportMsgTotalCounter} Statistics Reports");
-                Console.WriteLine($"  {peerDownMsgTotalCounter} Peer Down Notifications");
-                Console.WriteLine($"  {peerUpMsgTotalCounter} Peer Up Notifications");
-                Console.WriteLine($"  {initiationMsgTotalCounter} Initiation Message");
-                Console.WriteLine($"  {terminationMsgTotalCounter} Termination Messages");
+                Console.WriteLine($"BMP messages received: {msgTotalCounter} ({bmpMsgsPerSec} messages / second)");
+                Console.WriteLine($"  {routeMonitoringMsgCounter} Route Monitoring Messages");
+                Console.WriteLine($"  {statisticsReportMsgCounter} Statistics Reports");
+                Console.WriteLine($"  {peerDownMsgCounter} Peer Down Notifications");
+                Console.WriteLine($"  {peerUpMsgCounter} Peer Up Notifications");
+                Console.WriteLine($"  {initiationMsgCounter} Initiation Message");
+                Console.WriteLine($"  {terminationMsgCounter} Termination Messages");
                 Console.WriteLine();
-                Console.WriteLine("BMP messages/second : {0}", msgsPerSec);
+                Console.WriteLine($" BGP Update Messages: {bgpUpdateCounter} ({bgpUpdateMsgsPerSec} messages / second)");
+                Console.WriteLine($"  {prefixUpdateCounter} Prefix Updates");
+                Console.WriteLine($"  {prefixWithdrawCounter} Prefix Withdrawals");
+                Console.WriteLine();
+                Console.WriteLine($"Unique Autonomous Systems: {asns.Count}");
                 await Task.Delay(1000);
             }
 
@@ -45,29 +64,53 @@ namespace BmpListener.ConsoleExample
             Console.WriteLine("Shutting down...");
         }
 
-        public void LogMessage(object sender, MessageReceivedEventArgs e)
+        public async void LogMessageAsync(object sender, MessageReceivedEventArgs e)
         {
             msgTotalCounter++;
             var msg = e.BmpMessage;
             switch (msg.BmpHeader.MessageType)
             {
                 case (BmpMessageType.RouteMonitoring):
-                    routeMonitoringMsgTotalCounter++;
+                    routeMonitoringMsgCounter++;
+                    var bgpMsg = ((RouteMonitoring)msg).BgpMessage;
+                    if (bgpMsg.Header.Type == BgpMessage.Type.Update)
+                    {
+                        bgpUpdateCounter++;
+                        var bgpUpdate = (BgpUpdateMessage)bgpMsg;
+                        if (bgpUpdate.Nlri?.Count > 0)
+                        {
+                            prefixUpdateCounter++;
+                        }
+                        if (bgpUpdate.WithdrawnRoutes?.Count > 0)
+                        {
+                            prefixWithdrawCounter++;
+                        }
+                        var asPath = bgpUpdate.Attributes?.FirstOrDefault(x => x.AttributeType == PathAttributeType.AS_PATH);
+                        if (asPath != null)
+                        {
+                            var asnCount = ((PathAttributeASPath)asPath).ASPaths[0].ASNs.Count;
+                            for (int i = 1; i < asnCount; i++)
+                            {
+                                var asn = ((PathAttributeASPath)asPath).ASPaths[0].ASNs[i];
+                                asns.Add(asn);
+                            }
+                        }
+                    };
                     break;
                 case (BmpMessageType.StatisticsReport):
-                    statisticsReportMsgTotalCounter++;
+                    statisticsReportMsgCounter++;
                     break;
                 case (BmpMessageType.PeerDown):
-                    peerDownMsgTotalCounter++;
+                    peerDownMsgCounter++;
                     break;
                 case (BmpMessageType.PeerUp):
-                    peerUpMsgTotalCounter++;
+                    peerUpMsgCounter++;
                     break;
                 case (BmpMessageType.Initiation):
-                    initiationMsgTotalCounter++;
+                    initiationMsgCounter++;
                     break;
                 case (BmpMessageType.Termination):
-                    terminationMsgTotalCounter++;
+                    terminationMsgCounter++;
                     break;
             }
         }

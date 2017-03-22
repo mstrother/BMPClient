@@ -28,7 +28,7 @@ namespace BmpListener.ConsoleExample
             Console.WriteLine("Press any key to shutdown.");
 
             var logger = new ConsoleLogger();
-            bmpListener.OnMessageReceived += logger.LogMessage;
+            bmpListener.OnMessageReceived += logger.LogMessageAsync;
             Task.Run(() => logger.StartAsync(cts.Token), cts.Token);
 
             Console.ReadKey(true);
