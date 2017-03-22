@@ -8,6 +8,15 @@ namespace BmpListener.Bmp
 
         public BmpHeader(byte[] data)
         {
+            Decode(data);
+        }
+
+        public byte Version { get; private set; }
+        public int MessageLength { get; private set; }
+        public BmpMessageType MessageType { get; private set; }
+
+        public void Decode(byte[] data)
+        {
             Version = data[0];
             if (Version != bmpVersion)
             {
@@ -18,9 +27,5 @@ namespace BmpListener.Bmp
             MessageLength = BitConverter.ToInt32(data, 1);
             MessageType = (BmpMessageType)data[5];
         }
-
-        public byte Version { get; }
-        public int MessageLength { get; }
-        public BmpMessageType MessageType { get; }
     }
 }
