@@ -12,7 +12,7 @@ namespace BmpListener.Serialization
         {
             BgpUpdateMessage bgpMsg;
 
-            if (msg.BgpMessage.Header.Type == BgpMessage.Type.Update)
+            if (msg.BgpMessage.Header.Type == BgpMessageType.Update)
             {
                 bgpMsg = (BgpUpdateMessage)msg.BgpMessage;
             }

@@ -73,7 +73,7 @@ namespace BmpListener.ConsoleExample
                 case (BmpMessageType.RouteMonitoring):
                     routeMonitoringMsgCounter++;
                     var bgpMsg = ((RouteMonitoring)msg).BgpMessage;
-                    if (bgpMsg.Header.Type == BgpMessage.Type.Update)
+                    if (bgpMsg.Header.Type == BgpMessageType.Update)
                     {
                         bgpUpdateCounter++;
                         var bgpUpdate = (BgpUpdateMessage)bgpMsg;

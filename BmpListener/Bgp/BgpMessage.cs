@@ -7,16 +7,7 @@ namespace BmpListener.Bgp
         protected BgpMessage(BgpHeader bgpHeader)
         {
             Header = bgpHeader;
-        }
-
-        public enum Type
-        {
-            Open = 1,
-            Update,
-            Notification,
-            Keepalive,
-            RouteRefresh
-        }
+        }   
         
         public BgpHeader Header { get; }
 
@@ -32,15 +23,15 @@ namespace BmpListener.Bgp
 
             switch (bgpHeader.Type)
             {
-                case Type.Open:
+                case BgpMessageType.Open:
                     return new BgpOpenMessage(bgpHeader, data, offset);
-                case Type.Update:
+                case BgpMessageType.Update:
                     return new BgpUpdateMessage(bgpHeader, data, offset);
-                case Type.Notification:
+                case BgpMessageType.Notification:
                     return new BgpNotification(bgpHeader, data);
-                case Type.Keepalive:
+                case BgpMessageType.Keepalive:
                     return new BgpKeepAliveMessage(bgpHeader);
-                case Type.RouteRefresh:
+                case BgpMessageType.RouteRefresh:
                     throw new NotImplementedException();
                 default:
                     throw new NotImplementedException();
