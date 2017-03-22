@@ -4,8 +4,8 @@ namespace BmpListener.Bmp
 {
     public class RouteMonitoring : BmpMessage
     {
-        public RouteMonitoring(BmpHeader bmpHeader, byte[] data)
-            : base(bmpHeader, data)
+        public RouteMonitoring(byte[] data)
+            : base(data)
         {
             var offset = Constants.BmpCommonHeaderLength + Constants.BmpPerPeerHeaderLength;
             Decode(data, offset);

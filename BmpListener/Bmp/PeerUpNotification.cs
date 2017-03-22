@@ -6,8 +6,8 @@ namespace BmpListener.Bmp
 {
     public class PeerUpNotification : BmpMessage
     {
-        public PeerUpNotification(BmpHeader bmpHeader, byte[] data)
-            : base(bmpHeader, data)
+        public PeerUpNotification(byte[] data)
+            : base(data)
         {
             var offset = Constants.BmpCommonHeaderLength + Constants.BmpPerPeerHeaderLength;
             Decode(data, offset);

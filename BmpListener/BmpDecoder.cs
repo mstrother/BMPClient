@@ -11,20 +11,18 @@ namespace BmpListener
     {
         public static BmpMessage Decode(byte[] data)
         {
-            var bmpHeader = new BmpHeader(data);
-
-            switch (bmpHeader.MessageType)
+            switch ((BmpMessageType)data[5])
             {
                 case BmpMessageType.RouteMonitoring:
-                    return new RouteMonitoring(bmpHeader, data);
+                    return new RouteMonitoring(data);
                 case BmpMessageType.StatisticsReport:
-                    return new StatisticsReport(bmpHeader, data);
+                    return new StatisticsReport(data);
                 case BmpMessageType.PeerDown:
-                    return new PeerDownNotification(bmpHeader, data);
+                    return new PeerDownNotification(data);
                 case BmpMessageType.PeerUp:
-                    return new PeerUpNotification(bmpHeader, data);
+                    return new PeerUpNotification(data);
                 case BmpMessageType.Initiation:
-                    return new BmpInitiation(bmpHeader);
+                    return new BmpInitiation(data);
                 case BmpMessageType.Termination:
                     throw new NotImplementedException();
                 default:

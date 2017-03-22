@@ -1,15 +1,10 @@
-﻿using System;
-
-namespace BmpListener.Bmp
+﻿namespace BmpListener.Bmp
 {
     public class BmpInitiation : BmpMessage
     {
-        public BmpInitiation(BmpHeader bmpHeader)
-            : base(bmpHeader)
+        public BmpInitiation(byte[] data)
+            : base(data)
         {
-            BmpVersion = BmpHeader.Version;
         }
-        
-        public int BmpVersion { get; }
     }
 }

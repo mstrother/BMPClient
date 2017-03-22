@@ -5,8 +5,8 @@ namespace BmpListener.Bmp
 {
     public class PeerDownNotification : BmpMessage
     {
-        public PeerDownNotification(BmpHeader bmpHeader, byte[] data)
-            : base(bmpHeader, data)
+        public PeerDownNotification(byte[] data)
+            : base(data)
         {
             Decode(data);
         }
