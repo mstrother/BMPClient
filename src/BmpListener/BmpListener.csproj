@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <PackageProjectUrl>https://github.com/mstrother/BmpListener</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/mstrother/BmpListener/blob/master/LICENSE</PackageLicenseUrl>
+    <Authors>Mark Strother</Authors>
+    <Company>Mark Strother</Company>
+    <PackageId>BmpListener</PackageId>
+    <Product>BmpListener</Product>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="DotNetty.Codecs" Version="0.4.2" />
+    <PackageReference Include="DotNetty.Transport" Version="0.4.2" />
+    <PackageReference Include="GitVersionTask" Version="4.0.0-beta0011">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>
