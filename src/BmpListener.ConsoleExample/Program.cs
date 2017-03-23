@@ -11,10 +11,8 @@ namespace BmpListener.ConsoleExample
         private static void Main()
         {
             // optimize IOCP performance
-            int minWorkerThreads;
-            int minCompletionPortThreads;
-            ThreadPool.GetMinThreads(out minWorkerThreads, out minCompletionPortThreads);
-            ThreadPool.SetMinThreads(minWorkerThreads, Math.Max(16, minCompletionPortThreads));
+            //ThreadPool.GetMinThreads(out int minWorkerThreads, out int minCompletionPortThreads);
+            //ThreadPool.SetMinThreads(minWorkerThreads, Math.Max(16, minCompletionPortThreads));
 
             int threadCount = Environment.ProcessorCount;
 
