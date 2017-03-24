@@ -14,10 +14,8 @@ namespace BmpListener.Bgp
         public int CapabilityLength { get; }
 
         public static Capability GetCapability(byte[] data, int offset)
-        {
-            var capabilityType = (CapabilityCode)data[offset];
-
-            switch (capabilityType)
+        {            
+            switch ((CapabilityCode)data[offset])
             {
                 case CapabilityCode.Multiprotocol:
                     return new CapabilityMultiProtocol(data, offset);
