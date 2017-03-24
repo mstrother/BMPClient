@@ -26,5 +26,17 @@ namespace BmpListener.Tests
             Assert.True((int)BgpMessageType.Keepalive == 4);
             Assert.True((int)BgpMessageType.RouteRefresh == 5);
         }
+
+        [Fact]
+        public void CapabilityCodeTypes()
+        {
+            Assert.True((int)CapabilityCode.Multiprotocol == 1);
+            Assert.True((int)CapabilityCode.RouteRefresh == 2);
+            Assert.True((int)CapabilityCode.GracefulRestart == 64);
+            Assert.True((int)CapabilityCode.FourOctetAs == 65);
+            Assert.True((int)CapabilityCode.AddPath == 69);
+            Assert.True((int)CapabilityCode.EnhancedRouteRefresh == 70);
+            Assert.True((int)CapabilityCode.CiscoRouteRefresh == 128);
+        }
     }
 }
