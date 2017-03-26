@@ -1,24 +1,36 @@
 ﻿using BmpListener.Bmp;
 using DotNetty.Transport.Channels;
 using System;
+using System.Collections;
 using System.Diagnostics;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Threading.Tasks;
 
 namespace BmpListener
 {
     public class BmpMessageHandler : SimpleChannelInboundHandler<BmpMessage>
     {
-        EventHandler<MessageReceivedEventArgs> MessageReceived;
+        Subject<BmpMessage> onMessageReceived = new Subject<BmpMessage>();
 
-        public BmpMessageHandler(EventHandler<MessageReceivedEventArgs> eventHandler)
+        public IObservable<BmpMessage> OnMessageReceived
         {
-            MessageReceived = eventHandler;
+            get { return onMessageReceived.AsObservable(); }
         }
-
+        
         public override void ExceptionCaught(IChannelHandlerContext context, Exception e) => context.CloseAsync();
 
         protected override void ChannelRead0(IChannelHandlerContext context, BmpMessage msg)
         {
-            MessageReceived?.Invoke(this, new MessageReceivedEventArgs(msg));
+            try
+            {
+                onMessageReceived.OnNext(msg);
+            }
+            catch (Exception ex)
+            {
+                onMessageReceived.OnError(ex);
+            }
         }
     }
 }

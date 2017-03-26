@@ -1,5 +1,4 @@
-﻿using BmpListener.Extensions;
-using System;
+﻿using System;
 
 namespace BmpListener.Bgp
 {

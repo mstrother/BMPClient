@@ -4,6 +4,9 @@ using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using BmpListener.Bmp;
 using System;
+using System.Reactive.Subjects;
+using System.Reactive.Linq;
+using System.Reactive;
 
 namespace BmpListener
 {
@@ -40,6 +43,8 @@ namespace BmpListener
                 {
                     return;
                 }
+
+                // check bytes
 
                 var data = new byte[length];
                 input.ReadBytes(data);

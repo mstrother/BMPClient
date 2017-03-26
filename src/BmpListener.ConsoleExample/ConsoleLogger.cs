@@ -64,10 +64,9 @@ namespace BmpListener.ConsoleExample
             Console.WriteLine("Shutting down...");
         }
 
-        public async void LogMessageAsync(object sender, MessageReceivedEventArgs e)
+        public async void LogMessageAsync(BmpMessage msg)
         {
             msgTotalCounter++;
-            var msg = e.BmpMessage;
             switch (msg.BmpHeader.MessageType)
             {
                 case (BmpMessageType.RouteMonitoring):
