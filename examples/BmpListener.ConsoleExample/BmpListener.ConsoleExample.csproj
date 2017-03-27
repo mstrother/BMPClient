@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BmpListener\BmpListener.csproj" />
+    <ProjectReference Include="..\..\src\BmpListener\BmpListener.csproj" />
   </ItemGroup>
 
 </Project>
