@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BmpListener.Tests", "src\BmpListener.Tests\BmpListener.Tests.csproj", "{C21CA2B4-2CB1-4AFF-8D5A-6D6FE00CA75B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BmpListener.Tests", "test\BmpListener.Tests\BmpListener.Tests.csproj", "{C21CA2B4-2CB1-4AFF-8D5A-6D6FE00CA75B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BmpListener", "src\BmpListener\BmpListener.csproj", "{D2FB327E-65B5-44AD-A615-18E004119487}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BmpListener.ConsoleExample", "src\BmpListener.ConsoleExample\BmpListener.ConsoleExample.csproj", "{9D9EEF70-FFAB-49B8-95E3-1AE1C41907A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BmpListener.ConsoleExample", "examples\BmpListener.ConsoleExample\BmpListener.ConsoleExample.csproj", "{9D9EEF70-FFAB-49B8-95E3-1AE1C41907A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
