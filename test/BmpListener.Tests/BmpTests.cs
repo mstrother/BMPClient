@@ -17,5 +17,16 @@ namespace BmpListener.Tests
             Assert.Equal((int)BmpMessageType.Termination, 5);
             Assert.Equal((int)BmpMessageType.RouteMirroring, 6);
         }
+
+        [Theory]
+        [InlineData("AwAAAAYE")]
+        public void BmpHeaderDecodes(string value)
+        {
+            var data = Convert.FromBase64String(value);
+            var bmpHeader = new BmpHeader(data);
+            Assert.True(bmpHeader.MessageLength == 6);
+            Assert.True(bmpHeader.Version == 3);
+            Assert.True(bmpHeader.MessageType == BmpMessageType.Initiation);
+        }
     }
 }
