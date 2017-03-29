@@ -8,11 +8,10 @@ namespace BmpListener.Bgp
         public CapabilitiesOptionalParameter(byte[] data, int offset)
             : base(data, offset)
         {
-            Capabilities = new List<Capability>();
             Decode(data, offset + 2);
         }
 
-        public List<Capability> Capabilities { get; }
+        public List<Capability> Capabilities { get; } = new List<Capability>();
 
         public void Decode(byte[] data, int offset)
         {

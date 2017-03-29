@@ -1,10 +1,11 @@
-﻿namespace BmpListener.Bmp
+﻿using System;
+
+namespace BmpListener.Bmp
 {
     public class BmpInitiation : BmpMessage
     {
-        public BmpInitiation(byte[] data)
-            : base(data)
-        {
+        public override void Decode(byte[] data, int offset)
+        {            
         }
     }
 }

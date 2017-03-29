@@ -6,20 +6,13 @@ namespace BmpListener.Bmp
 {
     public class PeerUpNotification : BmpMessage
     {
-        public PeerUpNotification(byte[] data)
-            : base(data)
-        {
-            var offset = Constants.BmpCommonHeaderLength + Constants.BmpPerPeerHeaderLength;
-            Decode(data, offset);
-        }
-
         public IPAddress LocalAddress { get; set; }
         public int LocalPort { get; set; }
         public int RemotePort { get; set; }
         public BgpOpenMessage SentOpenMessage { get; set; }
         public BgpOpenMessage ReceivedOpenMessage { get; set; }
 
-        public void Decode(byte[] data, int offset)
+        public override void Decode(byte[] data, int offset)
         {
             // For IPv4 peers, the most significant bit of PeerHeader.Flags will be set to 0.
             if (((PeerHeader.Flags & (1 << 7)) != 0))
@@ -42,9 +35,9 @@ namespace BmpListener.Bmp
             RemotePort = BitConverter.ToUInt16(data, offset + 18);
 
             offset += 20;
-            SentOpenMessage = BgpMessage.Create(data, offset) as BgpOpenMessage;
+            SentOpenMessage = BgpMessage.ParseMessage(data, offset) as BgpOpenMessage;
             offset += SentOpenMessage.Header.Length;
-            ReceivedOpenMessage = BgpMessage.Create(data, offset) as BgpOpenMessage;
+            ReceivedOpenMessage = BgpMessage.ParseMessage(data, offset) as BgpOpenMessage;
         }
     }
 }

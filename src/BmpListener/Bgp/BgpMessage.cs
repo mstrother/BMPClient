@@ -4,35 +4,46 @@ namespace BmpListener.Bgp
 {
     public abstract class BgpMessage
     {
-        protected BgpMessage(byte[] data, int offset)
-        {
-            Header = new BgpHeader(data, offset);
-        }   
-        
-        public BgpHeader Header { get; }
+        public BgpHeader Header { get; protected set; }
 
-        public static BgpMessage GetBgpMessage(byte[] data)
+        public abstract void Decode(byte[] data, int offset);
+
+        public static BgpMessage ParseMessage(byte[] data)
         {
-            return Create(data, 0);
+            return ParseMessage(data, 0);
         }
 
-        public static BgpMessage Create(byte[] data, int offset)
+        public static BgpMessage ParseMessage(byte[] data, int offset)
         {
-            switch ((BgpMessageType)data[offset + 18])
+            var bgpHeader = new BgpHeader();
+            bgpHeader.Decode(data, offset);
+            BgpMessage bgpMsg;
+
+            switch (bgpHeader.Type)
             {
                 case BgpMessageType.Open:
-                    return new BgpOpenMessage(data, offset);
+                    bgpMsg = new BgpOpenMessage();
+                    break;
                 case BgpMessageType.Update:
-                    return new BgpUpdateMessage(data, offset);
+                    bgpMsg = new BgpUpdateMessage();
+                    break;
                 case BgpMessageType.Notification:
-                    return new BgpNotification(data, offset);
+                    bgpMsg = new BgpNotification();
+                    break;
                 case BgpMessageType.Keepalive:
-                    return new BgpKeepAliveMessage(data, offset);
+                    bgpMsg = new BgpKeepAliveMessage();
+                    break;
                 case BgpMessageType.RouteRefresh:
                     throw new NotImplementedException();
                 default:
                     return null;
             }
+
+            offset += Constants.BgpHeaderLength;
+
+            bgpMsg.Header = bgpHeader;
+            bgpMsg.Decode(data, offset);
+            return bgpMsg;
         }
     }
 }

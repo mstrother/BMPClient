@@ -10,7 +10,7 @@ namespace BmpListener.Bmp
         {
             Decode(data);
         }
-
+        
         public byte Version { get; private set; }
         public int MessageLength { get; private set; }
         public BmpMessageType MessageType { get; private set; }

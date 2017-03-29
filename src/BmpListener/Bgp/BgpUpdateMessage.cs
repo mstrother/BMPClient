@@ -3,25 +3,15 @@ using System.Collections.Generic;
 
 namespace BmpListener.Bgp
 {
-    public sealed class BgpUpdateMessage : BgpMessage
+    public class BgpUpdateMessage : BgpMessage
     {
-        public BgpUpdateMessage(byte[] data, int offset)
-             : base(data, offset)
-        {
-            Attributes = new List<PathAttribute>();
-            WithdrawnRoutes = new List<IPAddrPrefix>();
-            Nlri = new List<IPAddrPrefix>();
-            offset += Constants.BgpHeaderLength;
-            DecodeFromBytes(data, offset);
-        }
-
         public int WithdrawnRoutesLength { get; private set; }
         public int PathAttributeLength { get; private set; }
-        public List<PathAttribute> Attributes { get; }
-        public List<IPAddrPrefix> WithdrawnRoutes { get; }
-        public List<IPAddrPrefix> Nlri { get; }
+        public IList<PathAttribute> Attributes { get; } = new List<PathAttribute>();
+        public IList<IPAddrPrefix> WithdrawnRoutes { get; } = new List<IPAddrPrefix>();
+        public IList<IPAddrPrefix> Nlri { get; } = new List<IPAddrPrefix>();
 
-        public void DecodeFromBytes(byte[] data, int offset)
+        public override void Decode(byte[] data, int offset)
         {
             if (Header.Length == 23)
             {
@@ -34,7 +24,7 @@ namespace BmpListener.Bgp
             offset += 2;
             SetwithdrawnRoutes(data, offset);
             offset += WithdrawnRoutesLength;
-            
+
             Array.Reverse(data, offset, 2);
             PathAttributeLength = BitConverter.ToInt16(data, offset);
             offset += 2;

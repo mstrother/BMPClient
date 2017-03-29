@@ -1,12 +1,9 @@
-﻿using System;
-
-namespace BmpListener.Bgp
+﻿namespace BmpListener.Bgp
 {
     public class BgpKeepAliveMessage : BgpMessage
     {
-        public BgpKeepAliveMessage(byte[] data, int offset)
-            : base(data, offset)
-        {
+        public override void Decode(byte[] data, int offset)
+        {            
         }
     }
 }

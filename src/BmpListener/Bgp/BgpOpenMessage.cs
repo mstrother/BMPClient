@@ -4,23 +4,15 @@ using System.Net;
 
 namespace BmpListener.Bgp
 {
-    public sealed class BgpOpenMessage : BgpMessage
+    public class BgpOpenMessage : BgpMessage
     {
-        public BgpOpenMessage(byte[] data, int offset)
-            : base(data, offset)
-        {
-            OptionalParameters = new List<OptionalParameter>();
-            offset += Constants.BgpHeaderLength;
-            DecodeFromBytes(data, offset);
-        }
-
         public byte Version { get; private set; }
         public int MyAS { get; private set; }
         public int HoldTime { get; private set; }
         public IPAddress Id { get; private set; }
-        public IList<OptionalParameter> OptionalParameters { get; }
+        public IList<OptionalParameter> OptionalParameters { get; } = new List<OptionalParameter>();
 
-        public void DecodeFromBytes(byte[] data, int offset)
+        public override void Decode(byte[] data, int offset)
         {
             Version = data[offset];
 

@@ -4,9 +4,13 @@ namespace BmpListener.Bmp
 {
     public class StatisticsReport : BmpMessage
     {
-        public StatisticsReport(byte[] data)
-            : base(data)
+        public StatisticsReport()
         {
-        }        
+        }
+
+        public override void Decode(byte[] data, int offset)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 
 namespace BmpListener.Bmp
@@ -30,6 +31,7 @@ namespace BmpListener.Bmp
 
         public void Decode(byte[] data, int offset)
         {
+            var b64 = Convert.ToBase64String(data.Skip(offset).ToArray());
             PeerType = (Type)data[offset];
             offset++;
 

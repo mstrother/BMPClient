@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public class BgpHeader
     {
-        public BgpHeader(byte[] data, int offset)
-        {
-            Decode(data, offset);
-        }
-
         public byte[] Marker { get; } = new byte[16];
         public int Length { get; private set; }
         public BgpMessageType Type { get; private set; }

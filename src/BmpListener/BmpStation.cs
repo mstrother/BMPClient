@@ -23,7 +23,6 @@ namespace BmpListener
         readonly IEventLoopGroup parentEventLoopGroup;
         readonly IEventLoopGroup eventLoopGroup;
         readonly ServerBootstrap bootstrap;
-        readonly BmpMessageHandler bmpMessageHandler;
         IChannel channel;
 
         public BmpStation(int port)
@@ -38,15 +37,14 @@ namespace BmpListener
             closeCompletionSource = new TaskCompletionSource();
             parentEventLoopGroup = new MultithreadEventLoopGroup(1);
             eventLoopGroup = new MultithreadEventLoopGroup();
-            bmpMessageHandler = new BmpMessageHandler();
         }
 
         public Task CloseCompletion => closeCompletionSource.Task;
 
-        public IObservable<BmpMessage> OnMessageReceived
-        {
-            get { return bmpMessageHandler.OnMessageReceived; }
-        }
+        //public IObservable<BmpMessage> OnMessageReceived
+        //{
+        //    get { return ((BmpMessageHandler)channel.Pipeline.Last()).OnMessageReceived; }
+        //}
 
         public int Port { get; }
 
@@ -86,8 +84,7 @@ namespace BmpListener
                 closeCompletionSource.TryComplete();
             }
         }
-
-        //channel.Pipeline.Last()
+                
         void Bootstrap()
         {
             bootstrap.Group(parentEventLoopGroup, eventLoopGroup);
@@ -100,7 +97,7 @@ namespace BmpListener
             {
                 IChannelPipeline pipeline = channel.Pipeline;
                 pipeline.AddLast(new LengthFieldBasedFrameDecoder(ByteOrder.BigEndian, 4096, 1, 4, -5, 0, true));
-                pipeline.AddLast(new BmpDecoder(), bmpMessageHandler);
+                pipeline.AddLast(new BmpDecoder(), new BmpMessageHandler());
             }));
         }
 

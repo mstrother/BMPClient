@@ -11,27 +11,7 @@ using System.Reactive;
 namespace BmpListener
 {
     public class BmpDecoder : ByteToMessageDecoder
-    {
-        public static BmpMessage Decode(byte[] data)
-        {
-            switch ((BmpMessageType)data[5])
-            {
-                case BmpMessageType.RouteMonitoring:
-                    return new RouteMonitoring(data);
-                case BmpMessageType.StatisticsReport:
-                    return new StatisticsReport(data);
-                case BmpMessageType.PeerDown:
-                    return new PeerDownNotification(data);
-                case BmpMessageType.PeerUp:
-                    return new PeerUpNotification(data);
-                case BmpMessageType.Initiation:
-                    return new BmpInitiation(data);
-                case BmpMessageType.Termination:
-                    throw new NotImplementedException();
-                default:
-                    return null;
-            }
-        }
+    {   
 
         protected override void Decode(IChannelHandlerContext context, IByteBuffer input, List<object> output)
         {
@@ -48,7 +28,7 @@ namespace BmpListener
 
                 var data = new byte[length];
                 input.ReadBytes(data);
-                var bmpMessage = Decode(data);
+                var bmpMessage = BmpMessage.ParseMessage(data);
 
                 if (bmpMessage != null)
                 {
