@@ -1,12 +1,8 @@
 ﻿using BmpListener.Bmp;
 using DotNetty.Transport.Channels;
 using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Threading.Tasks;
 
 namespace BmpListener
 {
