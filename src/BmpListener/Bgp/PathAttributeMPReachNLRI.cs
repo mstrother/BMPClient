@@ -43,8 +43,8 @@ namespace BmpListener.Bgp
 
             // RFC4760 - 1 reserved byte
             //offset++;
-            var offset = data.Offset + nextHopLength + 21;
-            var count = data.Count - nextHopLength - 21;
+            var offset = data.Offset + nextHopLength + 5;
+            var count = data.Count - nextHopLength - 5;
             data = new ArraySegment<byte>(data.Array, offset, count);
             SetNlri(data);
         }
