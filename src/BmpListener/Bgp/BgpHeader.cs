@@ -1,19 +1,27 @@
 ﻿using System;
+using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public class BgpHeader
     {
+        public BgpHeader()
+        {
+        }
+
+        public BgpHeader(ArraySegment<byte> data)
+        {
+            Decode(data);
+        }
+
         public byte[] Marker { get; } = new byte[16];
         public int Length { get; private set; }
         public BgpMessageType Type { get; private set; }
 
-        public void Decode(byte[] data, int offset)
+        public void Decode(ArraySegment<byte> data)
         {
-            Array.Copy(data, offset, Marker, 0, 16);
-            Array.Reverse(data, offset + 16, 2);
-            Length = BitConverter.ToInt16(data, offset + 16);
-            Type = (BgpMessageType)data[offset + 18];
+            Length = BigEndian.ToUInt16(data, 16);
+            Type = (BgpMessageType)data.ElementAt(18);
         }
     }
 }
