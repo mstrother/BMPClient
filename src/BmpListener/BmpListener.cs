@@ -7,14 +7,10 @@ using DotNetty.Codecs;
 using DotNetty.Buffers;
 using System.Threading;
 using DotNetty.Common.Concurrency;
-using BmpListener.Bmp;
-using System.Reactive.Linq;
-using System.Reactive.Disposables;
-using System.Reactive.Subjects;
 
 namespace BmpListener
 {
-    public class BmpStation
+    public class BmpListener
     {
         const int ListenBacklogSize = 200; // connections allowed pending accept
         static readonly TimeSpan DefaultConnectionIdleTimeout = TimeSpan.FromSeconds(180); // connection idle timeout
@@ -25,13 +21,13 @@ namespace BmpListener
         readonly ServerBootstrap bootstrap;
         IChannel channel;
 
-        public BmpStation(int port)
+        public BmpListener(int port)
             : this()
         {
             Port = port;
         }
 
-        public BmpStation()
+        public BmpListener()
         {
             bootstrap = new ServerBootstrap();
             closeCompletionSource = new TaskCompletionSource();
