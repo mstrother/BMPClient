@@ -2,7 +2,7 @@
 
 namespace BmpListener.Bmp
 {
-    public abstract class BmpMessage : IBgpMessage
+    public abstract class BmpMessage
     {
         public BmpHeader BmpHeader { get; set; }
         public PerPeerHeader PeerHeader { get; set; }
