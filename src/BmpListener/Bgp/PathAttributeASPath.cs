@@ -10,27 +10,28 @@ namespace BmpListener.Bgp
 
         public override void Decode(ArraySegment<byte> data)
         {
-            for (int i = 0; i < Length;)
+            for (var i = 0; i < Length;)
             {
                 //ValidateASPath(data);
 
                 var segmentType = (ASPathSegment.Type)data.First();
-                var asnCount = data.ElementAt(1);
-                var asnList = new List<int>();
+                var asCount = data.ElementAt(1);
+                var asList = new List<int>();
 
                 //TO DO 2 byte asn data
-                //for (int maxOffset = 4 * asnCount + offset; offset < maxOffset;)
-                //{
-                //    Array.Reverse(data, offset, 4);
-                //    var asn = BitConverter.ToInt32(data, offset);
-                //    asnList.Add(asn);
-                //    offset += 4;
-                //}
+                for (var j = 0; j < asCount;)
+                {
+                    var asn = BigEndian.ToInt32(data, j * 4 + 2);
+                    asList.Add(asn);
+                    j++;
+                }
 
-                var asPathSegment = new ASPathSegment(segmentType, asnList);
+                var asPathSegment = new ASPathSegment(segmentType, asList);
                 ASPaths.Add(asPathSegment);
 
-                i += 4 * asnCount + 2;
+                var offset = 4 * asCount + 2;
+                data = new ArraySegment<byte>(data.Array, data.Offset + offset, data.Count - offset);
+                i += offset;
             }
         }
 
