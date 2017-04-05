@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using BmpListener.Bgp;
+using System.Linq;
 
 namespace BmpListener.Bmp
 {
@@ -12,32 +13,34 @@ namespace BmpListener.Bmp
         public BgpOpenMessage SentOpenMessage { get; set; }
         public BgpOpenMessage ReceivedOpenMessage { get; set; }
 
-        public override void Decode(byte[] data, int offset)
+        public override void Decode(ArraySegment<byte> data)
         {
             // For IPv4 peers, the most significant bit of PeerHeader.Flags will be set to 0.
             if (((PeerHeader.Flags & (1 << 7)) != 0))
             {
                 var ipBytes = new byte[16];
-                Array.Copy(data, offset, ipBytes, 0, 16);
+                Array.Copy(data.Array, data.Offset, ipBytes, 0, 4);
                 LocalAddress = new IPAddress(ipBytes);
             }
             else
             {
                 var ipBytes = new byte[4];
-                Array.Copy(data, offset + 12, ipBytes, 0, 4);
+                Array.Copy(data.Array, data.Offset + 12, ipBytes, 0, 4);
                 LocalAddress = new IPAddress(ipBytes);
             }
 
-            Array.Reverse(data, offset + 16, 2);
-            LocalPort = BitConverter.ToUInt16(data, offset + 16);
+            LocalPort = BigEndian.ToUInt16(data, 16);
+            RemotePort = BigEndian.ToUInt16(data, 18);
 
-            Array.Reverse(data, offset + 18, 2);
-            RemotePort = BitConverter.ToUInt16(data, offset + 18);
+            int offset = data.Offset + 20;
+            int count = data.Count - 20;
+            data = new ArraySegment<byte>(data.Array, offset, count);
+            SentOpenMessage = BgpMessage.DecodeMessage(data) as BgpOpenMessage;
 
-            offset += 20;
-            SentOpenMessage = BgpMessage.ParseMessage(data, offset) as BgpOpenMessage;
             offset += SentOpenMessage.Header.Length;
-            ReceivedOpenMessage = BgpMessage.ParseMessage(data, offset) as BgpOpenMessage;
+            count -= SentOpenMessage.Header.Length;
+            data = new ArraySegment<byte>(data.Array, offset, count);
+            ReceivedOpenMessage = BgpMessage.DecodeMessage(data) as BgpOpenMessage;
         }
     }
 }

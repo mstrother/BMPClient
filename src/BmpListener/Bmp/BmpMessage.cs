@@ -2,40 +2,42 @@
 
 namespace BmpListener.Bmp
 {
-    public abstract class BmpMessage
+    public abstract class BmpMessage : IBgpMessage
     {
-        public BmpHeader BmpHeader { get; private set; }
-        public PerPeerHeader PeerHeader { get; private set; }
+        public BmpHeader BmpHeader { get; set; }
+        public PerPeerHeader PeerHeader { get; set; }
 
-        public abstract void Decode(byte[] data, int offset);
+        public abstract void Decode(ArraySegment<byte> data);
 
-        public static BmpMessage ParseMessage(byte[] data)
+        public static BmpMessage DecodeMessage(byte[] bytes)
         {
-            var bmpHeader = new BmpHeader(data);
-            
-            if (bmpHeader.MessageType == BmpMessageType.Initiation)
-            {
-                return new BmpInitiation();
-            }
+            var data = new ArraySegment<byte>(bytes);
+            return DecodeMessage(data);
+        }
 
-            BmpMessage bmpMsg;
+        public static BmpMessage DecodeMessage(ArraySegment<byte> data)
+        {
+            var msgHeader = new BmpHeader();
+            msgHeader.Decode(data);
 
-            switch (bmpHeader.MessageType)
+            BmpMessage msg;
+
+            switch (msgHeader.MessageType)
             {
+                case BmpMessageType.Initiation:
+                    msg = new BmpInitiation();
+                    break;
                 case BmpMessageType.RouteMonitoring:
-                    bmpMsg = new RouteMonitoring();
+                    msg = new RouteMonitoring();
                     break;
                 case BmpMessageType.StatisticsReport:
-                    bmpMsg = new StatisticsReport();
+                    msg = new StatisticsReport();
                     break;
                 case BmpMessageType.PeerDown:
-                    bmpMsg = new PeerDownNotification();
+                    msg = new PeerDownNotification();
                     break;
                 case BmpMessageType.PeerUp:
-                    bmpMsg = new PeerUpNotification();
-                    break;
-                case BmpMessageType.Initiation:
-                    bmpMsg = new BmpInitiation();
+                    msg = new PeerUpNotification();
                     break;
                 case BmpMessageType.Termination:
                     throw new NotImplementedException();
@@ -43,13 +45,24 @@ namespace BmpListener.Bmp
                     return null;
             }
 
-            var perPeerHeader = new PerPeerHeader(data, Constants.BmpCommonHeaderLength);
-            var offset = Constants.BmpCommonHeaderLength + Constants.BmpPerPeerHeaderLength;
+            msg.BmpHeader = msgHeader;
 
-            bmpMsg.BmpHeader = bmpHeader;
-            bmpMsg.PeerHeader = perPeerHeader;
-            bmpMsg.Decode(data, offset);
-            return bmpMsg;
+            var offset = data.Offset + Constants.BmpCommonHeaderLength;
+            var count = data.Count - Constants.BmpCommonHeaderLength;
+            data = new ArraySegment<byte>(data.Array, offset, count);
+
+            if (msgHeader.MessageType != BmpMessageType.Initiation)
+            {
+                msg.PeerHeader = new PerPeerHeader();
+                msg.PeerHeader.Decode(data);
+
+                offset += Constants.BmpPerPeerHeaderLength;
+                count -= Constants.BmpPerPeerHeaderLength;
+                data = new ArraySegment<byte>(data.Array, offset, count);
+            }
+
+            msg.Decode(data);
+            return msg;
         }
     }
 }

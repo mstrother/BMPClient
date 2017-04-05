@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using BmpListener.Bmp;
-using System;
-using System.Reactive.Subjects;
-using System.Reactive.Linq;
-using System.Reactive;
 
 namespace BmpListener
 {
@@ -28,7 +24,7 @@ namespace BmpListener
 
                 var data = new byte[length];
                 input.ReadBytes(data);
-                var bmpMessage = BmpMessage.ParseMessage(data);
+                var bmpMessage = BmpMessage.DecodeMessage(data);
 
                 if (bmpMessage != null)
                 {

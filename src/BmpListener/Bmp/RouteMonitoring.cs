@@ -1,4 +1,5 @@
 ﻿using BmpListener.Bgp;
+using System;
 
 namespace BmpListener.Bmp
 {
@@ -6,9 +7,9 @@ namespace BmpListener.Bmp
     {
         public BgpMessage BgpMessage { get; set; }
 
-        public override void Decode(byte[] data, int offset)
+        public override void Decode(ArraySegment<byte> data)
         {
-            BgpMessage = BgpMessage.ParseMessage(data, offset);
+            BgpMessage = BgpMessage.DecodeMessage(data);
         }
     }
 }
