@@ -1,39 +1,60 @@
 ﻿using System;
+using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public abstract class Capability
     {
-        protected Capability(byte[] data, int offset)
-        {
-            CapabilityType = (CapabilityCode)data[offset];
-            CapabilityLength = data[offset + 1];
-        }
+        public CapabilityCode Code { get; protected set; }
+        public int Length { get; protected set; }
         
-        public CapabilityCode CapabilityType { get; }
-        public int CapabilityLength { get; }
+        public virtual void Decode(ArraySegment<byte> data)
+        {
+        }
 
-        public static Capability GetCapability(byte[] data, int offset)
-        {            
-            switch ((CapabilityCode)data[offset])
+        public static (Capability capability, int length) DecodeCapability(ArraySegment<byte> data)
+        {
+            Capability capability;
+
+            var capabilityType = (CapabilityCode)data.First();
+
+            switch (capabilityType)
             {
                 case CapabilityCode.Multiprotocol:
-                    return new CapabilityMultiProtocol(data, offset);
+                    capability = new CapabilityMultiProtocol();
+                    break;
                 case CapabilityCode.RouteRefresh:
-                    return new CapabilityRouteRefresh(data, offset);
+                    capability = new CapabilityRouteRefresh();
+                    break;
                 case CapabilityCode.GracefulRestart:
-                    return new CapabilityGracefulRestart(data, offset);
+                    capability = new CapabilityGracefulRestart();
+                    break;
                 case CapabilityCode.FourOctetAs:
-                    return new CapabilityFourOctetAsNumber(data, offset);
+                    capability = new CapabilityFourOctetAsNumber();
+                    break;
                 case CapabilityCode.AddPath:
-                    return new CapabilityAddPath(data, offset);
+                    capability = new CapabilityAddPath();
+                    break;
                 case CapabilityCode.EnhancedRouteRefresh:
-                    return new CapabilityEnhancedRouteRefresh(data, offset);
+                    capability = new CapabilityEnhancedRouteRefresh();
+                    break;
                 case CapabilityCode.CiscoRouteRefresh:
-                    return new CapabilityCiscoRouteRefresh(data, offset);
+                    capability = new CapabilityCiscoRouteRefresh();
+                    break;
                 default:
-                    return null;
+                    throw new Exception();
             }
+
+            capability.Code = capabilityType;
+            capability.Length = data.ElementAt(1);
+
+            if (capability.Length > 0)
+            {
+                data = new ArraySegment<byte>(data.Array, data.Offset + 2, capability.Length);
+                capability.Decode(data);
+            }
+
+            return (capability, capability.Length + 2);
         }
     }
 }

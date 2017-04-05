@@ -1,15 +1,10 @@
 ﻿using System;
+using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public class CapabilityMultiProtocol : Capability
     {
-        public CapabilityMultiProtocol(byte[] data, int offset) 
-            : base(data, offset)
-        {
-            Decode(data, offset + 2);
-        }
-
         public AddressFamily Afi { get; set; }
         public SubsequentAddressFamily Safi { get; set; }
 
@@ -17,11 +12,10 @@ namespace BmpListener.Bgp
         // sender and ignored by the receiver.
         public byte Res { get { return 0; } }
 
-        public void Decode(byte[] data, int offset)
+        public override void Decode(ArraySegment<byte> data)
         {
-            Array.Reverse(data, offset, 2);
-            Afi = (AddressFamily)BitConverter.ToInt16(data, offset);
-            Safi = (SubsequentAddressFamily)data[offset + 3];
+            Afi = (AddressFamily)BigEndian.ToInt16(data, 0);
+            Safi = (SubsequentAddressFamily)data.ElementAt(3);
         }
     }
 }

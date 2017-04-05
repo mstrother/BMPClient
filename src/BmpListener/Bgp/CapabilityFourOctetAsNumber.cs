@@ -2,20 +2,14 @@
 
 namespace BmpListener.Bgp
 {
+    // RFC 6793
     public class CapabilityFourOctetAsNumber : Capability
     {
-        public CapabilityFourOctetAsNumber(byte[] data, int offset) 
-            : base(data, offset)
-        {
-            Decode(data, offset + 2);
-        }
-
         public int Asn { get; private set; }
 
-        public void Decode(byte[] data, int offset)
+        public override void Decode(ArraySegment<byte> data)
         {
-            Array.Reverse(data, offset, 4);
-            Asn = BitConverter.ToInt32(data, offset);
+            Asn = BigEndian.ToInt32(data, 0);
         }
     }
 }
