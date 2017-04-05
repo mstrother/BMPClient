@@ -8,12 +8,12 @@ namespace BmpListener.Bgp
     {
         public AddressFamily AFI { get; private set; }
         public SubsequentAddressFamily SAFI { get; private set; }
-        public IList<IPAddrPrefix> WithdrawnRoutes { get; }
+        public IList<IPAddrPrefix> WithdrawnRoutes { get; } = new List<IPAddrPrefix>();
 
         public override void Decode(ArraySegment<byte> data)
         {
             AFI = (AddressFamily)BigEndian.ToInt16(data, 0);
-            SAFI = (SubsequentAddressFamily) data.ElementAt(3);
+            SAFI = (SubsequentAddressFamily) data.ElementAt(2);
             
             for (var i = 0; i < data.Count;)
             {
