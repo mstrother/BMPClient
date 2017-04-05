@@ -2,9 +2,9 @@
 
 namespace BmpListener.Bgp
 {
-    public sealed class BgpNotification : BgpMessage
+    public sealed class BgpNotificationMessage : BgpMessage
     {
-        public override void Decode(byte[] data, int offset)
+        public override void Decode(ArraySegment<byte> data)
         {
             throw new NotImplementedException();
         }

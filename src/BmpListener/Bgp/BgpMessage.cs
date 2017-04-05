@@ -4,34 +4,33 @@ namespace BmpListener.Bgp
 {
     public abstract class BgpMessage
     {
-        public BgpHeader Header { get; protected set; }
+        public BgpHeader Header { get; private set; }
 
-        public abstract void Decode(byte[] data, int offset);
+        public abstract void Decode(ArraySegment<byte> data);
 
-        public static BgpMessage ParseMessage(byte[] data)
+        public static BgpMessage DecodeMessage(ArraySegment<byte> data)
         {
-            return ParseMessage(data, 0);
-        }
+            var msgHeader = new BgpHeader(data);
 
-        public static BgpMessage ParseMessage(byte[] data, int offset)
-        {
-            var bgpHeader = new BgpHeader();
-            bgpHeader.Decode(data, offset);
-            BgpMessage bgpMsg;
+            var offset = data.Offset + Constants.BgpHeaderLength;
+            var count = data.Count - Constants.BgpHeaderLength;
+            data = new ArraySegment<byte>(data.Array, offset, count);
 
-            switch (bgpHeader.Type)
+            BgpMessage msg;
+
+            switch (msgHeader.Type)
             {
                 case BgpMessageType.Open:
-                    bgpMsg = new BgpOpenMessage();
+                    msg = new BgpOpenMessage();
                     break;
                 case BgpMessageType.Update:
-                    bgpMsg = new BgpUpdateMessage();
+                    msg = new BgpUpdateMessage();
                     break;
                 case BgpMessageType.Notification:
-                    bgpMsg = new BgpNotification();
+                    msg = new BgpNotificationMessage();
                     break;
                 case BgpMessageType.Keepalive:
-                    bgpMsg = new BgpKeepAliveMessage();
+                    msg = new BgpKeepAliveMessage();
                     break;
                 case BgpMessageType.RouteRefresh:
                     throw new NotImplementedException();
@@ -39,11 +38,9 @@ namespace BmpListener.Bgp
                     return null;
             }
 
-            offset += Constants.BgpHeaderLength;
-
-            bgpMsg.Header = bgpHeader;
-            bgpMsg.Decode(data, offset);
-            return bgpMsg;
+            msg.Header = msgHeader;
+            msg.Decode(data);
+            return msg;
         }
     }
 }

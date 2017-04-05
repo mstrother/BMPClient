@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 
 namespace BmpListener.Bgp
@@ -9,28 +10,27 @@ namespace BmpListener.Bgp
         public byte Version { get; private set; }
         public int MyAS { get; private set; }
         public int HoldTime { get; private set; }
-        public IPAddress Id { get; private set; }
+        public IPAddress BgpIdentifier { get; private set; }
+        public int OptionalParametersLength { get; private set; }
         public IList<OptionalParameter> OptionalParameters { get; } = new List<OptionalParameter>();
 
-        public override void Decode(byte[] data, int offset)
+        public override void Decode(ArraySegment<byte> data)
         {
-            Version = data[offset];
-
-            Array.Reverse(data, offset + 1, 2);
-            MyAS = BitConverter.ToUInt16(data, offset + 1);
-
-            Array.Reverse(data, offset + 3, 2);
-            HoldTime = BitConverter.ToInt16(data, offset + 3);
+            Version = data.First();
+            MyAS = BigEndian.ToUInt16(data, 1);
+            HoldTime = BigEndian.ToInt16(data, 3);
 
             var ipBytes = new byte[4];
-            Array.Copy(data, offset + 5, ipBytes, 0, 4);
-            Id = new IPAddress(ipBytes);
+            Array.Copy(data.Array, data.Offset + 4, ipBytes, 0, 4);
+            BgpIdentifier = new IPAddress(ipBytes);
 
-            var optionalParametersLength = data[offset + 9];
+            OptionalParametersLength = data.ElementAt(9);
 
-            offset += 10;
+            var offset = data.Offset + 10;
+            var count = OptionalParametersLength;
+            data = new ArraySegment<byte>(data.Array, offset, count);
 
-            for (int i = 0; i < optionalParametersLength;)
+            for (var i = 0; i < OptionalParametersLength;)
             {
                 if (i < 2)
                 {
@@ -38,18 +38,23 @@ namespace BmpListener.Bgp
                 }
 
                 OptionalParameter optParam;
-                if (data[offset] == 2)
-                {
-                    optParam = new CapabilitiesOptionalParameter(data, offset);
-                }
-                else
-                {
-                    optParam = new CapabilitiesOptionalParameter(data, offset);
-                }
-                OptionalParameters.Add(optParam);
 
-                offset += optParam.ParameterLength + 2;
-                i += optParam.ParameterLength + 2;
+                switch (data.First())
+                {
+                    case 2:
+                        optParam = new CapabilitiesParameter();
+                        break;
+                    default:
+                        optParam = new OptionalParameterUnknown();
+                        break;
+                }
+
+                optParam.Decode(data);
+                OptionalParameters.Add(optParam);
+                i += optParam.Length + 2;
+                offset += optParam.Length + 2;
+                count -= optParam.Length + 2;
+                data = new ArraySegment<byte>(data.Array, offset, count);
             }
         }
     }
