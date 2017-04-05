@@ -4,18 +4,11 @@ namespace BmpListener.Bgp
 {
     public class PathAttributeCommunity : PathAttribute
     {
-        public PathAttributeCommunity(byte[] data, int offset) 
-            : base(data, offset)
-        {
-            Decode(data, Offset);
-        }
-
         public uint Community { get; private set; }
 
-        protected void Decode(byte[] data, int offset)
+        public override void Decode(ArraySegment<byte> data)
         {
-            Array.Reverse(data, offset, 4);
-            Community = BitConverter.ToUInt32(data, offset);
+            Community = BigEndian.ToUInt32(data, 0);
         }
     }
 }

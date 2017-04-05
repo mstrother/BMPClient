@@ -1,28 +1,10 @@
 ﻿using System;
+using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public abstract class PathAttribute
     {
-        protected PathAttribute(byte[] data, int offset)
-        {
-            Flags = (AttributeFlags)data[offset];
-            AttributeType = (PathAttributeType)data[offset + 1];
-
-            bool extLength = (data[offset] & (1 << 4)) != 0;
-            if (extLength)
-            {
-                Array.Reverse(data, offset + 2, 2);
-                Length = BitConverter.ToUInt16(data, offset + 2);
-            }
-            else
-            {
-                Length = data[offset + 2];
-            }
-
-            Offset = extLength ? offset += 4 : offset += 3;
-        }
-
         [Flags]
         public enum AttributeFlags
         {
@@ -32,57 +14,95 @@ namespace BmpListener.Bgp
             Optional = 1 << 7
         }
 
-        protected int Offset { get; }
-
         public AttributeFlags Flags { get; private set; }
         public PathAttributeType AttributeType { get; private set; }
         public int Length { get; private set; }
 
-        public static PathAttribute Create(byte[] data, int offset)
+        public virtual void Decode(ArraySegment<byte> data)
         {
-            var attributeType = (PathAttributeType)data[offset + 1];
+        }
+
+        public static (PathAttribute, int) DecodeAttribute(ArraySegment<byte> data)
+        {
+            var attributeType = (PathAttributeType) data.ElementAt(1);
+            PathAttribute attr;
 
             switch (attributeType)
             {
                 case PathAttributeType.ORIGIN:
-                    return new PathAttributeOrigin(data, offset);
+                    attr = new PathAttributeOrigin();
+                    break;
                 case PathAttributeType.AS_PATH:
-                    return new PathAttributeASPath(data, offset);
+                    attr = new PathAttributeASPath();
+                    break;
                 case PathAttributeType.NEXT_HOP:
-                    return new PathAttributeNextHop(data, offset);
+                    attr = new PathAttributeNextHop();
+                    break;
                 case PathAttributeType.MULTI_EXIT_DISC:
-                    return new PathAttributeMultiExitDisc(data, offset);
+                    attr = new PathAttributeMultiExitDisc();
+                    break;
                 case PathAttributeType.LOCAL_PREF:
-                    return new PathAttributeUnknown(data, offset);
+                    attr = new PathAttributeUnknown();
+                    break;
                 case PathAttributeType.ATOMIC_AGGREGATE:
-                    return new PathAttrAtomicAggregate(data, offset);
+                    attr = new PathAttrAtomicAggregate();
+                    break;
                 case PathAttributeType.AGGREGATOR:
-                    return new PathAttributeAggregator(data, offset);
+                    attr = new PathAttributeAggregator();
+                    break;
                 case PathAttributeType.COMMUNITY:
-                    return new PathAttributeCommunity(data, offset);
+                    attr = new PathAttributeCommunity();
+                    break;
                 case PathAttributeType.ORIGINATOR_ID:
-                    return new PathAttributeUnknown(data, offset);
+                    attr = new PathAttributeUnknown();
+                    break;
                 case PathAttributeType.CLUSTER_LIST:
-                    return new PathAttributeUnknown(data, offset);
+                    attr = new PathAttributeUnknown();
+                    break;
                 case PathAttributeType.MP_REACH_NLRI:
-                    return new PathAttributeMPReachNLRI(data, offset);
+                    attr = new PathAttributeMPReachNLRI();
+                    break;
                 case PathAttributeType.MP_UNREACH_NLRI:
-                    return new PathAttributeMPUnreachNLRI(data, offset);
+                    attr = new PathAttributeMPUnreachNLRI();
+                    break;
                 case PathAttributeType.EXTENDED_COMMUNITIES:
-                    return new PathAttributeUnknown(data, offset);
+                    attr = new PathAttributeUnknown();
+                    break;
                 case PathAttributeType.AS4_PATH:
-                    return new PathAttributeUnknown(data, offset);
+                    attr = new PathAttributeUnknown();
+                    break;
                 case PathAttributeType.AS4_AGGREGATOR:
-                    return new PathAttributeUnknown(data, offset);
+                    attr = new PathAttributeUnknown();
+                    break;
                 case PathAttributeType.PMSI_TUNNEL:
-                    return new PathAttributeUnknown(data, offset);
+                    attr = new PathAttributeUnknown();
+                    break;
                 case PathAttributeType.TUNNEL_ENCAP:
-                    return new PathAttributeUnknown(data, offset);
+                    attr = new PathAttributeUnknown();
+                    break;
                 case PathAttributeType.LARGE_COMMUNITY:
-                    return new PathAttributeLargeCommunities(data, offset);
+                    attr = new PathAttributeLargeCommunities();
+                    break;
                 default:
-                    return new PathAttributeUnknown(data, offset);
+                    attr = new PathAttributeUnknown();
+                    break;
             }
+
+            attr.Flags = (AttributeFlags) data.First();
+            attr.AttributeType = (PathAttributeType) data.ElementAt(1);
+
+            attr.Length = (attr.Flags & AttributeFlags.ExtendedLength) == AttributeFlags.ExtendedLength
+                ? BigEndian.ToUInt16(data, 2)
+                : data.ElementAt(2);
+
+            data = new ArraySegment<byte>(data.Array, data.Offset + 2, attr.Length);
+            attr.Decode(data);
+
+            var length = attr.Flags.HasFlag(AttributeFlags.ExtendedLength)
+                ? attr.Length + 4
+                : attr.Length + 3;
+
+            return (attr, length);
         }
     }
 }

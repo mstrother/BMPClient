@@ -1,35 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public class PathAttributeMPUnreachNLRI : PathAttribute
     {
-        public PathAttributeMPUnreachNLRI(byte[] data, int offset)
-            : base(data, offset)
-        {
-            WithdrawnRoutes = new List<IPAddrPrefix>();
-            Decode(data, Offset);
-        }
-
         public AddressFamily AFI { get; private set; }
         public SubsequentAddressFamily SAFI { get; private set; }
         public IList<IPAddrPrefix> WithdrawnRoutes { get; }
 
-        protected void Decode(byte[] data, int offset)
+        public override void Decode(ArraySegment<byte> data)
         {
-            Array.Reverse(data, offset, 2);
-            AFI = (AddressFamily)BitConverter.ToInt16(data, offset);
-            SAFI = (SubsequentAddressFamily)data[offset + 2];
-            offset += 3;
-
-            var maxOffset = Length - offset;
-            while (offset < maxOffset)
+            AFI = (AddressFamily)BigEndian.ToInt16(data, 0);
+            SAFI = (SubsequentAddressFamily) data.ElementAt(3);
+            
+            for (var i = 0; i < data.Count;)
             {
-                var prefix = new IPAddrPrefix(data, offset, AFI);
-                offset += prefix.ByteLength;
+                (IPAddrPrefix prefix, int byteLength) = IPAddrPrefix.Decode(data, i, AFI);
+                WithdrawnRoutes.Add(prefix);
+                i += byteLength;
             }
         }
     }
 }
-

@@ -1,38 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public class PathAttributeASPath : PathAttribute
     {
-        public PathAttributeASPath(byte[] data, int offset)
-            : base(data, offset)
-        {
-            ASPaths = new List<ASPathSegment>();
-            Decode(data, Offset);
-        }
+        public IList<ASPathSegment> ASPaths { get; } = new List<ASPathSegment>();
 
-        public IList<ASPathSegment> ASPaths { get; }
-
-        protected void Decode(byte[] data, int offset)
+        public override void Decode(ArraySegment<byte> data)
         {
             for (int i = 0; i < Length;)
             {
                 //ValidateASPath(data);
 
-                var segmentType = (ASPathSegment.Type)data[offset];
-                var asnCount = data[offset + 1];
+                var segmentType = (ASPathSegment.Type)data.First();
+                var asnCount = data.ElementAt(1);
                 var asnList = new List<int>();
 
                 //TO DO 2 byte asn data
-                offset += 2;
-                for (int maxOffset = 4 * asnCount + offset; offset < maxOffset;)
-                {
-                    Array.Reverse(data, offset, 4);
-                    var asn = BitConverter.ToInt32(data, offset);
-                    asnList.Add(asn);
-                    offset += 4;
-                }
+                //for (int maxOffset = 4 * asnCount + offset; offset < maxOffset;)
+                //{
+                //    Array.Reverse(data, offset, 4);
+                //    var asn = BitConverter.ToInt32(data, offset);
+                //    asnList.Add(asn);
+                //    offset += 4;
+                //}
 
                 var asPathSegment = new ASPathSegment(segmentType, asnList);
                 ASPaths.Add(asPathSegment);
@@ -43,11 +36,11 @@ namespace BmpListener.Bgp
 
         //public bool ValidateASPath(byte[] data, int offset)
         //{
-        //    if (data.Length % 2 != 0 || data.Length < 2)
+        //    if (data.Type % 2 != 0 || data.Type < 2)
         //    {
         //        return false;
         //    }
-        //    if (data[data.Length] == 0 || data.Array[data.Length] > 4)
+        //    if (data[data.Type] == 0 || data.Array[data.Type] > 4)
         //    {
         //        return false;
         //    }

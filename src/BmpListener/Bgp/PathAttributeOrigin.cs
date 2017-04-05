@@ -1,15 +1,10 @@
 ﻿using System;
+using System.Linq;
 
 namespace BmpListener.Bgp
 {
     public class PathAttributeOrigin : PathAttribute
     {
-        public PathAttributeOrigin(byte[] data, int offset) 
-            : base(data, offset)
-        {
-            Decode(data, Offset);
-        }
-
         public enum Type
         {
             IGP,
@@ -19,9 +14,9 @@ namespace BmpListener.Bgp
 
         public Type Origin { get; private set; }
 
-        protected void Decode(byte[] data, int offset)
+        public override void Decode(ArraySegment<byte> data)
         {
-            Origin = (Type)data[offset];
+            Origin = (Type) data.First();
         }
     }
 }

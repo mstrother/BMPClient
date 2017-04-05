@@ -4,11 +4,6 @@ namespace BmpListener.Bgp
 {
     public class PathAttributeLargeCommunities : PathAttribute
     {
-        public PathAttributeLargeCommunities(byte[] data, int offset) : base(data, offset)
-        {
-            Decode(data, Offset);
-        }
-
         public int Asn { get; set; }
         public int LocalData1 { get; set; }
         public int LocalData2 { get; set; }
@@ -18,16 +13,11 @@ namespace BmpListener.Bgp
             return ($"{Asn}:{LocalData1}:{LocalData2}");
         }
 
-        protected void Decode(byte[] data, int offset)
+        public override void Decode(ArraySegment<byte> data)
         {
-            Array.Reverse(data, offset, 4);
-            Asn = BitConverter.ToInt32(data, offset);
-
-            Array.Reverse(data, offset + 4, 4);
-            LocalData1 = BitConverter.ToInt32(data, offset);
-
-            Array.Reverse(data, offset + 8, 4);
-            LocalData2 = BitConverter.ToInt32(data, offset);
+            Asn = BigEndian.ToInt32(data, 0);
+            LocalData1 = BigEndian.ToInt32(data, 4);
+            LocalData2 = BigEndian.ToInt32(data, 8);
         }
     }
 }
