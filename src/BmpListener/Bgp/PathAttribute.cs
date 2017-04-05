@@ -91,14 +91,22 @@ namespace BmpListener.Bgp
             attr.Flags = (AttributeFlags) data.First();
             attr.AttributeType = (PathAttributeType) data.ElementAt(1);
 
-            attr.Length = (attr.Flags & AttributeFlags.ExtendedLength) == AttributeFlags.ExtendedLength
-                ? BigEndian.ToUInt16(data, 2)
-                : data.ElementAt(2);
+            var extendedLength = (attr.Flags & AttributeFlags.ExtendedLength) == AttributeFlags.ExtendedLength;
 
-            data = new ArraySegment<byte>(data.Array, data.Offset + 2, attr.Length);
+            if (extendedLength)
+            {
+                attr.Length = BigEndian.ToUInt16(data, 2);
+                data = new ArraySegment<byte>(data.Array, data.Offset + 4, attr.Length);
+            }
+            else
+            {
+                attr.Length = data.ElementAt(2);
+                data = new ArraySegment<byte>(data.Array, data.Offset + 3, attr.Length);
+            }
+            
             attr.Decode(data);
 
-            var length = attr.Flags.HasFlag(AttributeFlags.ExtendedLength)
+            var length = extendedLength
                 ? attr.Length + 4
                 : attr.Length + 3;
 
