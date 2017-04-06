@@ -4,8 +4,8 @@ namespace BmpListener.Bmp
 {
     public abstract class BmpMessage
     {
-        public BmpHeader BmpHeader { get; set; }
-        public PerPeerHeader PeerHeader { get; set; }
+        public BmpHeader BmpHeader { get; private set; }
+        public PerPeerHeader PeerHeader { get; private set; }
 
         public abstract void Decode(ArraySegment<byte> data);
 
@@ -53,6 +53,7 @@ namespace BmpListener.Bmp
 
             if (msgHeader.MessageType != BmpMessageType.Initiation)
             {
+                data = new ArraySegment<byte>(data.Array, data.Offset, Constants.BmpPerPeerHeaderLength);
                 msg.PeerHeader = new PerPeerHeader();
                 msg.PeerHeader.Decode(data);
 

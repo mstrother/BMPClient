@@ -7,11 +7,11 @@ namespace BmpListener.Bmp
 {
     public class PeerUpNotification : BmpMessage
     {
-        public IPAddress LocalAddress { get; set; }
-        public int LocalPort { get; set; }
-        public int RemotePort { get; set; }
-        public BgpOpenMessage SentOpenMessage { get; set; }
-        public BgpOpenMessage ReceivedOpenMessage { get; set; }
+        public IPAddress LocalAddress { get; private set; }
+        public int LocalPort { get; private set; }
+        public int RemotePort { get; private set; }
+        public BgpOpenMessage SentOpenMessage { get; private set; }
+        public BgpOpenMessage ReceivedOpenMessage { get; private set; }
 
         public override void Decode(ArraySegment<byte> data)
         {
