@@ -3,6 +3,7 @@ using BmpListener.Bmp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using Xunit;
 
@@ -62,23 +63,68 @@ namespace BmpListener.Tests
         [InlineData("/////////////////////wAtAQ==")]
         public void BgpHeaderDecodes(string value)
         {
-            var data = Convert.FromBase64String(value);
+            var data = new ArraySegment<byte>(Convert.FromBase64String(value));
             var bgpHeader = new BgpHeader();
-            bgpHeader.Decode(data, 0);
+            bgpHeader.Decode(data);
             Assert.Equal(bgpHeader.Length, 45);
-            Assert.Equal(bgpHeader.Type, BgpMessageType.Open);            
+            Assert.Equal(bgpHeader.Type, BgpMessageType.Open);
         }
 
         [Theory]
         [InlineData("BFugAFponP0VEAIOAgABBAABAAFBBAAGCVv/////////////////////ADcBBPwDAPAtPyErGgIYAQQAAQABAgBABgB4AAEBAEEEAAD8A0YA")]
         public void BgpOpenDecodes(string value)
         {
-            var data = Convert.FromBase64String(value);
+            var data = new ArraySegment<byte>(Convert.FromBase64String(value));
             var msg = new BgpOpenMessage();
-            msg.Decode(data, 0);
+            msg.Decode(data);
             Assert.Equal(msg.MyAS, 23456);
             Assert.Equal(msg.Version, 4);
             Assert.Equal(msg.HoldTime, 90);
+        }
+
+        [Theory]
+        [InlineData("FVtiYA==")]
+        public void IPv4PrefixDecodes(string value)
+        {
+            var data = Convert.FromBase64String(value);
+            (IPAddrPrefix prefix, int byteLength) = IPAddrPrefix.Decode(data, 0, AddressFamily.IP);
+            Assert.Equal(prefix.Prefix, IPAddress.Parse("91.98.96.0"));
+            Assert.Equal(prefix.Length, 21);
+            Assert.Equal(byteLength, 4);
+            Assert.Equal(prefix.ToString(), "91.98.96.0/21");
+        }
+
+        [Theory]
+        [InlineData("LCYGroAUEA ==")]
+        public void IPv6PrefixDecodes(string value)
+        {
+            var data = Convert.FromBase64String(value);
+            (IPAddrPrefix prefix, int byteLength) = IPAddrPrefix.Decode(data, 0, AddressFamily.IP6);
+            Assert.Equal(prefix.Prefix, IPAddress.Parse("2606:ae80:1410::"));
+            Assert.Equal(prefix.Length, 44);
+            Assert.Equal(byteLength, 7);
+            Assert.Equal(prefix.ToString(), "2606:ae80:1410::/44");
+        }
+
+        [Theory]
+        [InlineData("AAYJWw==")]
+        public void CapabilityFourOctetASDecodes(string value)
+        {
+            var data = new ArraySegment<byte>(Convert.FromBase64String(value));
+            var capability = new CapabilityFourOctetAsNumber();
+            capability.Decode(data);
+            Assert.Equal(395611, capability.Asn);
+        }
+
+        [Theory]
+        [InlineData("AAEAAQ==")]
+        public void CapabilityMultiProtocolDecodes(string value)
+        {
+            var data = new ArraySegment<byte>(Convert.FromBase64String(value));
+            var capability = new CapabilityMultiProtocol();
+            capability.Decode(data);
+            Assert.Equal(capability.Afi, AddressFamily.IP);
+            Assert.Equal(capability.Safi, SubsequentAddressFamily.Unicast);
         }
     }
 }
