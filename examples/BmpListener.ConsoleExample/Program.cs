@@ -19,17 +19,17 @@ namespace BmpListener.ConsoleExample
             int threadCount = Environment.ProcessorCount;
 
             var cts = new CancellationTokenSource();
-            var bmpListener = new BmpStation(11019);
+            var bmpListener = new BmpListener(11019);
 
             Console.WriteLine($"Starting new BMP agent on port {bmpListener.Port}.");
             Task.Run(() => bmpListener.StartAsync(cts.Token), cts.Token);
-            Console.WriteLine($"BMP agent started at {DateTime.UtcNow.ToString("hh\\:mm\\:ss")} (UTC).");
+            Console.WriteLine($"BMP agent started at {DateTime.UtcNow:hh\\:mm\\:ss} (UTC).");
             Console.WriteLine();
             Console.WriteLine("Press any key to shutdown.");
 
             var logger = new ConsoleLogger();
-            Task.Run(() => logger.StartAsync(cts.Token), cts.Token);
-            bmpListener.OnMessageReceived.Subscribe(logger.LogMessageAsync);
+            //Task.Run(() => logger.StartAsync(cts.Token), cts.Token);
+            //bmpListener.OnMessageReceived.Subscribe(logger.LogMessageAsync);
 
             Console.ReadKey(true);
             cts.Cancel();

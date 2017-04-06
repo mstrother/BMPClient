@@ -96,7 +96,5 @@ namespace BmpListener
                 pipeline.AddLast(new BmpDecoder(), new BmpMessageHandler());
             }));
         }
-
-
     }
 }

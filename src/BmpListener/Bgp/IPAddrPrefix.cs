@@ -31,10 +31,6 @@ namespace BmpListener.Bgp
 
         public static (IPAddrPrefix prefix, int byteLength) Decode(ArraySegment<byte> data, int offset, AddressFamily afi)
         {
-            byte bitLength = data.First();
-            var ipBytes = afi == AddressFamily.IP
-                ? new byte[4]
-                : new byte[16];
             offset += data.Offset;
             return Decode(data.Array, data.Offset, afi);
         }
