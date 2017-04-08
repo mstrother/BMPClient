@@ -42,7 +42,8 @@ namespace BmpListener.Bgp
                     capability = new CapabilityCiscoRouteRefresh();
                     break;
                 default:
-                    throw new Exception();
+                    capability = new CapabilityUnknown();
+                    break;
             }
 
             capability.Code = capabilityType;
