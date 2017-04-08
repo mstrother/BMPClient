@@ -19,14 +19,28 @@ namespace BmpListener.Bgp
                 // End-of-RIB
             }
 
-            WithdrawnRoutesLength = EndianBitConverter.Big.ToInt16(data, 0);
-            data = new ArraySegment<byte>(data.Array, data.Offset + 2, WithdrawnRoutesLength);
-            SetwithdrawnRoutes(data);
+            int offset = data.Offset;
+            int count = data.Count;
 
-            data = new ArraySegment<byte>(data.Array, data.Offset + WithdrawnRoutesLength, data.Count - WithdrawnRoutesLength);
+            WithdrawnRoutesLength = EndianBitConverter.Big.ToInt16(data, 0);
+            offset += 2;
+            count -= 2;
+            data = new ArraySegment<byte>(data.Array, offset, count);
+            SetwithdrawnRoutes(data);
+            offset += WithdrawnRoutesLength;
+            count -= WithdrawnRoutesLength;
+
+            data = new ArraySegment<byte>(data.Array, offset, PathAttributeLength);
             PathAttributeLength = EndianBitConverter.Big.ToInt16(data, 0);
-            data = new ArraySegment<byte>(data.Array, data.Offset + 2, PathAttributeLength);
+            offset += 2;
+            count -= 2;
+            data = new ArraySegment<byte>(data.Array, offset, count);
             SetPathAttributes(data);
+
+            offset += PathAttributeLength;
+            count -= PathAttributeLength;
+            data = new ArraySegment<byte>(data.Array, offset, count);
+            SetNlri(data);
         }
 
 
@@ -48,6 +62,18 @@ namespace BmpListener.Bgp
                 Attributes.Add(attr);
                 data = new ArraySegment<byte>(data.Array, data.Offset + length, data.Count - length);
                 i += length;
+            }
+        }
+
+        private void SetNlri(ArraySegment<byte> data)
+        {
+            var nlriLength = data.Count;
+            for (var i = 0; i < nlriLength;)
+            {
+                (IPAddrPrefix prefix, int byteLength) = IPAddrPrefix.Decode(data, i, AddressFamily.IP);
+                Nlri.Add(prefix);
+                data = new ArraySegment<byte>(data.Array, data.Offset + byteLength, data.Count - byteLength);
+                i += byteLength;
             }
         }
     }
