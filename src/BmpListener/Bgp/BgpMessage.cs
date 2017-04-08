@@ -33,7 +33,8 @@ namespace BmpListener.Bgp
                     msg = new BgpKeepAliveMessage();
                     break;
                 case BgpMessageType.RouteRefresh:
-                    throw new NotImplementedException();
+                    msg = new BgpRouteRefreshMessage();
+                    break;
                 default:
                     return null;
             }
