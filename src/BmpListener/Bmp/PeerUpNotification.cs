@@ -2,6 +2,7 @@
 using System.Net;
 using BmpListener.Bgp;
 using System.Linq;
+using BmpListener.MiscUtil.Conversion;
 
 namespace BmpListener.Bmp
 {
@@ -29,8 +30,8 @@ namespace BmpListener.Bmp
                 LocalAddress = new IPAddress(ipBytes);
             }
 
-            LocalPort = BigEndian.ToUInt16(data, 16);
-            RemotePort = BigEndian.ToUInt16(data, 18);
+            LocalPort = EndianBitConverter.Big.ToUInt16(data, 16);
+            RemotePort = EndianBitConverter.Big.ToUInt16(data, 18);
 
             int offset = data.Offset + 20;
             int count = data.Count - 20;

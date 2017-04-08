@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BmpListener.MiscUtil.Conversion;
+using System;
 using System.Linq;
 
 namespace BmpListener.Bgp
@@ -95,7 +96,7 @@ namespace BmpListener.Bgp
 
             if (extendedLength)
             {
-                attr.Length = BigEndian.ToUInt16(data, 2);
+                attr.Length = EndianBitConverter.Big.ToUInt16(data, 2);
                 data = new ArraySegment<byte>(data.Array, data.Offset + 4, attr.Length);
             }
             else

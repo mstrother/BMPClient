@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BmpListener.MiscUtil.Conversion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,7 +22,7 @@ namespace BmpListener.Bgp
                 //TO DO 2 byte asn data
                 for (var j = 0; j < asCount;)
                 {
-                    var asn = BigEndian.ToInt32(data, j * 4 + 2);
+                    var asn = EndianBitConverter.Big.ToInt32(data, j * 4 + 2);
                     asList.Add(asn);
                     j++;
                 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BmpListener.MiscUtil.Conversion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -15,7 +16,7 @@ namespace BmpListener.Bgp
 
         public override void Decode(ArraySegment<byte> data)
         {
-            AFI = (AddressFamily)BigEndian.ToInt16(data, 0);
+            AFI = (AddressFamily)EndianBitConverter.Big.ToInt16(data, 0);
             SAFI = (SubsequentAddressFamily)data.ElementAt(2);
             var nextHopLength = data.ElementAt(3);
             //offset += 4;

@@ -1,13 +1,15 @@
+using BmpListener.MiscUtil.Conversion;
 using System;
 using System.Linq;
 using System.Net;
+//using BmpListener.MiscUtil.Conversion;
 
 namespace BmpListener.Bmp
 {
     public class PerPeerHeader
     {
         private const long TicksPerMicrosecond = 10;
-
+        
         public enum Type
         {
             Global,
@@ -33,7 +35,8 @@ namespace BmpListener.Bmp
                 IsPostPolicy = true;
             }
 
-            PeerDistinguisher = BigEndian.ToUInt64(data, 2);
+            PeerDistinguisher = EndianBitConverter.Big.ToUInt64(data, 2);
+
 
             if ((Flags & (1 << 7)) != 0)
             {
@@ -48,14 +51,14 @@ namespace BmpListener.Bmp
                 PeerAddress = new IPAddress(ipBytes);
             }
 
-            AS = BigEndian.ToInt32(data, 26);
+            AS = EndianBitConverter.Big.ToInt32(data, 26);
 
             var peerIdBytes = new byte[4];
             Array.Copy(data.Array, data.Offset + 30, peerIdBytes, 0, 4);
             PeerId = new IPAddress(peerIdBytes);
 
-            var seconds = BigEndian.ToInt32(data, 34);
-            var microSeconds = BigEndian.ToInt32(data, 38);
+            var seconds = EndianBitConverter.Big.ToInt32(data, 34);
+            var microSeconds = EndianBitConverter.Big.ToInt32(data, 38);
 
             var ticks = microSeconds * TicksPerMicrosecond;
             DateTime = DateTimeOffset.FromUnixTimeSeconds(seconds)

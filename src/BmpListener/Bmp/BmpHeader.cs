@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BmpListener.MiscUtil.Conversion;
+using System;
 using System.Linq;
 
 namespace BmpListener.Bmp
@@ -6,6 +7,8 @@ namespace BmpListener.Bmp
     public class BmpHeader
     {
         private readonly int bmpVersion = 3;
+
+        EndianBitConverter bigEndianBitConverter = EndianBitConverter.Big;
         
         public byte Version { get; private set; }
         public int MessageLength { get; private set; }
@@ -19,7 +22,7 @@ namespace BmpListener.Bmp
                 throw new NotSupportedException("version error");
             }
                         
-            MessageLength = BigEndian.ToInt32(data, 1);
+            MessageLength = bigEndianBitConverter.ToInt32(data, 1);
             MessageType = (BmpMessageType)data.ElementAt(5);
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BmpListener.MiscUtil.Conversion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -17,8 +18,8 @@ namespace BmpListener.Bgp
         public override void Decode(ArraySegment<byte> data)
         {
             Version = data.First();
-            MyAS = BigEndian.ToUInt16(data, 1);
-            HoldTime = BigEndian.ToInt16(data, 3);
+            MyAS = EndianBitConverter.Big.ToUInt16(data, 1);
+            HoldTime = EndianBitConverter.Big.ToInt16(data, 3);
 
             var ipBytes = new byte[4];
             Array.Copy(data.Array, data.Offset + 4, ipBytes, 0, 4);

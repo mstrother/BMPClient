@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BmpListener.MiscUtil.Conversion;
+using System;
 using System.Collections.Generic;
 
 namespace BmpListener.Bgp
@@ -18,12 +19,12 @@ namespace BmpListener.Bgp
                 // End-of-RIB
             }
 
-            WithdrawnRoutesLength = BigEndian.ToInt16(data, 0);
+            WithdrawnRoutesLength = EndianBitConverter.Big.ToInt16(data, 0);
             data = new ArraySegment<byte>(data.Array, data.Offset + 2, WithdrawnRoutesLength);
             SetwithdrawnRoutes(data);
 
             data = new ArraySegment<byte>(data.Array, data.Offset + WithdrawnRoutesLength, data.Count - WithdrawnRoutesLength);
-            PathAttributeLength = BigEndian.ToInt16(data, 0);
+            PathAttributeLength = EndianBitConverter.Big.ToInt16(data, 0);
             data = new ArraySegment<byte>(data.Array, data.Offset + 2, PathAttributeLength);
             SetPathAttributes(data);
         }

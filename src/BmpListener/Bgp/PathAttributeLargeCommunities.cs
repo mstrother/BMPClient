@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BmpListener.MiscUtil.Conversion;
+using System;
 
 namespace BmpListener.Bgp
 {
@@ -15,9 +16,9 @@ namespace BmpListener.Bgp
 
         public override void Decode(ArraySegment<byte> data)
         {
-            Asn = BigEndian.ToInt32(data, 0);
-            LocalData1 = BigEndian.ToInt32(data, 4);
-            LocalData2 = BigEndian.ToInt32(data, 8);
+            Asn = EndianBitConverter.Big.ToInt32(data, 0);
+            LocalData1 = EndianBitConverter.Big.ToInt32(data, 4);
+            LocalData2 = EndianBitConverter.Big.ToInt32(data, 8);
         }
     }
 }
