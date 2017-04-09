@@ -8,18 +8,10 @@ namespace BmpListener.Bmp
         public PerPeerHeader PeerHeader { get; private set; }
 
         public abstract void Decode(ArraySegment<byte> data);
-
-        public static BmpMessage DecodeMessage(byte[] bytes)
+        
+        public static BmpMessage DecodeMessage(byte[] data)
         {
-            var data = new ArraySegment<byte>(bytes);
-            return DecodeMessage(data);
-        }
-
-        public static BmpMessage DecodeMessage(ArraySegment<byte> data)
-        {
-            var msgHeader = new BmpHeader();
-            msgHeader.Decode(data);
-
+            var msgHeader = new BmpHeader(data);
             BmpMessage msg;
 
             switch (msgHeader.MessageType)
@@ -47,22 +39,18 @@ namespace BmpListener.Bmp
 
             msg.BmpHeader = msgHeader;
 
-            var offset = data.Offset + Constants.BmpCommonHeaderLength;
-            var count = data.Count - Constants.BmpCommonHeaderLength;
-            data = new ArraySegment<byte>(data.Array, offset, count);
+            var offset = Constants.BmpCommonHeaderLength;
+            var count = data.Length - Constants.BmpCommonHeaderLength;
 
             if (msgHeader.MessageType != BmpMessageType.Initiation)
             {
-                data = new ArraySegment<byte>(data.Array, data.Offset, Constants.BmpPerPeerHeaderLength);
-                msg.PeerHeader = new PerPeerHeader();
-                msg.PeerHeader.Decode(data);
-
+                msg.PeerHeader = new PerPeerHeader(data, offset);
                 offset += Constants.BmpPerPeerHeaderLength;
                 count -= Constants.BmpPerPeerHeaderLength;
-                data = new ArraySegment<byte>(data.Array, offset, count);
             }
 
-            msg.Decode(data);
+            var dataSegment = new ArraySegment<byte>(data, offset, count);
+            msg.Decode(dataSegment);
             return msg;
         }
     }
