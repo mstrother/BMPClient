@@ -10,19 +10,19 @@ namespace BmpListener.Bgp
         {
         }
 
-        public BgpHeader(ArraySegment<byte> data)
+        public BgpHeader(byte[] data, int offset)
         {
-            Decode(data);
+            Decode(data, offset);
         }
 
         public byte[] Marker { get; } = new byte[16];
-        public int Length { get; private set; }
+        public int Length { get; private set; } = Constants.BgpHeaderLength;
         public BgpMessageType Type { get; private set; }
 
-        public void Decode(ArraySegment<byte> data)
+        public void Decode(byte[] data, int offset)
         {
-            Length = EndianBitConverter.Big.ToUInt16(data, 16);
-            Type = (BgpMessageType)data.ElementAt(18);
+            Length = EndianBitConverter.Big.ToUInt16(data, offset + 16);
+            Type = (BgpMessageType)data.ElementAt(offset + 18);
         }
     }
 }

@@ -7,9 +7,9 @@ namespace BmpListener.Bgp
     {
         public uint Community { get; private set; }
 
-        public override void Decode(ArraySegment<byte> data)
+        public override void Decode(byte[] data, int offset)
         {
-            Community = EndianBitConverter.Big.ToUInt32(data, 0);
+            Community = EndianBitConverter.Big.ToUInt32(data, offset);
         }
     }
 }

@@ -19,13 +19,13 @@ namespace BmpListener.Bgp
         public PathAttributeType AttributeType { get; private set; }
         public int Length { get; private set; }
 
-        public virtual void Decode(ArraySegment<byte> data)
+        public virtual void Decode(byte[] data, int offset)
         {
         }
 
-        public static (PathAttribute, int) DecodeAttribute(ArraySegment<byte> data)
+        public static (PathAttribute, int) DecodeAttribute(byte[] data, int offset)
         {
-            var attributeType = (PathAttributeType) data.ElementAt(1);
+            var attributeType = (PathAttributeType)data[offset + 1];
             PathAttribute attr;
 
             switch (attributeType)
@@ -89,23 +89,24 @@ namespace BmpListener.Bgp
                     break;
             }
 
-            attr.Flags = (AttributeFlags) data.First();
-            attr.AttributeType = (PathAttributeType) data.ElementAt(1);
+            attr.Flags = (AttributeFlags)data[offset];
+            attr.AttributeType = attributeType;
+            offset += 2;
 
             var extendedLength = (attr.Flags & AttributeFlags.ExtendedLength) == AttributeFlags.ExtendedLength;
 
             if (extendedLength)
             {
-                attr.Length = EndianBitConverter.Big.ToUInt16(data, 2);
-                data = new ArraySegment<byte>(data.Array, data.Offset + 4, attr.Length);
+                attr.Length = EndianBitConverter.Big.ToUInt16(data, offset);
+                offset += 2;
             }
             else
             {
-                attr.Length = data.ElementAt(2);
-                data = new ArraySegment<byte>(data.Array, data.Offset + 3, attr.Length);
+                attr.Length = data[offset];
+                offset++;
             }
-            
-            attr.Decode(data);
+
+            attr.Decode(data, offset);
 
             var length = extendedLength
                 ? attr.Length + 4

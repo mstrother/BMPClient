@@ -14,11 +14,11 @@ namespace BmpListener.Bgp
             return ($"{Asn}:{LocalData1}:{LocalData2}");
         }
 
-        public override void Decode(ArraySegment<byte> data)
+        public override void Decode(byte[] data, int offset)
         {
-            Asn = EndianBitConverter.Big.ToInt32(data, 0);
-            LocalData1 = EndianBitConverter.Big.ToInt32(data, 4);
-            LocalData2 = EndianBitConverter.Big.ToInt32(data, 8);
+            Asn = EndianBitConverter.Big.ToInt32(data, offset);
+            LocalData1 = EndianBitConverter.Big.ToInt32(data, offset + 4);
+            LocalData2 = EndianBitConverter.Big.ToInt32(data, offset + 8);
         }
     }
 }

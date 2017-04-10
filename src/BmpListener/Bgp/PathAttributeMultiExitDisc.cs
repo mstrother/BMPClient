@@ -6,7 +6,7 @@ namespace BmpListener.Bgp
     {
         public int? Metric { get; private set; }
 
-        public override void Decode(ArraySegment<byte> data)
+        public override void Decode(byte[] data, int offset)
         {
             //Array.Reverse(data, offset, 0);
             //Metric = BitConverter.ToInt32(data, 0);

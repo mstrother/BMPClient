@@ -11,15 +11,16 @@ namespace BmpListener.Bgp
         public SubsequentAddressFamily SAFI { get; private set; }
         public IList<IPAddrPrefix> WithdrawnRoutes { get; } = new List<IPAddrPrefix>();
 
-        public override void Decode(ArraySegment<byte> data)
+        public override void Decode(byte[] data, int offset)
         {
-            AFI = (AddressFamily)EndianBitConverter.Big.ToInt16(data, 0);
-            SAFI = (SubsequentAddressFamily) data.ElementAt(2);
-            
-            for (var i = 0; i < data.Count;)
+            AFI = (AddressFamily)EndianBitConverter.Big.ToInt16(data, offset);
+            SAFI = (SubsequentAddressFamily)data.ElementAt(offset + 2);
+
+            for (var i = 3; i < Length;)
             {
-                (IPAddrPrefix prefix, int byteLength) = IPAddrPrefix.Decode(data, i, AFI);
+                (IPAddrPrefix prefix, int byteLength) = IPAddrPrefix.Decode(data, offset + i, AFI);
                 WithdrawnRoutes.Add(prefix);
+                offset += byteLength;
                 i += byteLength;
             }
         }

@@ -110,18 +110,7 @@ namespace BmpListener.MiscUtil.Conversion
             CheckByteArgument(value, startIndex, 1);
             return BitConverter.ToBoolean(value, startIndex);
         }
-
-        /// <summary>
-        /// Returns a Boolean value converted from one byte at a specified position in a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <returns>true if the byte at startIndex in value is nonzero; otherwise, false.</returns>
-        public bool ToBoolean(ArraySegment<byte> value, int startIndex)
-        {
-            return ToBoolean(value.Array, value.Offset + startIndex);
-        }
-
+        
         /// <summary>
         /// Returns a Unicode character converted from two bytes at a specified position in a byte array.
         /// </summary>
@@ -132,18 +121,7 @@ namespace BmpListener.MiscUtil.Conversion
         {
             return unchecked((char)(CheckedFromBytes(value, startIndex, 2)));
         }
-
-        /// <summary>
-        /// Returns a Unicode character converted from two bytes at a specified position in a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <returns>A character formed by two bytes beginning at startIndex.</returns>
-        public char ToChar(ArraySegment<byte> value, int startIndex)
-        {
-            return ToChar(value.Array, value.Offset + startIndex);
-        }
-
+        
         /// <summary>
         /// Returns a double-precision floating point number converted from eight bytes 
         /// at a specified position in a byte array.
@@ -155,19 +133,7 @@ namespace BmpListener.MiscUtil.Conversion
         {
             return Int64BitsToDouble(ToInt64(value, startIndex));
         }
-
-        /// <summary>
-        /// Returns a double-precision floating point number converted from eight bytes 
-        /// at a specified position in a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <returns>A double precision floating point number formed by eight bytes beginning at startIndex.</returns>
-        public double ToDouble(ArraySegment<byte> value, int startIndex)
-        {
-            return Int64BitsToDouble(ToInt64(value.Array, value.Offset + startIndex));
-        }
-
+        
         /// <summary>
         /// Returns a single-precision floating point number converted from four bytes 
         /// at a specified position in a byte array.
@@ -179,19 +145,7 @@ namespace BmpListener.MiscUtil.Conversion
         {
             return Int32BitsToSingle(ToInt32(value, startIndex));
         }
-
-        /// <summary>
-        /// Returns a single-precision floating point number converted from four bytes 
-        /// at a specified position in a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <returns>A single precision floating point number formed by four bytes beginning at startIndex.</returns>
-        public float ToSingle(ArraySegment<byte> value, int startIndex)
-        {
-            return Int32BitsToSingle(ToInt32(value.Array, value.Offset + startIndex));
-        }
-
+        
         /// <summary>
         /// Returns a 16-bit signed integer converted from two bytes at a specified position in a byte array.
         /// </summary>
@@ -202,18 +156,7 @@ namespace BmpListener.MiscUtil.Conversion
         {
             return unchecked((short)(CheckedFromBytes(value, startIndex, 2)));
         }
-
-        /// <summary>
-        /// Returns a 16-bit signed integer converted from two bytes at a specified position in a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <returns>A 16-bit signed integer formed by two bytes beginning at startIndex.</returns>
-        public short ToInt16(ArraySegment<byte> value, int startIndex)
-        {
-            return unchecked(ToInt16(value.Array, value.Offset + startIndex));
-        }
-
+        
         /// <summary>
         /// Returns a 32-bit signed integer converted from four bytes at a specified position in a byte array.
         /// </summary>
@@ -224,18 +167,7 @@ namespace BmpListener.MiscUtil.Conversion
         {
             return unchecked((int)(CheckedFromBytes(value, startIndex, 4)));
         }
-
-        /// <summary>
-        /// Returns a 32-bit signed integer converted from four bytes at a specified position in a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <returns>A 32-bit signed integer formed by four bytes beginning at startIndex.</returns>
-        public int ToInt32(ArraySegment<byte> value, int startIndex)
-        {
-            return unchecked((ToInt32(value.Array, value.Offset + startIndex)));
-        }
-
+        
         /// <summary>
         /// Returns a 64-bit signed integer converted from eight bytes at a specified position in a byte array.
         /// </summary>
@@ -246,18 +178,7 @@ namespace BmpListener.MiscUtil.Conversion
         {
             return CheckedFromBytes(value, startIndex, 8);
         }
-
-        /// <summary>
-        /// Returns a 64-bit signed integer converted from eight bytes at a specified position in a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <returns>A 64-bit signed integer formed by eight bytes beginning at startIndex.</returns>
-        public long ToInt64(ArraySegment<byte> value, int startIndex)
-        {
-            return ToInt64(value.Array, value.Offset + startIndex);
-        }
-
+        
         /// <summary>
         /// Returns a 16-bit unsigned integer converted from two bytes at a specified position in a byte array.
         /// </summary>
@@ -268,18 +189,7 @@ namespace BmpListener.MiscUtil.Conversion
         {
             return unchecked((ushort)(CheckedFromBytes(value, startIndex, 2)));
         }
-
-        /// <summary>
-        /// Returns a 16-bit unsigned integer converted from two bytes at a specified position in a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <returns>A 16-bit unsigned integer formed by two bytes beginning at startIndex.</returns>
-        public ushort ToUInt16(ArraySegment<byte> value, int startIndex)
-        {
-            return ToUInt16(value.Array, value.Offset + startIndex);
-        }
-
+        
         /// <summary>
         /// Returns a 32-bit unsigned integer converted from four bytes at a specified position in a byte array.
         /// </summary>
@@ -290,18 +200,7 @@ namespace BmpListener.MiscUtil.Conversion
         {
             return unchecked((uint)(CheckedFromBytes(value, startIndex, 4)));
         }
-
-        /// <summary>
-        /// Returns a 16-bit unsigned integer converted from two bytes at a specified position in a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <returns>A 16-bit unsigned integer formed by two bytes beginning at startIndex.</returns>
-        public uint ToUInt32(ArraySegment<byte> value, int startIndex)
-        {
-            return ToUInt16(value.Array, value.Offset + startIndex);
-        }
-
+        
         /// <summary>
         /// Returns a 64-bit unsigned integer converted from eight bytes at a specified position in a byte array.
         /// </summary>
@@ -312,18 +211,7 @@ namespace BmpListener.MiscUtil.Conversion
         {
             return unchecked((ulong)(CheckedFromBytes(value, startIndex, 8)));
         }
-
-        /// <summary>
-        /// Returns a 16-bit unsigned integer converted from two bytes at a specified position in a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <returns>A 16-bit unsigned integer formed by two bytes beginning at startIndex.</returns>
-        public ulong ToUInt64(ArraySegment<byte> value, int startIndex)
-        {
-            return ToUInt64(value.Array, value.Offset + startIndex);
-        }
-
+        
         /// <summary>
         /// Checks the given argument for validity.
         /// </summary>
@@ -386,23 +274,7 @@ namespace BmpListener.MiscUtil.Conversion
         {
             return BitConverter.ToString(value);
         }
-
-        /// <summary>
-        /// Returns a String converted from the elements of a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <remarks>All the elements of value are converted.</remarks>
-        /// <returns>
-        /// A String of hexadecimal pairs separated by hyphens, where each pair 
-        /// represents the corresponding element in value; for example, "7F-2C-4A".
-        /// </returns>
-        public static string ToString(ArraySegment<byte> value)
-        {
-            var data = new byte[value.Count];
-            Array.Copy(value.Array, 0, data, 0, value.Count);
-            return ToString(data);
-        }
-
+        
         /// <summary>
         /// Returns a String converted from the elements of a byte array starting at a specified array position.
         /// </summary>
@@ -417,24 +289,7 @@ namespace BmpListener.MiscUtil.Conversion
         {
             return BitConverter.ToString(value, startIndex);
         }
-
-        /// <summary>
-        /// Returns a String converted from the elements of a byte array starting at a specified array position.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <remarks>The elements from array position startIndex to the end of the array are converted.</remarks>
-        /// <returns>
-        /// A String of hexadecimal pairs separated by hyphens, where each pair 
-        /// represents the corresponding element in value; for example, "7F-2C-4A".
-        /// </returns>
-        public static string ToString(ArraySegment<byte> value, int startIndex)
-        {
-            var data = new byte[value.Count - startIndex];
-            Array.Copy(value.Array, value.Offset + startIndex, data, 0, value.Count - startIndex);
-            return ToString(data);
-        }
-
+        
         /// <summary>
         /// Returns a String converted from a specified number of bytes at a specified position in a byte array.
         /// </summary>
@@ -449,23 +304,7 @@ namespace BmpListener.MiscUtil.Conversion
         public static string ToString(byte[] value, int startIndex, int length)
         {
             return BitConverter.ToString(value, startIndex, length);
-        }
-
-        /// <summary>
-        /// Returns a String converted from a specified number of bytes at a specified position in a byte array.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <param name="length">The number of bytes to convert.</param>
-        /// <remarks>The length elements from array position startIndex are converted.</remarks>
-        /// <returns>
-        /// A String of hexadecimal pairs separated by hyphens, where each pair 
-        /// represents the corresponding element in value; for example, "7F-2C-4A".
-        /// </returns>
-        public static string ToString(ArraySegment<byte> value, int startIndex, int length)
-        {
-            return BitConverter.ToString(value.Array, value.Offset + startIndex, length);
-        }
+        }        
         #endregion
 
         #region	Decimal conversions
@@ -488,21 +327,7 @@ namespace BmpListener.MiscUtil.Conversion
             }
             return new Decimal(parts);
         }
-
-        /// <summary>
-        /// Returns a decimal value converted from sixteen bytes 
-        /// at a specified position in an ArraySegment<byte>.
-        /// </summary>
-        /// <param name="value">An ArraySegment<byte>.</param>
-        /// <param name="startIndex">The starting position within value.</param>
-        /// <returns>A decimal  formed by sixteen bytes beginning at startIndex.</returns>
-        public decimal ToDecimal(ArraySegment<byte> value, int startIndex)
-        {
-            var data = new byte[value.Count - startIndex];
-            Array.Copy(value.Array, value.Offset + startIndex, data, 0, value.Count - startIndex);
-            return ToDecimal(data, startIndex);
-        }
-
+        
         /// <summary>
         /// Returns the specified decimal value as an array of bytes.
         /// </summary>

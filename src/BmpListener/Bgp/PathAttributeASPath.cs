@@ -1,7 +1,6 @@
 ﻿using BmpListener.MiscUtil.Conversion;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {
@@ -9,20 +8,22 @@ namespace BmpListener.Bgp
     {
         public IList<ASPathSegment> ASPaths { get; } = new List<ASPathSegment>();
 
-        public override void Decode(ArraySegment<byte> data)
+        public override void Decode(byte[] data, int offset)
         {
             for (var i = 0; i < Length;)
             {
                 //ValidateASPath(data);
 
-                var segmentType = (ASPathSegment.Type)data.First();
-                var asCount = data.ElementAt(1);
+                var segmentType = (ASPathSegment.Type)data[offset];
+                var asCount = data[offset + 1];
+                offset += 2;
+
                 var asList = new List<int>();
 
                 //TO DO 2 byte asn data
                 for (var j = 0; j < asCount;)
                 {
-                    var asn = EndianBitConverter.Big.ToInt32(data, j * 4 + 2);
+                    var asn = EndianBitConverter.Big.ToInt32(data, j * 4 + offset);
                     asList.Add(asn);
                     j++;
                 }
@@ -30,8 +31,7 @@ namespace BmpListener.Bgp
                 var asPathSegment = new ASPathSegment(segmentType, asList);
                 ASPaths.Add(asPathSegment);
 
-                var offset = 4 * asCount + 2;
-                data = new ArraySegment<byte>(data.Array, data.Offset + offset, data.Count - offset);
+                offset += 4 * asCount + 2;
                 i += offset;
             }
         }

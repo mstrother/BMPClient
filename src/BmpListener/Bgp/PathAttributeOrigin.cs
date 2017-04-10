@@ -14,9 +14,9 @@ namespace BmpListener.Bgp
 
         public Type Origin { get; private set; }
 
-        public override void Decode(ArraySegment<byte> data)
+        public override void Decode(byte[] data, int offset)
         {
-            Origin = (Type) data.First();
+            Origin = (Type) data[offset];
         }
     }
 }

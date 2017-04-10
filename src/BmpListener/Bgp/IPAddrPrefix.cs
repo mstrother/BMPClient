@@ -28,12 +28,6 @@ namespace BmpListener.Bgp
             var ipAddrPrefix = new IPAddrPrefix { Length = bitLength, Prefix = prefix };
             return (ipAddrPrefix, byteLength + 1);
         }
-
-        public static (IPAddrPrefix prefix, int byteLength) Decode(ArraySegment<byte> data, int offset, AddressFamily afi)
-        {
-            offset += data.Offset;
-            return Decode(data.Array, data.Offset, afi);
-        }
     }
 }
 

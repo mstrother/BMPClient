@@ -8,7 +8,7 @@ namespace BmpListener.Bmp
         public short Reason { get; private set; }
         public BgpMessage BgpNotification { get; set; }
 
-        public override void Decode(ArraySegment<byte> data)
+        public override void Decode(byte[] data, int offset)
         {
         }
     }

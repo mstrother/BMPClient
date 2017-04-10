@@ -9,10 +9,10 @@ namespace BmpListener.Bgp
         public OptionalParameterType Type { get; private set; }
         public int Length { get; private set; }
 
-        public virtual void Decode(ArraySegment<byte> data)
+        public virtual void Decode(byte[] data, int offset)
         {
-            Type = (OptionalParameterType)data.First();
-            Length = data.ElementAt(1);
+            Type = (OptionalParameterType)data[offset];
+            Length = data[offset + 1];
         }
     }
 }

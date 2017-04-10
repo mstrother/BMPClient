@@ -63,9 +63,9 @@ namespace BmpListener.Tests
         [InlineData("/////////////////////wAtAQ==")]
         public void BgpHeaderDecodes(string value)
         {
-            var data = new ArraySegment<byte>(Convert.FromBase64String(value));
+            var data = Convert.FromBase64String(value);
             var bgpHeader = new BgpHeader();
-            bgpHeader.Decode(data);
+            bgpHeader.Decode(data, 0);
             Assert.Equal(bgpHeader.Length, 45);
             Assert.Equal(bgpHeader.Type, BgpMessageType.Open);
         }
@@ -74,9 +74,9 @@ namespace BmpListener.Tests
         [InlineData("BFugAFponP0VEAIOAgABBAABAAFBBAAGCVv/////////////////////ADcBBPwDAPAtPyErGgIYAQQAAQABAgBABgB4AAEBAEEEAAD8A0YA")]
         public void BgpOpenDecodes(string value)
         {
-            var data = new ArraySegment<byte>(Convert.FromBase64String(value));
+            var data = Convert.FromBase64String(value);
             var msg = new BgpOpenMessage();
-            msg.Decode(data);
+            msg.Decode(data, 0);
             Assert.Equal(msg.MyAS, 23456);
             Assert.Equal(msg.Version, 4);
             Assert.Equal(msg.HoldTime, 90);
@@ -110,9 +110,9 @@ namespace BmpListener.Tests
         [InlineData("AAYJWw==")]
         public void CapabilityFourOctetASDecodes(string value)
         {
-            var data = new ArraySegment<byte>(Convert.FromBase64String(value));
+            var data = Convert.FromBase64String(value);
             var capability = new CapabilityFourOctetAsNumber();
-            capability.Decode(data);
+            capability.Decode(data, 0);
             Assert.Equal(395611, capability.Asn);
         }
 
@@ -120,9 +120,9 @@ namespace BmpListener.Tests
         [InlineData("AAEAAQ==")]
         public void CapabilityMultiProtocolDecodes(string value)
         {
-            var data = new ArraySegment<byte>(Convert.FromBase64String(value));
+            var data = Convert.FromBase64String(value);
             var capability = new CapabilityMultiProtocol();
-            capability.Decode(data);
+            capability.Decode(data, 0);
             Assert.Equal(capability.Afi, AddressFamily.IP);
             Assert.Equal(capability.Safi, SubsequentAddressFamily.Unicast);
         }

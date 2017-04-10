@@ -1,7 +1,6 @@
 ﻿using BmpListener.MiscUtil.Conversion;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {
@@ -12,18 +11,19 @@ namespace BmpListener.Bgp
         public ushort Time { get; private set; }
         public IList<(AddressFamily, SubsequentAddressFamily, byte)> Tuples { get; } = new List<(AddressFamily afi, SubsequentAddressFamily safi, byte flags)> { };
 
-        public override void Decode(ArraySegment<byte> data)
+        public override void Decode(byte[] data, int offset)
         {
-            var restart = EndianBitConverter.Big.ToUInt16(data, 0);
+            var restart = EndianBitConverter.Big.ToUInt16(data, offset);
             Flags = (byte)(restart >> 12);
             Time = (ushort)(restart & 0xfff);
 
-            for(int i = 2; i < data.Count;)
+            for (int i = 2; i < Length;)
             {
-                AddressFamily afi = (AddressFamily)EndianBitConverter.Big.ToUInt16(data, i);
-                SubsequentAddressFamily safi = (SubsequentAddressFamily)data.ElementAt(i + 1);
-                var flags = data.ElementAt(i + 2);
+                AddressFamily afi = (AddressFamily)EndianBitConverter.Big.ToUInt16(data, offset + i);
+                SubsequentAddressFamily safi = (SubsequentAddressFamily)data[offset + i + 1];
+                var flags = data[offset + i + 2];
                 Tuples.Add((afi, safi, flags));
+                offset += 4;
                 i += 4;
             }
         }

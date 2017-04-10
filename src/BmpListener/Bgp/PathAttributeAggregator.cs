@@ -8,7 +8,7 @@ namespace BmpListener.Bgp
         public int AS { get; private set; }
         public IPAddress IPAddress { get; private set; }
 
-        public override void Decode(ArraySegment<byte> data)
+        public override void Decode(byte[] data, int offset)
         {
             // TODO: fix
             //AS = BitConverter.ToInt16(data, 0);

@@ -7,7 +7,7 @@ namespace BmpListener.Bmp
         public BmpHeader BmpHeader { get; private set; }
         public PerPeerHeader PeerHeader { get; private set; }
 
-        public abstract void Decode(ArraySegment<byte> data);
+        public abstract void Decode(byte[] data, int offset);
         
         public static BmpMessage DecodeMessage(byte[] data)
         {
@@ -50,7 +50,7 @@ namespace BmpListener.Bmp
             }
 
             var dataSegment = new ArraySegment<byte>(data, offset, count);
-            msg.Decode(dataSegment);
+            msg.Decode(data, offset);
             return msg;
         }
     }

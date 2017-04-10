@@ -8,9 +8,9 @@ namespace BmpListener.Bgp
     {
         public int Asn { get; private set; }
 
-        public override void Decode(ArraySegment<byte> data)
+        public override void Decode(byte[] data, int offset)
         {
-            Asn = EndianBitConverter.Big.ToInt32(data, 0);
+            Asn = EndianBitConverter.Big.ToInt32(data, offset);
         }
     }
 }

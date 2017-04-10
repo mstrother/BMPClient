@@ -4,17 +4,14 @@ namespace BmpListener.Bgp
 {
     public abstract class BgpMessage
     {
-        public BgpHeader Header { get; private set; }
+        public BgpHeader Header { get; private set; } = new BgpHeader();
 
-        public abstract void Decode(ArraySegment<byte> data);
+        public abstract void Decode(byte[] data, int offset);
 
-        public static BgpMessage DecodeMessage(ArraySegment<byte> data)
+        public static BgpMessage DecodeMessage(byte[] data, int offset)
         {
-            var msgHeader = new BgpHeader(data);
-
-            var offset = data.Offset + Constants.BgpHeaderLength;
-            var count = data.Count - Constants.BgpHeaderLength;
-            data = new ArraySegment<byte>(data.Array, offset, count);
+            var msgHeader = new BgpHeader(data, offset);
+            offset += Constants.BgpHeaderLength;
 
             BgpMessage msg;
 
@@ -40,7 +37,7 @@ namespace BmpListener.Bgp
             }
 
             msg.Header = msgHeader;
-            msg.Decode(data);
+            msg.Decode(data, offset);
             return msg;
         }
     }

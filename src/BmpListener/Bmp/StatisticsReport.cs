@@ -4,7 +4,7 @@ namespace BmpListener.Bmp
 {
     public class StatisticsReport : BmpMessage
     {
-        public override void Decode(ArraySegment<byte> data)
+        public override void Decode(byte[] data, int offset)
         {
             throw new NotImplementedException();
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {
@@ -8,15 +7,15 @@ namespace BmpListener.Bgp
         public CapabilityCode Code { get; protected set; }
         public int Length { get; protected set; }
         
-        public virtual void Decode(ArraySegment<byte> data)
+        public virtual void Decode(byte[] data, int offset)
         {
         }
 
-        public static (Capability capability, int length) DecodeCapability(ArraySegment<byte> data)
+        public static (Capability capability, int length) DecodeCapability(byte[] data, int offset)
         {
             Capability capability;
 
-            var capabilityType = (CapabilityCode)data.First();
+            var capabilityType = (CapabilityCode)data[offset];
 
             switch (capabilityType)
             {
@@ -47,12 +46,12 @@ namespace BmpListener.Bgp
             }
 
             capability.Code = capabilityType;
-            capability.Length = data.ElementAt(1);
+            capability.Length = data[offset + 1];
 
             if (capability.Length > 0)
             {
-                data = new ArraySegment<byte>(data.Array, data.Offset + 2, capability.Length);
-                capability.Decode(data);
+                offset += 2;
+                capability.Decode(data, offset);
             }
 
             return (capability, capability.Length + 2);
