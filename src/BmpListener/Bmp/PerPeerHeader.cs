@@ -32,40 +32,48 @@ namespace BmpListener.Bmp
         public IPAddress PeerAddress { get; private set; }
         public int AS { get; private set; }
         public IPAddress PeerId { get; private set; }
-        public DateTimeOffset DateTime { get; private set; }
+        public DateTime DateTime { get; private set; }
 
         public void Decode(byte[] data, int offset)
         {
             PeerType = (Type)data[offset];
-            Flags = data[offset + 1];
+            offset++;
+
+            Flags = data[offset];
+            offset++;
             if ((Flags & (1 << 6)) != 0)
             {
                 IsPostPolicy = true;
             }
 
-            PeerDistinguisher = EndianBitConverter.Big.ToUInt64(data, 2);
+            PeerDistinguisher = EndianBitConverter.Big.ToUInt64(data, offset);
+            offset += 8;
             
             if ((Flags & (1 << 7)) != 0)
             {
                 var ipBytes = new byte[16];
-                Array.Copy(data, offset + 10, ipBytes, 0, 4);
+                Array.Copy(data, offset, ipBytes, 0, 4);
                 PeerAddress = new IPAddress(ipBytes);
             }
             else
             {
                 var ipBytes = new byte[4];
-                Array.Copy(data, offset + 22, ipBytes, 0, 4);
+                Array.Copy(data, offset + 12, ipBytes, 0, 4);
                 PeerAddress = new IPAddress(ipBytes);
             }
+            offset += 16;
 
-            AS = EndianBitConverter.Big.ToInt32(data, 26);
+            AS = EndianBitConverter.Big.ToInt32(data, offset);
+            offset += 4;
 
             var peerIdBytes = new byte[4];
-            Array.Copy(data, offset + 30, peerIdBytes, 0, 4);
+            Array.Copy(data, offset, peerIdBytes, 0, 4);
             PeerId = new IPAddress(peerIdBytes);
+            offset += 4;
 
-            var seconds = EndianBitConverter.Big.ToInt32(data, 34);
-            var microSeconds = EndianBitConverter.Big.ToInt32(data, 38);
+            var seconds = EndianBitConverter.Big.ToInt32(data, offset);
+            offset += 4;
+            var microSeconds = EndianBitConverter.Big.ToInt32(data, offset);
 
             var ticks = microSeconds * TicksPerMicrosecond;
             DateTime = DateTimeOffset.FromUnixTimeSeconds(seconds)
