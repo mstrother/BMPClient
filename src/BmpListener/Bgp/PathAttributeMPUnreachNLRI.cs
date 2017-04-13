@@ -14,7 +14,9 @@ namespace BmpListener.Bgp
         public override void Decode(byte[] data, int offset)
         {
             AFI = (AddressFamily)EndianBitConverter.Big.ToInt16(data, offset);
-            SAFI = (SubsequentAddressFamily)data.ElementAt(offset + 2);
+            offset++;
+            SAFI = (SubsequentAddressFamily)data.ElementAt(offset);
+            offset++;
 
             for (var i = 3; i < Length;)
             {
