@@ -16,7 +16,22 @@ namespace BmpListener.Bgp
 
         public override void Decode(byte[] data, int offset)
         {
-            Origin = (Type) data[offset];
+            Origin = (Type)data[offset];
+        }
+
+        public override string ToString()
+        {
+            switch (Origin)
+            {
+                case (Type.IGP):
+                    return "igp";
+                case (Type.EGP):
+                    return "egp";
+                case (Type.Incomplete):
+                    return "incomplete";
+                default:
+                    return string.Empty;
+            }
         }
     }
 }
