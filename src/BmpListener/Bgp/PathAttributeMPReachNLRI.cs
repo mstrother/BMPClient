@@ -17,14 +17,16 @@ namespace BmpListener.Bgp
         public override void Decode(byte[] data, int offset)
         {
             AFI = (AddressFamily)EndianBitConverter.Big.ToInt16(data, offset);
-            SAFI = (SubsequentAddressFamily)data.ElementAt(offset + 2);
-            var nextHopLength = data.ElementAt(offset + 3);
-            //offset += 4;
+            offset += 2;
+            SAFI = (SubsequentAddressFamily)data[offset];
+            offset++;
+            var nextHopLength = data[offset];
+            offset++;
 
             if (nextHopLength > 0)
             {
                 var nextHopBytes = new byte[16];
-                Array.Copy(data, offset + 4, nextHopBytes, 0, 16);
+                Array.Copy(data, offset, nextHopBytes, 0, 16);
                 NextHop = new IPAddress(nextHopBytes);
                 //offset += 16;
 
@@ -40,12 +42,12 @@ namespace BmpListener.Bgp
                 //    Array.Copy(data.Array, offset, linklocalBytes, 0, 16);
                 //    LinkLocalNextHop = new IPAddress(linklocalBytes);
                 //}
+                offset += nextHopLength;
             }
 
             // RFC4760 - 1 reserved byte
-            //offset++;
-            offset += nextHopLength + 5;
-            var nlriLength = Length - offset;
+            offset++;
+            var nlriLength = Length - (5 + nextHopLength);
             SetNlri(data, offset, nlriLength);
         }
 
@@ -53,7 +55,7 @@ namespace BmpListener.Bgp
         {
             for (var i = 0; i < length;)
             {
-                (IPAddrPrefix prefix, int byteLength) = IPAddrPrefix.Decode(data, i, AFI);
+                (IPAddrPrefix prefix, int byteLength) = IPAddrPrefix.Decode(data, offset + i, AFI);
                 NLRI.Add(prefix);
                 offset += byteLength;
                 i += byteLength;
