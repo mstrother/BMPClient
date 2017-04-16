@@ -65,7 +65,9 @@ namespace BmpListener.Serialization
             {
                 Peer = CreateModel(bmpMsg.PeerHeader),
                 LocalPort = bmpMsg.LocalPort,
-                RemotePort = bmpMsg.RemotePort
+                RemotePort = bmpMsg.RemotePort,
+                ReceivedOpenMessage = CreateModel(bmpMsg.ReceivedOpenMessage),
+                SentOpenMessage = CreateModel(bmpMsg.SentOpenMessage)
             };
         }
 
@@ -73,11 +75,15 @@ namespace BmpListener.Serialization
         {
             var bgpMsg = bmpMsg.BgpMessage as BgpUpdateMessage;
 
-            var model = new UpdateModel();
-            model.Peer = CreateModel(bmpMsg.PeerHeader);
+            var model = new UpdateModel()
+            {
+                BmpMsgLength = bmpMsg.BmpHeader.MessageLength,
+                BgpMsgLength = bgpMsg.Header.Length,
+                Peer = CreateModel(bmpMsg.PeerHeader)
+            };
 
             // End-of-RIB
-            if (bgpMsg.Header.Length == Constants.BgpHeaderLength)
+            if (bgpMsg.Header.Length == 23)
             {
                 return model;
             }
@@ -85,8 +91,7 @@ namespace BmpListener.Serialization
             var origin = bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.ORIGIN);
             model.Origin = ((PathAttributeOrigin)origin).Origin.ToString();
 
-            var asPath = bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.AS_PATH) as PathAttributeASPath;
-            if (asPath != null)
+            if (bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.AS_PATH) is PathAttributeASPath asPath)
             {
                 model.AsPath = new List<int>();
                 for (int i = 0; i < asPath.ASPaths[0].ASNs.Count; i++)
@@ -141,7 +146,7 @@ namespace BmpListener.Serialization
             if (mpReach != null)
             {
                 model.Announce = new List<AnnounceModel>();
-                
+
                 var announceModel = new AnnounceModel
                 {
                     Afi = afiStringMap[mpReach.AFI],
@@ -152,7 +157,7 @@ namespace BmpListener.Serialization
 
                 for (int i = 0; i < mpReach.NLRI.Count; i++)
                 {
-                    var prefix = bgpMsg.Nlri[i].ToString();
+                    var prefix = mpReach.NLRI[i].ToString();
                     announceModel.Prefixes.Add(prefix);
                 }
 
@@ -160,6 +165,22 @@ namespace BmpListener.Serialization
             }
 
             return model;
-        }            
+        }
+
+        private static BgpOpenModel CreateModel(BgpOpenMessage bgpMsg)
+        {
+            var capabilities = bgpMsg.OptionalParameters.FirstOrDefault(x => x.Type == OptionalParameterType.Capability) as CapabilitiesParameter;
+            var fourOctectAsn = capabilities.Capabilities.FirstOrDefault(x => x.Code == CapabilityCode.FourOctetAs) as CapabilityFourOctetAsNumber;
+            var gracefulRestart = capabilities.Capabilities.FirstOrDefault(x => x.Code == CapabilityCode.GracefulRestart) as CapabilityGracefulRestart;
+            var multiProtocol = capabilities.Capabilities.FirstOrDefault(x => x.Code == CapabilityCode.Multiprotocol) as CapabilityMultiProtocol;
+
+            return new BgpOpenModel
+            {
+                Asn = bgpMsg.MyAS,
+                HoldTime = bgpMsg.HoldTime,
+                Id = bgpMsg.BgpIdentifier.ToString(),
+                FourOctectAsn = fourOctectAsn?.Asn
+            };
+        }
     }
 }
