@@ -21,20 +21,22 @@ namespace BmpListener.Bmp
                 var ipBytes = new byte[16];
                 Array.Copy(data, offset, ipBytes, 0, 4);
                 LocalAddress = new IPAddress(ipBytes);
+                offset += 4;
             }
             else
             {
                 var ipBytes = new byte[4];
                 Array.Copy(data, offset + 12, ipBytes, 0, 4);
                 LocalAddress = new IPAddress(ipBytes);
+                offset += 16;
             }
 
-            LocalPort = EndianBitConverter.Big.ToUInt16(data, 16);
-            RemotePort = EndianBitConverter.Big.ToUInt16(data, 18);
+            LocalPort = EndianBitConverter.Big.ToUInt16(data, offset);
+            offset += 2;
+            RemotePort = EndianBitConverter.Big.ToUInt16(data, offset);
+            offset += 2;
 
-            offset += 20;
             SentOpenMessage = BgpMessage.DecodeMessage(data, offset) as BgpOpenMessage;
-
             offset += SentOpenMessage.Header.Length;
             ReceivedOpenMessage = BgpMessage.DecodeMessage(data, offset) as BgpOpenMessage;
         }
