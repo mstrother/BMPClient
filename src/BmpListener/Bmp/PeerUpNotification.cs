@@ -21,15 +21,15 @@ namespace BmpListener.Bmp
                 var ipBytes = new byte[16];
                 Array.Copy(data, offset, ipBytes, 0, 4);
                 LocalAddress = new IPAddress(ipBytes);
-                offset += 4;
             }
             else
             {
                 var ipBytes = new byte[4];
                 Array.Copy(data, offset + 12, ipBytes, 0, 4);
                 LocalAddress = new IPAddress(ipBytes);
-                offset += 16;
             }
+
+            offset += 16;
 
             LocalPort = EndianBitConverter.Big.ToUInt16(data, offset);
             offset += 2;
