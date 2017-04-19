@@ -4,7 +4,7 @@ namespace BmpListener.Bgp
 {
     public abstract class BgpMessage
     {
-        public BgpHeader Header { get; private set; } = new BgpHeader();
+        public BgpHeader Header { get; protected set; } = new BgpHeader();
 
         public abstract void Decode(byte[] data, int offset);
 

@@ -1,24 +1,23 @@
 ﻿using BmpListener.MiscUtil.Conversion;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 
 namespace BmpListener.Bgp
 {
-    public class PathAttributeMPReachNLRI : PathAttribute
+    public class PathAttributeMPReachNlri : PathAttribute
     {
-        public AddressFamily AFI { get; private set; }
-        public SubsequentAddressFamily SAFI { get; private set; }
+        public AddressFamily Afi { get; private set; }
+        public SubsequentAddressFamily Safi { get; private set; }
         public IPAddress NextHop { get; private set; }
         public IPAddress LinkLocalNextHop { get; private set; }
         public IList<IPAddrPrefix> NLRI { get; } = new List<IPAddrPrefix>();
 
         public override void Decode(byte[] data, int offset)
         {
-            AFI = (AddressFamily)EndianBitConverter.Big.ToInt16(data, offset);
+            Afi = (AddressFamily)EndianBitConverter.Big.ToInt16(data, offset);
             offset += 2;
-            SAFI = (SubsequentAddressFamily)data[offset];
+            Safi = (SubsequentAddressFamily)data[offset];
             offset++;
             var nextHopLength = data[offset];
             offset++;
@@ -47,18 +46,12 @@ namespace BmpListener.Bgp
 
             // RFC4760 - 1 reserved byte
             offset++;
-            var nlriLength = Length - (5 + nextHopLength);
-            SetNlri(data, offset, nlriLength);
-        }
 
-        public void SetNlri(byte[] data, int offset, int length)
-        {
-            for (var i = 0; i < length;)
+            for (int i = 0; i < Length - (5 + nextHopLength);)
             {
-                (IPAddrPrefix prefix, int byteLength) = IPAddrPrefix.Decode(data, offset + i, AFI);
+                (IPAddrPrefix prefix, int length) = IPAddrPrefix.Decode(data, offset + i, Afi);
                 NLRI.Add(prefix);
-                offset += byteLength;
-                i += byteLength;
+                i += length;
             }
         }
     }

@@ -61,10 +61,10 @@ namespace BmpListener.Bgp
                     attr = new PathAttributeUnknown();
                     break;
                 case PathAttributeType.MP_REACH_NLRI:
-                    attr = new PathAttributeMPReachNLRI();
+                    attr = new PathAttributeMPReachNlri();
                     break;
                 case PathAttributeType.MP_UNREACH_NLRI:
-                    attr = new PathAttributeMPUnreachNLRI();
+                    attr = new PathAttributeMPUnreachNlri();
                     break;
                 case PathAttributeType.EXTENDED_COMMUNITIES:
                     attr = new PathAttributeUnknown();

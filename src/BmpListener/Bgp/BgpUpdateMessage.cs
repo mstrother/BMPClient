@@ -1,5 +1,4 @@
 ﻿using BmpListener.MiscUtil.Conversion;
-using System;
 using System.Collections.Generic;
 
 namespace BmpListener.Bgp
@@ -21,48 +20,29 @@ namespace BmpListener.Bgp
 
             WithdrawnRoutesLength = EndianBitConverter.Big.ToInt16(data, offset);
             offset += 2;
-            SetwithdrawnRoutes(data, offset);
+            for (int i = 0; i < WithdrawnRoutesLength;)
+            {
+                (IPAddrPrefix prefix, int length) = IPAddrPrefix.Decode(data, offset + i, AddressFamily.IP);
+                WithdrawnRoutes.Add(prefix);
+                i += length;
+            }
             offset += WithdrawnRoutesLength;
 
             PathAttributeLength = EndianBitConverter.Big.ToInt16(data, offset);
             offset += 2;
-            SetPathAttributes(data, offset);
-
-            offset += PathAttributeLength;
-            var nlriLength = Header.Length - 23 - PathAttributeLength - WithdrawnRoutesLength;
-            SetNlri(data, offset, nlriLength);
-        }
-
-
-        private void SetwithdrawnRoutes(byte[] data, int offset)
-        {
-            for (var i = 0; i < WithdrawnRoutesLength;)
+            for (int i = 0; i < PathAttributeLength;)
             {
-                (IPAddrPrefix prefix, int byteLength) = IPAddrPrefix.Decode(data, offset + i, AddressFamily.IP);
-                WithdrawnRoutes.Add(prefix);
-                i += byteLength;
-            }
-        }
-
-        private void SetPathAttributes(byte[] data, int offset)
-        {
-            for (var i = 0; i < PathAttributeLength;)
-            {
-                (PathAttribute attr, int length) = PathAttribute.DecodeAttribute(data, offset);
+                (PathAttribute attr, int length) = PathAttribute.DecodeAttribute(data, offset + i);
                 Attributes.Add(attr);
-                offset += length;
                 i += length;
             }
-        }
+            offset += PathAttributeLength;
 
-        private void SetNlri(byte[] data, int offset, int length)
-        {
-            for (var i = 0; i < length;)
+            for (int i = 0; i < Header.Length - 23 - PathAttributeLength - WithdrawnRoutesLength;)
             {
-                (IPAddrPrefix prefix, int byteLength) = IPAddrPrefix.Decode(data, offset + i, AddressFamily.IP);
+                (IPAddrPrefix prefix, int length) = IPAddrPrefix.Decode(data, offset + i, AddressFamily.IP);
                 Nlri.Add(prefix);
-                offset += byteLength;
-                i += byteLength;
+                i += length;
             }
         }
     }
