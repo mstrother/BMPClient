@@ -6,8 +6,6 @@ namespace BmpListener.Bgp
 {
     public class IPAddrPrefix
     {
-        // RFC 4721 4.3
-        // The Type field indicates the length in bits of the IP address prefix.
         public int Length { get; private set; }
         public IPAddress Prefix { get; private set; }
 
