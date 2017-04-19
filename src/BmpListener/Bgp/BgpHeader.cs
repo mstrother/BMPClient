@@ -1,6 +1,4 @@
 ﻿using BmpListener.MiscUtil.Conversion;
-using System;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {
@@ -22,7 +20,7 @@ namespace BmpListener.Bgp
         public void Decode(byte[] data, int offset)
         {
             Length = EndianBitConverter.Big.ToUInt16(data, offset + 16);
-            Type = (BgpMessageType)data.ElementAt(offset + 18);
+            Type = (BgpMessageType)data[offset + 18];
         }
     }
 }
