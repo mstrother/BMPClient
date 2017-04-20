@@ -11,5 +11,10 @@ namespace BmpListener.Bgp
         {
             Community = EndianBitConverter.Big.ToUInt32(data, offset);
         }
+
+        public override string ToString()
+        {
+            return $"{Community >> 16}:{Community & 0xffff}";
+        }
     }
 }
