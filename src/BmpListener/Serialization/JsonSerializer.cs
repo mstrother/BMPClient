@@ -1,186 +1,187 @@
 ﻿using BmpListener.Bgp;
 using BmpListener.Bmp;
+using BmpListener.Serialization.Converters;
 using BmpListener.Serialization.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace BmpListener.Serialization
 {
     public static class JsonSerializer
     {
-        private static Dictionary<AddressFamily, string> afiStringMap = new Dictionary<AddressFamily, string>()
-        {
-            {AddressFamily.IP, "ip" },
-            {AddressFamily.IP6, "ipv6"  }
-        };
-
-        private static Dictionary<SubsequentAddressFamily, string> safiStringMap = new Dictionary<SubsequentAddressFamily, string>()
-        {
-            {SubsequentAddressFamily.Multicast, "multicast" },
-            {SubsequentAddressFamily.Unicast, "unicast"  }
-        };
-
         static JsonSerializer()
         {
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                Converters = new List<JsonConverter> { new IPAddressConverter(), new BgpOpenConverter(), new BgpUpdateConverter(), new AddressFamilyConverter(), new SubsequentAddressFamilyConverter(), new IPAddrPrefixConverter() }
             };
         }
 
-        public static string ToJson(this BmpMessage msg)
+        public static string ToJson(this IBmpMessage msg)
         {
+            JObject jObject = null;
+
             switch (msg.BmpHeader.MessageType)
             {
                 case (BmpMessageType.PeerUp):
-                    var peerUpmodel = CreateModel((PeerUpNotification)msg);
-                    return JsonConvert.SerializeObject(peerUpmodel);
+                    var model = ConvertToModel((PeerUpNotification)msg);
+                    jObject = JObject.FromObject(model);
+                    break;
                 case (BmpMessageType.RouteMonitoring):
-                    var updateModel = CreateModel((RouteMonitoring)msg);
-                    return JsonConvert.SerializeObject(updateModel);
+                    jObject = ToJObject((RouteMonitoring)msg);
+                    break;
                 default:
                     return null;
             }
+
+            var json = JsonConvert.SerializeObject(jObject);
+            return json;
         }
 
-        public static PeerHeaderModel CreateModel(PerPeerHeader peerHeader)
+        private static PeerUpNotificationModel ConvertToModel(PeerUpNotification msg)
+        {
+            var peer = ConvertToModel(msg.PeerHeader);
+
+            return new PeerUpNotificationModel
+            {
+                Peer = peer,
+                LocalPort = msg.LocalPort,
+                RemotePort = msg.RemotePort,
+            };
+        }
+
+        private static PeerHeaderModel ConvertToModel(PerPeerHeader peerHeader)
         {
             return new PeerHeaderModel
             {
-                Type = "global",
-                Address = peerHeader.PeerAddress.ToString(),
+                // type
+                Address = peerHeader.PeerAddress,
                 Asn = peerHeader.AS,
-                Id = peerHeader.PeerId.ToString(),
+                Id = peerHeader.PeerId,
                 Time = peerHeader.DateTime
             };
         }
 
-        public static PeerUpModel CreateModel(PeerUpNotification bmpMsg)
+        private static JObject ToJObject(RouteMonitoring msg)
         {
-            return new PeerUpModel
+            var peerHeaderModel = ConvertToModel(msg.PeerHeader);
+
+            var jObject = new JObject
             {
-                Peer = CreateModel(bmpMsg.PeerHeader),
-                LocalPort = bmpMsg.LocalPort,
-                RemotePort = bmpMsg.RemotePort,
-                ReceivedOpenMessage = CreateModel(bmpMsg.ReceivedOpenMessage),
-                SentOpenMessage = CreateModel(bmpMsg.SentOpenMessage)
+                { "bmpMsgLength", msg.BmpHeader.MessageLength },
+                { "bgpMsgLength", msg.Header.Length },
+                { "peer", JObject.FromObject(peerHeaderModel) }
             };
+
+            if (msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.ORIGIN) is PathAttributeOrigin origin)
+            {
+                switch (origin.Origin)
+                {
+                    case PathAttributeOrigin.Type.IGP:
+                        jObject.Add("origin", "igp");
+                        break;
+                    case PathAttributeOrigin.Type.EGP:
+                        jObject.Add("origin", "egp");
+                        break;
+                    case PathAttributeOrigin.Type.Incomplete:
+                        jObject.Add("origin", "incomplete");
+                        break;
+                }
+            }
+
+            if (msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MULTI_EXIT_DISC) is PathAttributeMultiExitDisc med)
+            {
+                jObject.Add("med", med.Metric);
+            }
+
+            if (msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.COMMUNITY) is PathAttributeCommunity community)
+            {
+                jObject.Add("community", community.ToString());
+            }
+
+            var asPath = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.AS_PATH) as PathAttributeASPath;
+            var asns = asPath?.ASPaths[0].ASNs;
+            if (asns?.Count > 0)
+            {
+                var jarrayObj = new JArray(asns);
+                jObject.Add("asPath", jarrayObj);
+            }
+
+            var announceObj = new JArray();
+            var withdrawObj = new JArray();
+
+            if (msg.Nlri.Count > 0)
+            {
+                var nexthop = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.NEXT_HOP) as PathAttributeNextHop;
+                var announce = ToJObject(AddressFamily.IP, SubsequentAddressFamily.Unicast, nexthop.NextHop, msg.Nlri);
+                announceObj.Add(announce);
+            }
+
+            if (msg.WithdrawnRoutesLength > 0)
+            {
+                var withdraw = ToJObject(AddressFamily.IP, SubsequentAddressFamily.Unicast, msg.WithdrawnRoutes);
+                withdrawObj.Add(withdraw);
+            }
+
+            var mpReach = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MP_REACH_NLRI) as PathAttributeMPReachNlri;
+            if (mpReach?.NLRI.Count > 0)
+            {
+                var nexthop = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.NEXT_HOP) as PathAttributeNextHop;
+                var announce = ToJObject(mpReach.Afi, mpReach.Safi, mpReach.NextHop, mpReach.NLRI);
+                announceObj.Add(announce);
+            }
+
+            var mpUnreach = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MP_UNREACH_NLRI) as PathAttributeMPUnreachNlri;
+            if (mpUnreach?.WithdrawnRoutes.Count > 0)
+            {
+                var withdraw = ToJObject(mpUnreach.Afi, mpUnreach.Safi, mpUnreach.WithdrawnRoutes);
+                withdrawObj.Add(withdraw);
+            }
+
+            if (announceObj.Count > 0)
+            {
+                jObject.Add("announce", announceObj);
+            }
+
+            if (withdrawObj.Count > 0)
+            {
+                jObject.Add("withdraw", withdrawObj);
+            }
+
+            return jObject;
         }
 
-        private static UpdateModel CreateModel(RouteMonitoring bmpMsg)
+        private static JObject ToJObject(AddressFamily afi, SubsequentAddressFamily safi, IPAddress nexthop, IList<IPAddrPrefix> prefixes)
         {
-            var bgpMsg = bmpMsg.BgpMessage as BgpUpdateMessage;
-
-            var model = new UpdateModel()
+            var model = new PrefixAnnounceModel
             {
-                BmpMsgLength = bmpMsg.BmpHeader.MessageLength,
-                BgpMsgLength = bgpMsg.Header.Length,
-                Peer = CreateModel(bmpMsg.PeerHeader)
+                Afi = afi,
+                Safi = safi,
+                Nexthop = nexthop,
+                Prefixes = prefixes
             };
 
-            // End-of-RIB
-            if (bgpMsg.Header.Length == 23)
-            {
-                return model;
-            }
-
-            var origin = bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.ORIGIN);
-            model.Origin = ((PathAttributeOrigin)origin).Origin.ToString();
-
-            if (bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.AS_PATH) is PathAttributeASPath asPath)
-            {
-                model.AsPath = new List<int>();
-                for (int i = 0; i < asPath.ASPaths[0].ASNs.Count; i++)
-                {
-                    model.AsPath.Add(asPath.ASPaths[0].ASNs[i]);
-                }
-            }
-
-            if (bgpMsg.WithdrawnRoutesLength > 0)
-            {
-                model.Withdraw = new List<WithdrawModel>();
-
-                var withdrawModel = new WithdrawModel
-                {
-                    Afi = afiStringMap[AddressFamily.IP],
-                    Safi = safiStringMap[SubsequentAddressFamily.Unicast],
-                    Prefixes = new List<string>()
-                };
-
-                for (int i = 0; i < bgpMsg.WithdrawnRoutes.Count; i++)
-                {
-                    var prefix = bgpMsg.WithdrawnRoutes[i].ToString();
-                    withdrawModel.Prefixes.Add(prefix);
-                }
-
-                model.Withdraw.Add(withdrawModel);
-            }
-
-            if (bgpMsg.Nlri?.Count > 0)
-            {
-                model.Announce = new List<AnnounceModel>();
-
-                var nexthop = bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.NEXT_HOP);
-                var announceModel = new AnnounceModel
-                {
-                    Afi = afiStringMap[AddressFamily.IP],
-                    Safi = safiStringMap[SubsequentAddressFamily.Unicast],
-                    Nexthop = ((PathAttributeNextHop)nexthop).NextHop.ToString(),
-                    Prefixes = new List<string>()
-                };
-
-                for (int i = 0; i < bgpMsg.Nlri.Count; i++)
-                {
-                    var prefix = bgpMsg.Nlri[i].ToString();
-                    announceModel.Prefixes.Add(prefix);
-                }
-
-                model.Announce.Add(announceModel);
-            }
-
-            var mpReach = bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MP_REACH_NLRI) as PathAttributeMPReachNLRI;
-            if (mpReach != null)
-            {
-                model.Announce = new List<AnnounceModel>();
-
-                var announceModel = new AnnounceModel
-                {
-                    Afi = afiStringMap[mpReach.AFI],
-                    Safi = safiStringMap[mpReach.SAFI],
-                    Nexthop = mpReach.NextHop.ToString(),
-                    Prefixes = new List<string>()
-                };
-
-                for (int i = 0; i < mpReach.NLRI.Count; i++)
-                {
-                    var prefix = mpReach.NLRI[i].ToString();
-                    announceModel.Prefixes.Add(prefix);
-                }
-
-                model.Announce.Add(announceModel);
-            }
-
-            return model;
+            var jObject = JObject.FromObject(model);
+            return jObject;
         }
 
-        private static BgpOpenModel CreateModel(BgpOpenMessage bgpMsg)
+        private static JObject ToJObject(AddressFamily afi, SubsequentAddressFamily safi, IList<IPAddrPrefix> prefixes)
         {
-            var capabilities = bgpMsg.OptionalParameters.FirstOrDefault(x => x.Type == OptionalParameterType.Capability) as CapabilitiesParameter;
-            var fourOctectAsn = capabilities.Capabilities.FirstOrDefault(x => x.Code == CapabilityCode.FourOctetAs) as CapabilityFourOctetAsNumber;
-            var gracefulRestart = capabilities.Capabilities.FirstOrDefault(x => x.Code == CapabilityCode.GracefulRestart) as CapabilityGracefulRestart;
-            var multiProtocol = capabilities.Capabilities.FirstOrDefault(x => x.Code == CapabilityCode.Multiprotocol) as CapabilityMultiProtocol;
-
-            return new BgpOpenModel
+            var model = new PrefixWithdrawal
             {
-                Asn = bgpMsg.MyAS,
-                HoldTime = bgpMsg.HoldTime,
-                Id = bgpMsg.BgpIdentifier.ToString(),
-                FourOctectAsn = fourOctectAsn?.Asn
+                Afi = afi,
+                Safi = safi,
+                Prefixes = prefixes
             };
+
+            var jObject = JObject.FromObject(model);
+            return jObject;
         }
     }
 }
