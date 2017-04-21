@@ -25,22 +25,22 @@ namespace BmpListener.Serialization
 
         public static string ToJson(this IBmpMessage msg)
         {
-            JObject jObject = null;
+            string json;
 
             switch (msg.BmpHeader.MessageType)
             {
                 case (BmpMessageType.PeerUp):
-                    var model = ConvertToModel((PeerUpNotification)msg);
-                    jObject = JObject.FromObject(model);
+                    var peerUpNotificationModel = ConvertToModel(msg as PeerUpNotification);
+                    json = JsonConvert.SerializeObject(peerUpNotificationModel);
                     break;
                 case (BmpMessageType.RouteMonitoring):
-                    jObject = ToJObject((RouteMonitoring)msg);
+                    var routeMonitoringModel = ConvertToModel(msg as RouteMonitoring);
+                    json = JsonConvert.SerializeObject(routeMonitoringModel);
                     break;
                 default:
                     return null;
             }
 
-            var json = JsonConvert.SerializeObject(jObject);
             return json;
         }
 
@@ -68,15 +68,21 @@ namespace BmpListener.Serialization
             };
         }
 
-        private static JObject ToJObject(RouteMonitoring msg)
+        private static RouteMonitoringModel ConvertToModel(RouteMonitoring msg)
         {
             var peerHeaderModel = ConvertToModel(msg.PeerHeader);
 
-            var jObject = new JObject
+            if (msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MULTI_EXIT_DISC) is PathAttributeMultiExitDisc med)
             {
-                { "bmpMsgLength", msg.BmpHeader.MessageLength },
-                { "bgpMsgLength", msg.Header.Length },
-                { "peer", JObject.FromObject(peerHeaderModel) }
+                var metric = med.Metric;
+            }
+
+            var asPath = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.AS_PATH) as PathAttributeASPath;
+
+            var model = new RouteMonitoringModel
+            {
+                AsPath = asPath?.ASPaths[0].ASNs,
+                Peer = peerHeaderModel
             };
 
             if (msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.ORIGIN) is PathAttributeOrigin origin)
@@ -84,104 +90,72 @@ namespace BmpListener.Serialization
                 switch (origin.Origin)
                 {
                     case PathAttributeOrigin.Type.IGP:
-                        jObject.Add("origin", "igp");
+                        model.Origin = "igp";
                         break;
                     case PathAttributeOrigin.Type.EGP:
-                        jObject.Add("origin", "egp");
+                        model.Origin = "egp";
                         break;
                     case PathAttributeOrigin.Type.Incomplete:
-                        jObject.Add("origin", "incomplete");
+                        model.Origin = "incomplete";
                         break;
                 }
             }
 
-            if (msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MULTI_EXIT_DISC) is PathAttributeMultiExitDisc med)
-            {
-                jObject.Add("med", med.Metric);
-            }
-
             if (msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.COMMUNITY) is PathAttributeCommunity community)
             {
-                jObject.Add("community", community.ToString());
+                model.Community = community.ToString();
             }
-
-            var asPath = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.AS_PATH) as PathAttributeASPath;
-            var asns = asPath?.ASPaths[0].ASNs;
-            if (asns?.Count > 0)
-            {
-                var jarrayObj = new JArray(asns);
-                jObject.Add("asPath", jarrayObj);
-            }
-
-            var announceObj = new JArray();
-            var withdrawObj = new JArray();
 
             if (msg.Nlri.Count > 0)
             {
                 var nexthop = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.NEXT_HOP) as PathAttributeNextHop;
-                var announce = ToJObject(AddressFamily.IP, SubsequentAddressFamily.Unicast, nexthop.NextHop, msg.Nlri);
-                announceObj.Add(announce);
+                var announce = ConvertToModel(AddressFamily.IP, SubsequentAddressFamily.Unicast, nexthop.NextHop, msg.Nlri);
+                model.Announce.Add(announce);
             }
 
             if (msg.WithdrawnRoutesLength > 0)
             {
-                var withdraw = ToJObject(AddressFamily.IP, SubsequentAddressFamily.Unicast, msg.WithdrawnRoutes);
-                withdrawObj.Add(withdraw);
+                var withdraw = ConvertToModel(AddressFamily.IP, SubsequentAddressFamily.Unicast, msg.WithdrawnRoutes);
+                model.Withdraw.Add(withdraw);
             }
 
             var mpReach = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MP_REACH_NLRI) as PathAttributeMPReachNlri;
             if (mpReach?.NLRI.Count > 0)
             {
                 var nexthop = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.NEXT_HOP) as PathAttributeNextHop;
-                var announce = ToJObject(mpReach.Afi, mpReach.Safi, mpReach.NextHop, mpReach.NLRI);
-                announceObj.Add(announce);
+                var announce = ConvertToModel(mpReach.Afi, mpReach.Safi, mpReach.NextHop, mpReach.NLRI);
+                model.Announce.Add(announce);
             }
 
             var mpUnreach = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MP_UNREACH_NLRI) as PathAttributeMPUnreachNlri;
             if (mpUnreach?.WithdrawnRoutes.Count > 0)
             {
-                var withdraw = ToJObject(mpUnreach.Afi, mpUnreach.Safi, mpUnreach.WithdrawnRoutes);
-                withdrawObj.Add(withdraw);
+                var withdraw = ConvertToModel(mpUnreach.Afi, mpUnreach.Safi, msg.WithdrawnRoutes);
+                model.Withdraw.Add(withdraw);
             }
 
-            if (announceObj.Count > 0)
-            {
-                jObject.Add("announce", announceObj);
-            }
-
-            if (withdrawObj.Count > 0)
-            {
-                jObject.Add("withdraw", withdrawObj);
-            }
-
-            return jObject;
+            return model;
         }
 
-        private static JObject ToJObject(AddressFamily afi, SubsequentAddressFamily safi, IPAddress nexthop, IList<IPAddrPrefix> prefixes)
+        private static PrefixAnnounceModel ConvertToModel(AddressFamily afi, SubsequentAddressFamily safi, IPAddress nexthop, IList<IPAddrPrefix> prefixes)
         {
-            var model = new PrefixAnnounceModel
+            return new PrefixAnnounceModel
             {
                 Afi = afi,
                 Safi = safi,
                 Nexthop = nexthop,
                 Prefixes = prefixes
             };
-
-            var jObject = JObject.FromObject(model);
-            return jObject;
         }
 
-        private static JObject ToJObject(AddressFamily afi, SubsequentAddressFamily safi, IList<IPAddrPrefix> prefixes)
+        private static PrefixWithdrawal ConvertToModel(AddressFamily afi, SubsequentAddressFamily safi, IList<IPAddrPrefix> prefixes)
         {
-            var model = new PrefixWithdrawal
+            return new PrefixWithdrawal
             {
                 Afi = afi,
                 Safi = safi,
                 Prefixes = prefixes
             };
-
-            var jObject = JObject.FromObject(model);
-            return jObject;
         }
     }
 }
