@@ -30,7 +30,7 @@ namespace BmpListener.Serialization
             };
         }
 
-        public static string ToJson(this IBmpMessage msg)
+        public static string ToJson(this BmpMessage msg)
         {
             string json;
 
@@ -77,52 +77,54 @@ namespace BmpListener.Serialization
 
         private static RouteMonitoringModel ConvertToModel(RouteMonitoring msg)
         {
-            if (msg.Attributes.Count > 4)
+            var bgpMsg = msg.BgpUpdate;
+
+            if (bgpMsg.Attributes.Count > 4)
             {
                 int i = 0;
             }
 
             var peerHeaderModel = ConvertToModel(msg.PeerHeader);
             
-            var asPath = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.AsPath) as PathAttributeASPath;
+            var asPath = bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.AsPath) as PathAttributeASPath;
 
             var model = new RouteMonitoringModel
             {
-                Origin = (PathAttributeOrigin)msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.Origin),
+                Origin = (PathAttributeOrigin)bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.Origin),
                 AsPath = asPath?.ASPaths[0].ASNs,
                 Peer = peerHeaderModel
             };
             
-            var communities = msg.Attributes.Where(x => x.AttributeType == PathAttributeType.Community).ToList();
+            var communities = bgpMsg.Attributes.Where(x => x.AttributeType == PathAttributeType.Community).ToList();
             foreach (var community in communities)
             {
                 model.Communities.Add(community.ToString());
             }
 
-            if (msg.Nlri.Count > 0)
+            if (bgpMsg.Nlri.Count > 0)
             {
-                var nexthop = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.NextHop) as PathAttributeNextHop;
-                var announce = ConvertToModel(AddressFamily.IP, SubsequentAddressFamily.Unicast, nexthop?.NextHop, msg.Nlri);
+                var nexthop = bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.NextHop) as PathAttributeNextHop;
+                var announce = ConvertToModel(AddressFamily.IP, SubsequentAddressFamily.Unicast, nexthop?.NextHop, bgpMsg.Nlri);
                 model.Announce.Add(announce);
             }
 
-            if (msg.WithdrawnRoutesLength > 0)
+            if (bgpMsg.WithdrawnRoutesLength > 0)
             {
-                var withdraw = ConvertToModel(AddressFamily.IP, SubsequentAddressFamily.Unicast, msg.WithdrawnRoutes);
+                var withdraw = ConvertToModel(AddressFamily.IP, SubsequentAddressFamily.Unicast, bgpMsg.WithdrawnRoutes);
                 model.Withdraw.Add(withdraw);
             }
 
-            var mpReach = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MpReachNlri) as PathAttributeMPReachNlri;
+            var mpReach = bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MpReachNlri) as PathAttributeMPReachNlri;
             if (mpReach?.NLRI.Count > 0)
             {
                 var announce = ConvertToModel(mpReach.Afi, mpReach.Safi, mpReach.NextHop, mpReach.NLRI);
                 model.Announce.Add(announce);
             }
 
-            var mpUnreach = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MpUnreachNlri) as PathAttributeMPUnreachNlri;
+            var mpUnreach = bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MpUnreachNlri) as PathAttributeMPUnreachNlri;
             if (mpUnreach?.WithdrawnRoutes.Count > 0)
             {
-                var withdraw = ConvertToModel(mpUnreach.Afi, mpUnreach.Safi, msg.WithdrawnRoutes);
+                var withdraw = ConvertToModel(mpUnreach.Afi, mpUnreach.Safi, bgpMsg.WithdrawnRoutes);
                 model.Withdraw.Add(withdraw);
             }
 
