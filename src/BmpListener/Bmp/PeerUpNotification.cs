@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using BmpListener.Bgp;
-using System.Linq;
 using BmpListener.MiscUtil.Conversion;
 
 namespace BmpListener.Bmp
@@ -16,7 +15,7 @@ namespace BmpListener.Bmp
 
         public override void Decode(byte[] data, int offset)
         {
-            if (((PeerHeader.Flags & (1 << 7)) != 0))
+            if ((PeerHeader.Flags & (1 << 7)) != 0)
             {
                 var ipBytes = new byte[16];
                 Array.Copy(data, offset, ipBytes, 0, 4);
@@ -37,7 +36,7 @@ namespace BmpListener.Bmp
             offset += 2;
 
             SentOpenMessage = BgpMessage.DecodeMessage(data, offset) as BgpOpenMessage;
-            offset += SentOpenMessage.Header.Length;
+            offset += SentOpenMessage?.Header.Length ?? 0;
             ReceivedOpenMessage = BgpMessage.DecodeMessage(data, offset) as BgpOpenMessage;
         }
     }
