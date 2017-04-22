@@ -4,8 +4,8 @@
     public enum NotificationErrorCode
     {
         MessageHeaderError = 1,
-        OPENMessageError,
-        UPDATEMessageError,
+        OpenMessageError,
+        UpdateMessageError,
         HoldTimerExpired,
         FiniteStateMachineError,
         Cease,

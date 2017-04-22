@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace BmpListener.Bgp
+﻿namespace BmpListener.Bgp
 {
     public class PathAttributeOrigin : PathAttribute
     {

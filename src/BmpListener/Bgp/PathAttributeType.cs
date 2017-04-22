@@ -3,24 +3,24 @@
     // http://www.iana.org/assignments/bgp-parameters/bgp-parameters.xhtml#bgp-parameters-2
     public enum PathAttributeType
     {
-        ORIGIN = 1,
-        AS_PATH,
-        NEXT_HOP,
-        MULTI_EXIT_DISC,
-        LOCAL_PREF,
-        ATOMIC_AGGREGATE,
-        AGGREGATOR,
-        COMMUNITY,
-        ORIGINATOR_ID,
-        CLUSTER_LIST,
-        MP_REACH_NLRI = 14,
-        MP_UNREACH_NLRI,
-        EXTENDED_COMMUNITIES,
-        AS4_PATH,
-        AS4_AGGREGATOR,
-        PMSI_TUNNEL = 22,
-        TUNNEL_ENCAP,
-        AIGP = 26,
-        LARGE_COMMUNITY = 32
+        Origin = 1,
+        AsPath,
+        NextHop,
+        MultiExitDisc,
+        LocalPref,
+        AtomicAggregate,
+        Aggregator,
+        Community,
+        OriginatorId,
+        ClusterList,
+        MpReachNlri = 14,
+        MpUnreachNlri,
+        ExtendedCommunities,
+        As4Path,
+        As4Aggregator,
+        PmsiTunnel = 22,
+        TunnelEncap,
+        Aigp = 26,
+        LargeCommunity = 32
     }
 }

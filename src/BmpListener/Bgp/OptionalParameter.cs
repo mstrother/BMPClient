@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Linq;
-
-namespace BmpListener.Bgp
+﻿namespace BmpListener.Bgp
 {
     public abstract class OptionalParameter
     {

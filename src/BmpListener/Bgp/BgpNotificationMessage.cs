@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace BmpListener.Bgp
+﻿namespace BmpListener.Bgp
 {
     public sealed class BgpNotificationMessage : BgpMessage
     {
@@ -11,7 +8,8 @@ namespace BmpListener.Bgp
         public override void Decode(byte[] data, int offset)
         {
             ErrorCode = (NotificationErrorCode)data[offset];
-            ErrorSubCode = data.ElementAt(offset + 1);
+            offset++;
+            ErrorSubCode = data[offset];
         }
     }
 }

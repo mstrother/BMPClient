@@ -20,7 +20,7 @@ namespace BmpListener.Bgp
 
             WithdrawnRoutesLength = EndianBitConverter.Big.ToInt16(data, offset);
             offset += 2;
-            for (int i = 0; i < WithdrawnRoutesLength;)
+            for (var i = 0; i < WithdrawnRoutesLength;)
             {
                 (IPAddrPrefix prefix, int length) = IPAddrPrefix.Decode(data, offset + i, AddressFamily.IP);
                 WithdrawnRoutes.Add(prefix);
@@ -30,7 +30,7 @@ namespace BmpListener.Bgp
 
             PathAttributeLength = EndianBitConverter.Big.ToInt16(data, offset);
             offset += 2;
-            for (int i = 0; i < PathAttributeLength;)
+            for (var i = 0; i < PathAttributeLength;)
             {
                 (PathAttribute attr, int length) = PathAttribute.DecodeAttribute(data, offset + i);
                 Attributes.Add(attr);
@@ -38,7 +38,7 @@ namespace BmpListener.Bgp
             }
             offset += PathAttributeLength;
 
-            for (int i = 0; i < Header.Length - 23 - PathAttributeLength - WithdrawnRoutesLength;)
+            for (var i = 0; i < Header.Length - 23 - PathAttributeLength - WithdrawnRoutesLength;)
             {
                 (IPAddrPrefix prefix, int length) = IPAddrPrefix.Decode(data, offset + i, AddressFamily.IP);
                 Nlri.Add(prefix);

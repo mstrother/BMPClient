@@ -1,5 +1,4 @@
-﻿
-namespace BmpListener.Bgp
+﻿namespace BmpListener.Bgp
 {
     // http://www.iana.org/assignments/capability-codes/capability-codes.xhtml
     public enum CapabilityCode

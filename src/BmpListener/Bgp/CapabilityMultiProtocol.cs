@@ -1,6 +1,4 @@
 ﻿using BmpListener.MiscUtil.Conversion;
-using System;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {

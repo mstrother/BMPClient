@@ -1,6 +1,5 @@
 ﻿using BmpListener.MiscUtil.Conversion;
 using System;
-using System.Linq;
 
 namespace BmpListener.Bgp
 {
@@ -30,58 +29,58 @@ namespace BmpListener.Bgp
 
             switch (attributeType)
             {
-                case PathAttributeType.ORIGIN:
+                case PathAttributeType.Origin:
                     attr = new PathAttributeOrigin();
                     break;
-                case PathAttributeType.AS_PATH:
+                case PathAttributeType.AsPath:
                     attr = new PathAttributeASPath();
                     break;
-                case PathAttributeType.NEXT_HOP:
+                case PathAttributeType.NextHop:
                     attr = new PathAttributeNextHop();
                     break;
-                case PathAttributeType.MULTI_EXIT_DISC:
+                case PathAttributeType.MultiExitDisc:
                     attr = new PathAttributeMultiExitDisc();
                     break;
-                case PathAttributeType.LOCAL_PREF:
+                case PathAttributeType.LocalPref:
                     attr = new PathAttributeUnknown();
                     break;
-                case PathAttributeType.ATOMIC_AGGREGATE:
+                case PathAttributeType.AtomicAggregate:
                     attr = new PathAttrAtomicAggregate();
                     break;
-                case PathAttributeType.AGGREGATOR:
+                case PathAttributeType.Aggregator:
                     attr = new PathAttributeAggregator();
                     break;
-                case PathAttributeType.COMMUNITY:
+                case PathAttributeType.Community:
                     attr = new PathAttributeCommunity();
                     break;
-                case PathAttributeType.ORIGINATOR_ID:
+                case PathAttributeType.OriginatorId:
                     attr = new PathAttributeUnknown();
                     break;
-                case PathAttributeType.CLUSTER_LIST:
+                case PathAttributeType.ClusterList:
                     attr = new PathAttributeUnknown();
                     break;
-                case PathAttributeType.MP_REACH_NLRI:
+                case PathAttributeType.MpReachNlri:
                     attr = new PathAttributeMPReachNlri();
                     break;
-                case PathAttributeType.MP_UNREACH_NLRI:
+                case PathAttributeType.MpUnreachNlri:
                     attr = new PathAttributeMPUnreachNlri();
                     break;
-                case PathAttributeType.EXTENDED_COMMUNITIES:
+                case PathAttributeType.ExtendedCommunities:
                     attr = new PathAttributeUnknown();
                     break;
-                case PathAttributeType.AS4_PATH:
+                case PathAttributeType.As4Path:
                     attr = new PathAttributeUnknown();
                     break;
-                case PathAttributeType.AS4_AGGREGATOR:
+                case PathAttributeType.As4Aggregator:
                     attr = new PathAttributeUnknown();
                     break;
-                case PathAttributeType.PMSI_TUNNEL:
+                case PathAttributeType.PmsiTunnel:
                     attr = new PathAttributeUnknown();
                     break;
-                case PathAttributeType.TUNNEL_ENCAP:
+                case PathAttributeType.TunnelEncap:
                     attr = new PathAttributeUnknown();
                     break;
-                case PathAttributeType.LARGE_COMMUNITY:
+                case PathAttributeType.LargeCommunity:
                     attr = new PathAttributeLargeCommunities();
                     break;
                 default:
