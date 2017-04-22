@@ -1,25 +1,32 @@
-﻿using BmpListener.Bgp;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using BmpListener.Bgp;
 using BmpListener.Bmp;
 using BmpListener.Serialization.Converters;
 using BmpListener.Serialization.Models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 
 namespace BmpListener.Serialization
 {
-    public static class JsonSerializer
+    public static class BmpSerializer
     {
-        static JsonSerializer()
+        static BmpSerializer()
         {
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore,
-                Converters = new List<JsonConverter> { new IPAddressConverter(), new BgpOpenConverter(), new BgpUpdateConverter(), new AddressFamilyConverter(), new SubsequentAddressFamilyConverter(), new IPAddrPrefixConverter() }
+                Converters = new List<JsonConverter>
+                {
+                    new IPAddressConverter(),
+                    new BgpOpenConverter(),
+                    new AddressFamilyConverter(),
+                    new SubsequentAddressFamilyConverter(),
+                    new IPAddrPrefixConverter(),
+                    new PathAttributeOriginConverter()
+                }
             };
         }
 
@@ -29,11 +36,11 @@ namespace BmpListener.Serialization
 
             switch (msg.BmpHeader.MessageType)
             {
-                case (BmpMessageType.PeerUp):
+                case BmpMessageType.PeerUp:
                     var peerUpNotificationModel = ConvertToModel(msg as PeerUpNotification);
                     json = JsonConvert.SerializeObject(peerUpNotificationModel);
                     break;
-                case (BmpMessageType.RouteMonitoring):
+                case BmpMessageType.RouteMonitoring:
                     var routeMonitoringModel = ConvertToModel(msg as RouteMonitoring);
                     json = JsonConvert.SerializeObject(routeMonitoringModel);
                     break;
@@ -52,7 +59,7 @@ namespace BmpListener.Serialization
             {
                 Peer = peer,
                 LocalPort = msg.LocalPort,
-                RemotePort = msg.RemotePort,
+                RemotePort = msg.RemotePort
             };
         }
 
@@ -70,46 +77,32 @@ namespace BmpListener.Serialization
 
         private static RouteMonitoringModel ConvertToModel(RouteMonitoring msg)
         {
-            var peerHeaderModel = ConvertToModel(msg.PeerHeader);
-
-            if (msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MULTI_EXIT_DISC) is PathAttributeMultiExitDisc med)
+            if (msg.Attributes.Count > 4)
             {
-                var metric = med.Metric;
+                int i = 0;
             }
 
-            var asPath = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.AS_PATH) as PathAttributeASPath;
+            var peerHeaderModel = ConvertToModel(msg.PeerHeader);
+            
+            var asPath = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.AsPath) as PathAttributeASPath;
 
             var model = new RouteMonitoringModel
             {
+                Origin = (PathAttributeOrigin)msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.Origin),
                 AsPath = asPath?.ASPaths[0].ASNs,
                 Peer = peerHeaderModel
             };
-
-            if (msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.ORIGIN) is PathAttributeOrigin origin)
+            
+            var communities = msg.Attributes.Where(x => x.AttributeType == PathAttributeType.Community).ToList();
+            foreach (var community in communities)
             {
-                switch (origin.Origin)
-                {
-                    case PathAttributeOrigin.Type.IGP:
-                        model.Origin = "igp";
-                        break;
-                    case PathAttributeOrigin.Type.EGP:
-                        model.Origin = "egp";
-                        break;
-                    case PathAttributeOrigin.Type.Incomplete:
-                        model.Origin = "incomplete";
-                        break;
-                }
-            }
-
-            if (msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.COMMUNITY) is PathAttributeCommunity community)
-            {
-                model.Community = community.ToString();
+                model.Communities.Add(community.ToString());
             }
 
             if (msg.Nlri.Count > 0)
             {
-                var nexthop = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.NEXT_HOP) as PathAttributeNextHop;
-                var announce = ConvertToModel(AddressFamily.IP, SubsequentAddressFamily.Unicast, nexthop.NextHop, msg.Nlri);
+                var nexthop = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.NextHop) as PathAttributeNextHop;
+                var announce = ConvertToModel(AddressFamily.IP, SubsequentAddressFamily.Unicast, nexthop?.NextHop, msg.Nlri);
                 model.Announce.Add(announce);
             }
 
@@ -119,15 +112,14 @@ namespace BmpListener.Serialization
                 model.Withdraw.Add(withdraw);
             }
 
-            var mpReach = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MP_REACH_NLRI) as PathAttributeMPReachNlri;
+            var mpReach = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MpReachNlri) as PathAttributeMPReachNlri;
             if (mpReach?.NLRI.Count > 0)
             {
-                var nexthop = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.NEXT_HOP) as PathAttributeNextHop;
                 var announce = ConvertToModel(mpReach.Afi, mpReach.Safi, mpReach.NextHop, mpReach.NLRI);
                 model.Announce.Add(announce);
             }
 
-            var mpUnreach = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MP_UNREACH_NLRI) as PathAttributeMPUnreachNlri;
+            var mpUnreach = msg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MpUnreachNlri) as PathAttributeMPUnreachNlri;
             if (mpUnreach?.WithdrawnRoutes.Count > 0)
             {
                 var withdraw = ConvertToModel(mpUnreach.Afi, mpUnreach.Safi, msg.WithdrawnRoutes);
@@ -148,7 +140,8 @@ namespace BmpListener.Serialization
             };
         }
 
-        private static PrefixWithdrawal ConvertToModel(AddressFamily afi, SubsequentAddressFamily safi, IList<IPAddrPrefix> prefixes)
+        private static PrefixWithdrawal ConvertToModel(AddressFamily afi, SubsequentAddressFamily safi,
+            IList<IPAddrPrefix> prefixes)
         {
             return new PrefixWithdrawal
             {

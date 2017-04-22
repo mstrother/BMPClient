@@ -27,6 +27,8 @@ namespace BmpListener
                 var data = new byte[length];
                 input.ReadBytes(data);
                 var bmpMessage = BmpMessage.DecodeMessage(data);
+                var json = bmpMessage.ToJson();
+                Console.WriteLine(json);
 
                 if (bmpMessage != null)
                 {
