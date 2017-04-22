@@ -40,16 +40,13 @@ namespace BmpListener.Bmp
             msg.BmpHeader = msgHeader;
 
             var offset = Constants.BmpCommonHeaderLength;
-            var count = data.Length - Constants.BmpCommonHeaderLength;
 
             if (msgHeader.MessageType != BmpMessageType.Initiation)
             {
                 msg.PeerHeader = new PerPeerHeader(data, offset);
                 offset += Constants.BmpPerPeerHeaderLength;
-                count -= Constants.BmpPerPeerHeaderLength;
             }
-
-            var dataSegment = new ArraySegment<byte>(data, offset, count);
+            
             msg.Decode(data, offset);
             return msg;
         }
