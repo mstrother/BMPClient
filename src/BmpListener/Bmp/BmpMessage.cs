@@ -8,12 +8,12 @@ namespace BmpListener.Bmp
         public PerPeerHeader PeerHeader { get; private set; }
 
         public abstract void Decode(byte[] data, int offset);
-        
-        public static BmpMessage DecodeMessage(byte[] data)
+
+        public static BmpMessage Create(byte[] data)
         {
             var msgHeader = new BmpHeader(data);
             BmpMessage msg;
-
+            
             switch (msgHeader.MessageType)
             {
                 case BmpMessageType.Initiation:
@@ -32,13 +32,13 @@ namespace BmpListener.Bmp
                     msg = new PeerUpNotification();
                     break;
                 case BmpMessageType.Termination:
-                    throw new NotImplementedException();
+                    msg = new BmpTermination();
+                    break;
                 default:
                     return null;
             }
 
             msg.BmpHeader = msgHeader;
-
             var offset = Constants.BmpCommonHeaderLength;
 
             if (msgHeader.MessageType != BmpMessageType.Initiation)
@@ -46,7 +46,7 @@ namespace BmpListener.Bmp
                 msg.PeerHeader = new PerPeerHeader(data, offset);
                 offset += Constants.BmpPerPeerHeaderLength;
             }
-            
+
             msg.Decode(data, offset);
             return msg;
         }
