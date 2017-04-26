@@ -12,6 +12,8 @@ namespace BmpListener.Serialization.Models
         public IList<PrefixAnnounceModel> Announce { get; set; } = new List<PrefixAnnounceModel>();
         public IList<PrefixWithdrawal> Withdraw { get; set; } = new List<PrefixWithdrawal>();
 
+        public bool ShouldSerializeCommunities() => Announce.Count > 0;
+
         public bool ShouldSerializeAnnounce() => Announce.Count > 0;
 
         public bool ShouldSerializeWithdraw() => Withdraw.Count > 0;

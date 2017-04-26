@@ -9,14 +9,10 @@ namespace BmpListener.Utilities
         
         public abstract Endianness Endianness { get; }
 
-        static LittleEndianBitConverter little = new LittleEndianBitConverter();
+        public static LittleEndianBitConverter Little { get; } = new LittleEndianBitConverter();
 
-        public static LittleEndianBitConverter Little => little;
+        public static BigEndianBitConverter Big { get; } = new BigEndianBitConverter();
 
-        static BigEndianBitConverter big = new BigEndianBitConverter();
-
-        public static BigEndianBitConverter Big => big;
-        
         public long DoubleToInt64Bits(double value)
         {
             return BitConverter.DoubleToInt64Bits(value);
@@ -92,11 +88,11 @@ namespace BmpListener.Utilities
         {
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
             if (startIndex < 0 || startIndex > value.Length - bytesRequired)
             {
-                throw new ArgumentOutOfRangeException("startIndex");
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
             }
         }
         
@@ -130,7 +126,7 @@ namespace BmpListener.Utilities
             {
                 parts[i] = ToInt32(value, startIndex + i * 4);
             }
-            return new Decimal(parts);
+            return new decimal(parts);
         }
         
         public byte[] GetBytes(decimal value)
@@ -214,7 +210,7 @@ namespace BmpListener.Utilities
         {
             if (buffer == null)
             {
-                throw new ArgumentNullException("buffer", "Byte array must not be null");
+                throw new ArgumentNullException(nameof(buffer), "Byte array must not be null");
             }
             if (buffer.Length < index + bytes)
             {

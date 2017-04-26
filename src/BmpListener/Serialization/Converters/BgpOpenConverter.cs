@@ -63,7 +63,7 @@ namespace BmpListener.Serialization.Converters
                         break;
                     case CapabilityCode.CiscoRouteRefresh:
                         writer.WritePropertyName("ciscoRouteRefresh");
-                        writer.WriteValue(true); ;
+                        writer.WriteValue(true); 
                         break;
                 }
             }

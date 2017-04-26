@@ -1,6 +1,6 @@
 ﻿namespace BmpListener.Bgp
 {
-    public sealed class BgpNotificationMessage : BgpMessage
+    public class BgpNotificationMessage : BgpMessage
     {
         public NotificationErrorCode ErrorCode { get; private set; }
         public int ErrorSubCode { get; private set; }
@@ -9,6 +9,7 @@
         {
             ErrorCode = (NotificationErrorCode)data[offset];
             offset++;
+
             ErrorSubCode = data[offset];
         }
     }

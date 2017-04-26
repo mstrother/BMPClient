@@ -1,5 +1,4 @@
-﻿using System;
-using BmpListener.MiscUtil.Conversion;
+﻿using BmpListener.Utilities;
 
 namespace BmpListener.Bmp
 {

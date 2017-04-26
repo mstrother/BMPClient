@@ -1,7 +1,7 @@
-﻿using BmpListener.MiscUtil.Conversion;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using BmpListener.Utilities;
 
 namespace BmpListener.Bgp
 {
@@ -11,7 +11,7 @@ namespace BmpListener.Bgp
         public SubsequentAddressFamily Safi { get; private set; }
         public IPAddress NextHop { get; private set; }
         public IPAddress LinkLocalNextHop { get; private set; }
-        public IList<IPAddrPrefix> NLRI { get; } = new List<IPAddrPrefix>();
+        public IList<IPAddrPrefix> Nlri { get; } = new List<IPAddrPrefix>();
 
         public override void Decode(byte[] data, int offset)
         {
@@ -50,7 +50,7 @@ namespace BmpListener.Bgp
             for (int i = 0; i < Length - (5 + nextHopLength);)
             {
                 (IPAddrPrefix prefix, int length) = IPAddrPrefix.Decode(data, offset + i, Afi);
-                NLRI.Add(prefix);
+                Nlri.Add(prefix);
                 i += length;
             }
         }

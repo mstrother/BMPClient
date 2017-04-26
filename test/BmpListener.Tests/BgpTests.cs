@@ -1,10 +1,6 @@
 ﻿using BmpListener.Bgp;
-using BmpListener.Bmp;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using Xunit;
 
 namespace BmpListener.Tests
@@ -36,24 +32,24 @@ namespace BmpListener.Tests
         }
 
         [Theory]
-        [InlineData(PathAttributeType.ORIGIN, 1)]
-        [InlineData(PathAttributeType.AS_PATH, 2)]
-        [InlineData(PathAttributeType.NEXT_HOP, 3)]
-        [InlineData(PathAttributeType.MULTI_EXIT_DISC, 4)]
-        [InlineData(PathAttributeType.LOCAL_PREF, 5)]
-        [InlineData(PathAttributeType.ATOMIC_AGGREGATE, 6)]
-        [InlineData(PathAttributeType.AGGREGATOR, 7)]
-        [InlineData(PathAttributeType.COMMUNITY, 8)]
-        [InlineData(PathAttributeType.ORIGINATOR_ID, 9)]
-        [InlineData(PathAttributeType.CLUSTER_LIST, 10)]
-        [InlineData(PathAttributeType.MP_REACH_NLRI, 14)]
-        [InlineData(PathAttributeType.EXTENDED_COMMUNITIES, 16)]
-        [InlineData(PathAttributeType.AS4_PATH, 17)]
-        [InlineData(PathAttributeType.AS4_AGGREGATOR, 18)]
-        [InlineData(PathAttributeType.PMSI_TUNNEL, 22)]
-        [InlineData(PathAttributeType.TUNNEL_ENCAP, 23)]
-        [InlineData(PathAttributeType.AIGP, 26)]
-        [InlineData(PathAttributeType.LARGE_COMMUNITY, 32)]
+        [InlineData(PathAttributeType.Origin, 1)]
+        [InlineData(PathAttributeType.AsPath, 2)]
+        [InlineData(PathAttributeType.NextHop, 3)]
+        [InlineData(PathAttributeType.MultiExitDisc, 4)]
+        [InlineData(PathAttributeType.LocalPref, 5)]
+        [InlineData(PathAttributeType.AtomicAggregate, 6)]
+        [InlineData(PathAttributeType.Aggregator, 7)]
+        [InlineData(PathAttributeType.Community, 8)]
+        [InlineData(PathAttributeType.OriginatorId, 9)]
+        [InlineData(PathAttributeType.ClusterList, 10)]
+        [InlineData(PathAttributeType.MpReachNlri, 14)]
+        [InlineData(PathAttributeType.ExtendedCommunities, 16)]
+        [InlineData(PathAttributeType.As4Path, 17)]
+        [InlineData(PathAttributeType.As4Aggregator, 18)]
+        [InlineData(PathAttributeType.PmsiTunnel, 22)]
+        [InlineData(PathAttributeType.TunnelEncap, 23)]
+        [InlineData(PathAttributeType.Aigp, 26)]
+        [InlineData(PathAttributeType.LargeCommunity, 32)]
         public void ValidatePathAttributeTypes(PathAttributeType attr, int i)
         {
             Assert.Equal((int)attr, i);

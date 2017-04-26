@@ -81,7 +81,6 @@ namespace BmpListener.Serialization
 
             if (bgpMsg.Attributes.Count > 4)
             {
-                int i = 0;
             }
 
             var peerHeaderModel = ConvertToModel(msg.PeerHeader);
@@ -115,16 +114,16 @@ namespace BmpListener.Serialization
             }
 
             var mpReach = bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MpReachNlri) as PathAttributeMPReachNlri;
-            if (mpReach?.NLRI.Count > 0)
+            if (mpReach?.Nlri.Count > 0)
             {
-                var announce = ConvertToModel(mpReach.Afi, mpReach.Safi, mpReach.NextHop, mpReach.NLRI);
+                var announce = ConvertToModel(mpReach.Afi, mpReach.Safi, mpReach.NextHop, mpReach.Nlri);
                 model.Announce.Add(announce);
             }
 
             var mpUnreach = bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.MpUnreachNlri) as PathAttributeMPUnreachNlri;
             if (mpUnreach?.WithdrawnRoutes.Count > 0)
             {
-                var withdraw = ConvertToModel(mpUnreach.Afi, mpUnreach.Safi, bgpMsg.WithdrawnRoutes);
+                var withdraw = ConvertToModel(mpUnreach.Afi, mpUnreach.Safi, mpUnreach.WithdrawnRoutes);
                 model.Withdraw.Add(withdraw);
             }
 

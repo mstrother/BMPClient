@@ -1,5 +1,5 @@
-﻿using BmpListener.MiscUtil.Conversion;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using BmpListener.Utilities;
 
 namespace BmpListener.Bgp
 {
@@ -20,6 +20,7 @@ namespace BmpListener.Bgp
 
             WithdrawnRoutesLength = EndianBitConverter.Big.ToInt16(data, offset);
             offset += 2;
+
             for (var i = 0; i < WithdrawnRoutesLength;)
             {
                 (IPAddrPrefix prefix, int length) = IPAddrPrefix.Decode(data, offset + i, AddressFamily.IP);
@@ -30,6 +31,7 @@ namespace BmpListener.Bgp
 
             PathAttributeLength = EndianBitConverter.Big.ToInt16(data, offset);
             offset += 2;
+
             for (var i = 0; i < PathAttributeLength;)
             {
                 (PathAttribute attr, int length) = PathAttribute.DecodeAttribute(data, offset + i);

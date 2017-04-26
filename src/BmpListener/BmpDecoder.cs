@@ -5,6 +5,7 @@ using DotNetty.Transport.Channels;
 using BmpListener.Bmp;
 using BmpListener.Serialization;
 using System;
+using System.Reactive.Linq;
 
 namespace BmpListener
 {
@@ -26,9 +27,7 @@ namespace BmpListener
 
                 var data = new byte[length];
                 input.ReadBytes(data);
-                var bmpMessage = BmpMessage.DecodeMessage(data);
-                var json = bmpMessage.ToJson();
-                Console.WriteLine(json);
+                var bmpMessage = BmpMessage.Create(data);
 
                 if (bmpMessage != null)
                 {

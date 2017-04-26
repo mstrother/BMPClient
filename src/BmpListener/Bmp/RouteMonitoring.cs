@@ -8,7 +8,7 @@ namespace BmpListener.Bmp
 
         public override void Decode(byte[] data, int offset)
         {
-            BgpUpdate = BgpMessage.DecodeMessage(data, offset) as BgpUpdateMessage;
+            BgpUpdate = BgpMessage.Create(data, offset) as BgpUpdateMessage;
         }
     }
 }

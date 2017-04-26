@@ -1,7 +1,7 @@
-﻿using BmpListener.MiscUtil.Conversion;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using BmpListener.Utilities;
 
 namespace BmpListener.Bgp
 {
@@ -17,16 +17,20 @@ namespace BmpListener.Bgp
         public override void Decode(byte[] data, int offset)
         {
             Version = data[offset];
-            MyAS = EndianBitConverter.Big.ToUInt16(data, offset + 1);
-            HoldTime = EndianBitConverter.Big.ToInt16(data, offset + 3);
+            offset++;
+
+            MyAS = EndianBitConverter.Big.ToUInt16(data, offset);
+            offset += 2;
+
+            HoldTime = EndianBitConverter.Big.ToInt16(data, offset);
+            offset++;
 
             var ipBytes = new byte[4];
-            Array.Copy(data, offset + 4, ipBytes, 0, 4);
+            Array.Copy(data, offset, ipBytes, 0, 4);
             BgpIdentifier = new IPAddress(ipBytes);
 
             OptionalParametersLength = data[offset + 9];
-
-            offset += 10;
+            offset++;
 
             for (var i = 0; i < OptionalParametersLength;)
             {

@@ -1,5 +1,5 @@
-﻿using BmpListener.MiscUtil.Conversion;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using BmpListener.Utilities;
 
 namespace BmpListener.Bgp
 {

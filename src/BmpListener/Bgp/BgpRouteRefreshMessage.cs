@@ -1,4 +1,4 @@
-﻿using BmpListener.MiscUtil.Conversion;
+﻿using BmpListener.Utilities;
 
 namespace BmpListener.Bgp
 {
@@ -11,8 +11,12 @@ namespace BmpListener.Bgp
         public override void Decode(byte[] data, int offset)
         {
             Afi = (AddressFamily)EndianBitConverter.Big.ToUInt16(data, offset);
-            Demarcation = data[offset + 2];
-            Safi = (SubsequentAddressFamily)data[offset + 3];
+            offset += 2;
+
+            Demarcation = data[offset];
+            offset++;
+
+            Safi = (SubsequentAddressFamily)data[offset];
         }
     }
 }

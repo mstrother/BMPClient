@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using BmpListener.Bgp;
-using BmpListener.MiscUtil.Conversion;
+using BmpListener.Utilities;
 
 namespace BmpListener.Bmp
 {
@@ -35,9 +35,9 @@ namespace BmpListener.Bmp
             RemotePort = EndianBitConverter.Big.ToUInt16(data, offset);
             offset += 2;
 
-            SentOpenMessage = BgpMessage.DecodeMessage(data, offset) as BgpOpenMessage;
+            SentOpenMessage = BgpMessage.Create(data, offset) as BgpOpenMessage;
             offset += SentOpenMessage?.Header.Length ?? 0;
-            ReceivedOpenMessage = BgpMessage.DecodeMessage(data, offset) as BgpOpenMessage;
+            ReceivedOpenMessage = BgpMessage.Create(data, offset) as BgpOpenMessage;
         }
     }
 }

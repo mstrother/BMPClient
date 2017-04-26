@@ -3,13 +3,12 @@
     public abstract class BgpMessage
     {
         public BgpHeader Header { get; protected set; } = new BgpHeader();
-
+        
         public abstract void Decode(byte[] data, int offset);
 
-        public static BgpMessage DecodeMessage(byte[] data, int offset)
+        public static BgpMessage Create(byte[] data, int offset)
         {
             var msgHeader = new BgpHeader(data, offset);
-            offset += Constants.BgpHeaderLength;
 
             BgpMessage msg;
 
@@ -35,6 +34,8 @@
             }
 
             msg.Header = msgHeader;
+            offset += Constants.BgpHeaderLength;
+
             msg.Decode(data, offset);
             return msg;
         }
