@@ -1,4 +1,4 @@
-﻿namespace BmpListener.MiscUtil.Conversion
+﻿namespace BmpListener.Utilities
 {
     public enum Endianness
     {

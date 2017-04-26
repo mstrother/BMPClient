@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace BmpListener.MiscUtil.Conversion
+namespace BmpListener.Utilities
 {
     public abstract class EndianBitConverter
     {
