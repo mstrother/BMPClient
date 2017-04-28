@@ -1,17 +1,13 @@
 ﻿using BmpListener.Bmp;
 using DotNetty.Transport.Channels;
 using System;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
+using System.Threading.Tasks;
 
 namespace BmpListener
 {
     public class BmpMessageHandler : SimpleChannelInboundHandler<BmpMessage>
     {
-        private static readonly Subject<BmpMessage> BmpMessageReceived = new Subject<BmpMessage>();
-
-        public static IObservable<BmpMessage> MessageReceived => BmpMessageReceived;
+        public static Func<BmpMessage, Task> ProcessMessage;
 
         public override void ExceptionCaught(IChannelHandlerContext context, Exception e) => context.CloseAsync();
 
@@ -19,11 +15,10 @@ namespace BmpListener
         {
             try
             {
-                BmpMessageReceived.OnNext(msg);
+                ProcessMessage?.Invoke(msg);
             }
             catch (Exception ex)
             {
-                BmpMessageReceived.OnError(ex);
             }
         }
     }

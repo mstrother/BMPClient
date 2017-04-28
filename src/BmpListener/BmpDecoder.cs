@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using BmpListener.Bmp;
-using BmpListener.Serialization;
-using System;
-using System.Reactive.Linq;
 
 namespace BmpListener
 {
