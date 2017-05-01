@@ -11,16 +11,16 @@ namespace BmpListener.Serialization.Converters
             return objectType == typeof(PathAttributeOrigin);
         }
 
-        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var origin = (PathAttributeOrigin)value;
 
             switch (origin.Origin)
             {
-                case PathAttributeOrigin.Type.IGP:
+                case PathAttributeOrigin.Type.Igp:
                     writer.WriteValue("igp");
                     break;
-                case PathAttributeOrigin.Type.EGP:
+                case PathAttributeOrigin.Type.Egp:
                     writer.WriteValue("egp");
                     break;
                 case PathAttributeOrigin.Type.Incomplete:
@@ -32,7 +32,7 @@ namespace BmpListener.Serialization.Converters
             }
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

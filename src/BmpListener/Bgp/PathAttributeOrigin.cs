@@ -4,8 +4,8 @@
     {
         public enum Type
         {
-            IGP,
-            EGP,
+            Igp,
+            Egp,
             Incomplete
         }
 
