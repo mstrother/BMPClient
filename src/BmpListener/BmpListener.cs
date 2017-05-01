@@ -36,12 +36,7 @@ namespace BmpListener
         }
 
         public Task CloseCompletion => closeCompletionSource.Task;
-
-        //public IObservable<BmpMessage> OnMessageReceived
-        //{
-        //    get { return ((BmpMessageHandler)channel.Pipeline.Last()).OnMessageReceived; }
-        //}
-
+        
         public int Port { get; }
 
         public async Task StartAsync(CancellationToken cancellationToken)
