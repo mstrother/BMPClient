@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BmpListener.Bgp;
 
 namespace BmpListener.Serialization.Models
 {
     public class RouteMonitoringModel
     {
+        public DateTime DateTime { get; set; }
         public PeerHeaderModel Peer { get; set; }
         public PathAttributeOrigin Origin { get; set; }
         public IList<string> Communities { get; set; } = new List<string>();

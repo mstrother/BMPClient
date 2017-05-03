@@ -9,6 +9,5 @@ namespace BmpListener.Serialization.Models
         public IPAddress Address { get; set; }
         public int Asn { get; set; }
         public IPAddress Id { get; set; }
-        public DateTime Time { get; set; }
     }
 }

@@ -57,6 +57,7 @@ namespace BmpListener.Serialization
 
             return new PeerUpNotificationModel
             {
+                DateTime = msg.PeerHeader.DateTime,
                 Peer = peer,
                 LocalPort = msg.LocalPort,
                 RemotePort = msg.RemotePort
@@ -70,8 +71,7 @@ namespace BmpListener.Serialization
                 // type
                 Address = peerHeader.PeerAddress,
                 Asn = peerHeader.AS,
-                Id = peerHeader.PeerId,
-                Time = peerHeader.DateTime
+                Id = peerHeader.PeerId
             };
         }
 
@@ -89,9 +89,10 @@ namespace BmpListener.Serialization
 
             var model = new RouteMonitoringModel
             {
+                DateTime = msg.PeerHeader.DateTime,
+                Peer = peerHeaderModel,
                 Origin = (PathAttributeOrigin)bgpMsg.Attributes.FirstOrDefault(x => x.AttributeType == PathAttributeType.Origin),
                 AsPath = asPath?.ASPaths[0].ASNs,
-                Peer = peerHeaderModel
             };
             
             var communities = bgpMsg.Attributes.Where(x => x.AttributeType == PathAttributeType.Community).ToList();
