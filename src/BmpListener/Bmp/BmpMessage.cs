@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BmpListener.Bmp
+﻿namespace BmpListener.Bmp
 {
     public abstract class BmpMessage
     {

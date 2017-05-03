@@ -8,7 +8,7 @@ namespace BmpListener.Bgp
     {
         public byte Flags { get; private set; }
         public ushort Time { get; private set; }
-        public IList<(AddressFamily, SubsequentAddressFamily, byte)> Tuples { get; } = new List<(AddressFamily afi, SubsequentAddressFamily safi, byte flags)> { };
+        public IList<(AddressFamily, SubsequentAddressFamily, byte)> Tuples { get; } = new List<(AddressFamily afi, SubsequentAddressFamily safi, byte flags)> ();
 
         public override void Decode(byte[] data, int offset)
         {

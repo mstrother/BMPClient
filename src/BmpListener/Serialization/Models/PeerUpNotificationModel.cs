@@ -1,5 +1,4 @@
 ﻿using System;
-using BmpListener.Bgp;
 
 namespace BmpListener.Serialization.Models
 {
