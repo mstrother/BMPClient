@@ -82,7 +82,6 @@ namespace BmpListener
             bootstrap.Option(ChannelOption.SoBacklog, ListenBacklogSize);
             bootstrap.ChildOption(ChannelOption.Allocator, PooledByteBufferAllocator.Default);
             bootstrap.Channel<TcpServerSocketChannel>();
-            bootstrap.Option(ChannelOption.SoBacklog, 100);
             bootstrap.Option(ChannelOption.ConnectTimeout, DefaultConnectionIdleTimeout);
             bootstrap.ChildHandler(new ActionChannelInitializer<ISocketChannel>(channel =>
             {
