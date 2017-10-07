@@ -8,8 +8,9 @@
 
         public static BgpMessage Create(byte[] data, int offset)
         {
-            var msgHeader = new BgpHeader(data, offset);
+            var bgpHeaderLength = 19;
 
+            var msgHeader = new BgpHeader(data, offset);
             BgpMessage msg;
 
             switch (msgHeader.Type)
@@ -34,7 +35,7 @@
             }
 
             msg.Header = msgHeader;
-            offset += Constants.BgpHeaderLength;
+            offset += bgpHeaderLength;
 
             msg.Decode(data, offset);
             return msg;

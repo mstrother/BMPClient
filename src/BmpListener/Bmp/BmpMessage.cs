@@ -9,6 +9,9 @@
 
         public static BmpMessage Create(byte[] data)
         {
+            var commonHeaderLength = 6;
+            var perPeerHeaderLength = 42;
+
             var msgHeader = new BmpHeader(data);
             BmpMessage msg;
             
@@ -37,12 +40,12 @@
             }
 
             msg.BmpHeader = msgHeader;
-            var offset = Constants.BmpCommonHeaderLength;
+            var offset = commonHeaderLength;
 
             if (msgHeader.MessageType != BmpMessageType.Initiation)
             {
                 msg.PeerHeader = new PerPeerHeader(data, offset);
-                offset += Constants.BmpPerPeerHeaderLength;
+                offset += perPeerHeaderLength;
             }
 
             msg.Decode(data, offset);

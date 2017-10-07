@@ -5,6 +5,7 @@ namespace BmpListener.Bgp
 {
     public class BgpUpdateMessage : BgpMessage
     {
+        public bool EndOfRib { get; private set; }
         public int WithdrawnRoutesLength { get; private set; }
         public int PathAttributeLength { get; private set; }
         public IList<PathAttribute> Attributes { get; } = new List<PathAttribute>();
@@ -13,9 +14,9 @@ namespace BmpListener.Bgp
 
         public override void Decode(byte[] data, int offset)
         {
-            if (data.Length == 23)
+            if (Header.Length == 23)
             {
-                // End-of-RIB
+                EndOfRib = true;
             }
 
             WithdrawnRoutesLength = EndianBitConverter.Big.ToInt16(data, offset);

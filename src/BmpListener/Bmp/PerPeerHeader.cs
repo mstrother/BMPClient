@@ -20,7 +20,8 @@ namespace BmpListener.Bmp
         {
             Global,
             RD,
-            Local
+            Local,
+            LocalRIB
         }
 
         public byte Flags { get; private set; }

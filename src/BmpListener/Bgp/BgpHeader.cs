@@ -14,7 +14,7 @@ namespace BmpListener.Bgp
         }
 
         public byte[] Marker { get; } = new byte[16];
-        public int Length { get; private set; } = Constants.BgpHeaderLength;
+        public int Length { get; private set; } = 19;
         public BgpMessageType Type { get; private set; }
 
         public void Decode(byte[] data, int offset)
